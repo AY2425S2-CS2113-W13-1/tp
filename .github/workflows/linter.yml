@@ -23,8 +23,8 @@ jobs:
         uses: github/super-linter@v4
         env:
           RUN-LOCAL: false
-          LINEAR_RULES_PATH: ${{ github.workspace }}/config/checkstyle
-          JAVA_FILE_NAME: ${{ github.workspace }}/config/checkstyle/checkstyle.xml
+          LINTER_RULES_PATH: ${{ github.workspace }}/config/checkstyle
+          JAVA_FILE_NAME: checkstyle.xml
           VALIDATE_ALL_CODEBASE: true
           VALIDATE_JAVA: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
