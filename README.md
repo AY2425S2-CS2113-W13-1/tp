@@ -1,5 +1,5 @@
 # Javatro - CLI Roguelike Deck-Building Game [![Super-Linter](https://github.com/flyingapricot/tp/actions/workflows/linter.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
- 
+  [![Super-Linter](https://github.com/flyingapricot/tp/actions/workflows/java-formatter.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
 ## Overview
 
 Javatro is a text-based roguelike deck-building game designed for those who love strategic gameplay without the need for graphical interfaces. Inspired by the game *Balatro*, it combines elements of poker and roguelike mechanics to create a deeply replayable, strategic experience that can be enjoyed through a simple command-line interface (CLI).
