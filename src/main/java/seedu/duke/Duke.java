@@ -1,7 +1,6 @@
 package seedu.duke;
 
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 
 public final class Duke {
@@ -22,7 +21,7 @@ public final class Duke {
                 + "|____/ \\__,_|_|\\_\\___|\n";
         System.out.println("Hello from\n" + logo);
         System.out.println("What is your name?");
-        int valuetest = 5;
+        int valuetest = 2;
 
         Scanner in = new Scanner(System.in);
         System.out.println("Hello " + in.nextLine());
