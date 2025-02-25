@@ -1,11 +1,5 @@
 name: Auto Java Formatter
-on:
-  pull_request:
-    branches:
-      - main  # Trigger on PR to main branch
-  push:
-    branches:
-      - main  # Trigger on push to main branch
+on: [pull_request]
 
 jobs:
   build:
