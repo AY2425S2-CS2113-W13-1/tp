@@ -21,13 +21,4 @@ jobs:
           VALIDATE_GOOGLE_JAVA_FORMAT: true
           VALIDATE_JAVA: true
           
-      - name: Commit and push fixes
-        run: |
-          git config --global user.name "flyingapricot"
-          git config --global user.email "neerajkumbar44@gmail.com"
-          git add '**/*.java' #Add Only Java Files
-          git commit -m "Apply Google Java Format fixes"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
