@@ -26,7 +26,7 @@
     </module>
 
     <module name="SuppressionFilter">
-        <property name="file" value="./supressions.xml"/>
+        <property name="file" value="${github.workspace}/config/checkstyle/supressions.xml"/>
     </module>
 
     <module name="LineLength">
