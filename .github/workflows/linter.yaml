@@ -24,6 +24,9 @@ jobs:
           OUTPUT_FORMAT: html
         continue-on-error: true
 
+      - name: List contents of linter output directory (for debugging)
+        run: ls -R /tmp/linter_output/
+
       - name: Upload Linter Report As Artifact
         uses: actions/upload-artifact@v4
         with:
