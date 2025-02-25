@@ -31,4 +31,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: linter-report
-          path: ${DEFAULT_WORKSPACE}/${SUPER_LINTER_OUTPUT_DIRECTORY_NAME}/super-linter/*.html
+          path: ${{ github.workspace }}/super-linter.log
