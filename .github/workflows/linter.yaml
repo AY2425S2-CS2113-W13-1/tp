@@ -25,7 +25,7 @@ jobs:
         continue-on-error: true
 
       - name: List contents of linter output directory (for debugging)
-        run: ls -r ${DEFAULT_WORKSPACE}/super-linter
+        run: ls -r ${{ github.workspace }}/super-linter
 
       - name: Upload Linter Report As Artifact
         uses: actions/upload-artifact@v4
