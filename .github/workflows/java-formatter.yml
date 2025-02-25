@@ -29,13 +29,14 @@ jobs:
       
       - name: Commit formatted code
         run: |
-          git config --global user.name "flyingapricot"
-          git config --global user.email "neerajkumbar44@gmail.com"
+          git config --global user.name "Auto Formatter"
+          git config --global user.email "auto_formatter@gmail.com"
           git add .
           git commit -m "Apply google-java-format to Java files" || echo "No changes to commit"
 
       - name: Push changes
         run: |
-          git push origin main
+          git checkout $GITHUB_REF
+          git push origin $GITHUB_REF
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
