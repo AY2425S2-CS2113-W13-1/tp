@@ -5,6 +5,8 @@ jobs:
   build:
     name: Auto Java Formatter
     runs-on: ubuntu-latest
+    env:
+      BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -36,6 +38,6 @@ jobs:
 
       - name: Push changes
         run: |
-          git push origin $GITHUB_HEAD_REF
+          git push origin BRANCH_NAME
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
