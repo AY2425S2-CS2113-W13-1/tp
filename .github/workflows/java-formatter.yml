@@ -1,0 +1,45 @@
+name: Auto Java Formatter
+on:
+  pull_request:
+    branches:
+      - main  # Trigger on PR to main branch
+  push:
+    branches:
+      - main  # Trigger on push to main branch
+
+jobs:
+  build:
+    name: Auto Java Formatter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: '17'
+          java-package: jdk+fx
+
+      - name: Install google-java-format
+        run: |
+          wget https://github.com/google/google-java-format/releases/download/v1.11.0/google-java-format-1.11.0-all-deps.jar -O google-java-format.jar
+
+      - name: Apply google-java-format to all Java files
+        run: |
+          java -jar google-java-format.jar --replace $(find . -name "*.java")
+
+      - name: Commit formatted code
+        run: |
+          git config --global user.name "flyingapricot"
+          git config --global user.email "neerajkumbar44@gmail.com"
+          git add .
+          git commit -m "Apply google-java-format to Java files" || echo "No changes to commit"
+
+      - name: Push changes
+        run: |
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
