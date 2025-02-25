@@ -64,6 +64,9 @@
 
         <module name="AvoidStarImport"/>
 
+        <module name="UnusedVariable"/>
+
+
         <!--
         NAMING CHECKS
         -->
