@@ -6,12 +6,12 @@ jobs:
     name: Lint Code Base
     runs-on: ubuntu-latest
 
-    env:
-      RUN-LOCAL: false
-      JAVA_FILE_NAME: ${{ github.workspace }}/config/checkstyle/checkstyle.xml
-      VALIDATE_ALL_CODEBASE: true
-      VALIDATE_JAVA: true
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # env:
+    #   RUN-LOCAL: false
+    #   JAVA_FILE_NAME: ${{ github.workspace }}/config/checkstyle/checkstyle.xml
+    #   VALIDATE_ALL_CODEBASE: true
+    #   VALIDATE_JAVA: true
+    #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout code
@@ -22,10 +22,11 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter@v4
         env:
-          RUN-LOCAL: ${{ env.RUN-LOCAL }}
-          JAVA_FILE_NAME: ${{ env.JAVA_FILE_NAME }}
-          VALIDATE_ALL_CODEBASE: ${{ env.VALIDATE_ALL_CODEBASE }}
-          VALIDATE_JAVA: ${{ env.VALIDATE_JAVA }}
+          RUN-LOCAL: false
+          LINEAR_RULES_PATH: ${{ github.workspace }}/config/checkstyle
+          JAVA_FILE_NAME: ${{ github.workspace }}/config/checkstyle/checkstyle.xml
+          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_JAVA: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
