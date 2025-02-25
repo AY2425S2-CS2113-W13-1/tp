@@ -22,7 +22,7 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter@v4
         env:
-          LINTER_RULES_PATH: ${{ env.CHECKSTYLE_FILE_PATH }}  # Reference the job-level variable
+          CHECKSTYLE_FILE_PATH: ${{ env.CHECKSTYLE_FILE_PATH }}  # Reference the job-level variable
           VALIDATE_ALL_CODEBASE: ${{ env.VALIDATE_ALL_CODEBASE }}
           VALIDATE_JAVA: ${{ env.VALIDATE_JAVA }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
