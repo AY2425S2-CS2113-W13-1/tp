@@ -18,9 +18,6 @@ jobs:
           LINTER_RULES_PATH: config/checkstyle/checkstyle.xml
           VALIDATE_ALL_CODEBASE: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FIX_GOOGLE_JAVA_FORMAT: true
-          VALIDATE_GOOGLE_JAVA_FORMAT: true
-          VALIDATE_JAVA: true
 
       - name: Show environment variables for debugging
         run: |
