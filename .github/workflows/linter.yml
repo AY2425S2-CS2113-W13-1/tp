@@ -24,6 +24,6 @@ jobs:
 
       - name: Show environment variables for debugging
         run: |
-          echo "CHECKSTYLE_CONFIG=${{ env.CHECKSTYLE_CONFIG }}"
+            echo "LINTER_RULES_PATH=${{ env.LINTER_RULES_PATH }}"
 
 
