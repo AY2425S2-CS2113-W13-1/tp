@@ -1,4 +1,4 @@
-# Javatro - CLI Roguelike Deck-Building Game [![Super-Linter](https://github.com/flyingapricot/tp/actions/workflows/linter.yaml/badge.svg)](https://github.com/marketplace/actions/super-linter)
+# Javatro - CLI Roguelike Deck-Building Game [![Super-Linter](https://github.com/flyingapricot/tp/actions/workflows/linter.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
  
 ## Overview
 
