@@ -38,8 +38,15 @@ shadowJar {
 }
 
 checkstyle {
+    configFile = file('config/checkstyle/checkstyle.xml')
     toolVersion = '10.2'
 }
+
+task checkstyle(type: Checkstyle) {
+    source 'src/main/java' // or the relevant source directory
+    include '**/*.java' // optional: include only Java files
+}
+
 
 run{
     standardInput = System.in
