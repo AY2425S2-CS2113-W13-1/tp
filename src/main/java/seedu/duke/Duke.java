@@ -12,7 +12,7 @@ public final class Duke {
      * Main entry-point for the java.duke.Duke application.
      * @param args The command-line arguments passed to the program.
      */
-    public static void main( final String[]args) {
+    public static void main(final String[] args) {
         String logo = " ____        _        \n"
                 + "|  _ \\ _   _| | _____ \n"
                 + "| | | | | | | |/ / _ \\\n"
