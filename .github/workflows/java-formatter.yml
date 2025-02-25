@@ -1,5 +1,9 @@
 name: Auto Java Formatter
-on: [pull_request]
+on:
+  pull_request:
+    branches:
+      - '**'  # This targets all branches
+    types: [opened, synchronize, reopened]
 
 jobs:
   build:
