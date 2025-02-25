@@ -1,5 +1,5 @@
 name: Auto Java Formatter
-on: push
+on: [push]
 
 jobs:
   build:
