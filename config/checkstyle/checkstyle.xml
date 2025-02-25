@@ -64,7 +64,7 @@
 
         <module name="AvoidStarImport"/>
 
-        <module name="UnusedVariable"/>
+        <module name="com.puppycrawl.tools.checkstyle.checks.design.UnusedVariable"/>
 
 
         <!--
