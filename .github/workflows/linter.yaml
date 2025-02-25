@@ -20,6 +20,7 @@ jobs:
           FIX_GOOGLE_JAVA_FORMAT: false
           VALIDATE_GOOGLE_JAVA_FORMAT: true
           VALIDATE_JAVA: true
+          SUPER_LINTER_OUTPUT_DIRECTORY_NAME: ${{ github.workspace }}/super-linter
           SAVE_SUPER_LINTER_OUTPUT: true
         continue-on-error: true
 
