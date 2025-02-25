@@ -25,7 +25,7 @@ jobs:
         run: |
           git config --global user.name "flyingapricot"
           git config --global user.email "neerajkumbar44@gmail.com"
-          git add .
+          git add '**/*.java' #Add Only Java Files
           git commit -m "Apply Google Java Format fixes"
           git push
         env:
