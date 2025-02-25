@@ -20,3 +20,10 @@ jobs:
           FIX_GOOGLE_JAVA_FORMAT: false
           VALIDATE_GOOGLE_JAVA_FORMAT: true
           VALIDATE_JAVA: true
+          OUTPUT_FORMAT: html
+
+      - name: Upload Linter Report As Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: linter-report
+          path: /tmp/linter_output/*.html
