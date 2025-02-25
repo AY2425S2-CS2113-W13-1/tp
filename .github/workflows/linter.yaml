@@ -24,7 +24,7 @@ jobs:
           SUPER_LINTER_SUMMARY_FILE_NAME: ${{ github.workspace }}/super-linter-summary.md
           SUPER_LINTER_OUTPUT_DIRECTORY_NAME: ${{ github.workspace }}
           SAVE_SUPER_LINTER_OUTPUT: true
-          
+          SAVE_SUPER_LINTER_SUMMARY: true
         continue-on-error: true
 
       - name: List contents of linter output directory (for debugging)
