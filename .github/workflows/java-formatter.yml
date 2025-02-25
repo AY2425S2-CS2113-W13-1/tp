@@ -1,6 +1,10 @@
 name: Auto Java Formatter
 on: [push]
 
+permissions:
+  contents: write
+
+
 jobs:
   build:
     if: github.actor != 'Auto Formatter'
