@@ -1,12 +1,9 @@
 name: Auto Java Formatter
-on:
-  pull_request:
-    branches:
-      - '**'  # This targets all branches
-    types: [opened, synchronize, reopened]
+on: push
 
 jobs:
   build:
+    if: github.actor != 'Auto Formatter'
     name: Auto Java Formatter
     runs-on: ubuntu-latest
     steps:
