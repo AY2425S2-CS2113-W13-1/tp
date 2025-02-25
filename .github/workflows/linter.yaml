@@ -20,6 +20,7 @@ jobs:
           FIX_GOOGLE_JAVA_FORMAT: false
           VALIDATE_GOOGLE_JAVA_FORMAT: true
           VALIDATE_JAVA: true
+          SAVE_SUPER_LINTER_OUTPUT: true
           OUTPUT_FORMAT: html
         continue-on-error: true
 
