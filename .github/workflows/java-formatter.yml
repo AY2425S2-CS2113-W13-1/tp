@@ -36,7 +36,6 @@ jobs:
 
       - name: Push changes
         run: |
-          git checkout $GITHUB_REF
-          git push origin $GITHUB_REF
+          git push origin $GITHUB_HEAD_REF
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
