@@ -20,12 +20,12 @@ jobs:
           FIX_GOOGLE_JAVA_FORMAT: false
           VALIDATE_GOOGLE_JAVA_FORMAT: true
           VALIDATE_JAVA: true
-          SUPER_LINTER_OUTPUT_DIRECTORY_NAME: ${{ github.workspace }}/super-linter
+          SUPER_LINTER_OUTPUT_DIRECTORY_NAME: ${{ github.workspace }}
           SAVE_SUPER_LINTER_OUTPUT: true
         continue-on-error: true
 
       - name: List contents of linter output directory (for debugging)
-        run: ls -r ${{ github.workspace }}/super-linter
+        run: ls -r ${{ github.workspace }}
 
       - name: Upload Linter Report As Artifact
         uses: actions/upload-artifact@v4
