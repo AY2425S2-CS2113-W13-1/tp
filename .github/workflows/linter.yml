@@ -7,7 +7,6 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      JAVA_FILE_NAME: ../../../config/checkstyle/checkstyle.xml
       RUN-LOCAL: false
       VALIDATE_ALL_CODEBASE: true
       VALIDATE_JAVA: true
@@ -22,7 +21,8 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter@v4
         env:
-          JAVA_FILE_NAME: ${{ env.JAVA_FILE_NAME }}
+          RUN-LOCAL: ${{ env.RUN-LOCAL }}
+          JAVA_FILE_NAME: config/checkstyle/checkstyle.xml
           VALIDATE_ALL_CODEBASE: ${{ env.VALIDATE_ALL_CODEBASE }}
           VALIDATE_JAVA: ${{ env.VALIDATE_JAVA }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
