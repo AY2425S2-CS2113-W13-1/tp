@@ -21,7 +21,7 @@ jobs:
           VALIDATE_GOOGLE_JAVA_FORMAT: true
           VALIDATE_JAVA: true
           ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
-          SUPER_LINTER_SUMMARY_FILE_NAME: ${{ github.workspace }}/super-linter-summary.md
+          SUPER_LINTER_SUMMARY_FILE_NAME: super-linter-summary.md
           SUPER_LINTER_OUTPUT_DIRECTORY_NAME: ${{ github.workspace }}
           SAVE_SUPER_LINTER_OUTPUT: true
           SAVE_SUPER_LINTER_SUMMARY: true
