@@ -1,6 +1,8 @@
 package seedu.duke;
 
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
+
 
 public final class Duke {
     // Private constructor to prevent instantiation
