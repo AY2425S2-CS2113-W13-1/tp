@@ -21,11 +21,10 @@ jobs:
           VALIDATE_GOOGLE_JAVA_FORMAT: true
           VALIDATE_JAVA: true
           SAVE_SUPER_LINTER_OUTPUT: true
-          OUTPUT_FORMAT: html
         continue-on-error: true
 
       - name: List contents of linter output directory (for debugging)
-        run: ls -R ${DEFAULT_WORKSPACE}/super-linter
+        run: ls -r ${DEFAULT_WORKSPACE}/super-linter
 
       - name: Upload Linter Report As Artifact
         uses: actions/upload-artifact@v4
