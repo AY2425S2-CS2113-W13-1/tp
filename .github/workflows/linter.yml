@@ -15,7 +15,7 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter@v4
         env:
-          LINTER_RULES_PATH: ../../config/checkstyle.xml
+          LINTER_RULES_PATH: ${{ github.workspace }}/config/checkstyle.xml
           VALIDATE_ALL_CODEBASE: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FIX_GOOGLE_JAVA_FORMAT: true
