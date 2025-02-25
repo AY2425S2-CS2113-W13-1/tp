@@ -38,6 +38,6 @@ jobs:
 
       - name: Push changes
         run: |
-          git push
+          git push origin ${{ BRANCH_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
