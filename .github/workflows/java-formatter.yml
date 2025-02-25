@@ -17,14 +17,16 @@ jobs:
           java-version: '17'
           java-package: jdk+fx
 
-      - name: Install google-java-format
+      # Step 3: Download Google Java Format .jar file
+      - name: Download google-java-format
         run: |
-          wget https://github.com/google/google-java-format/releases/download/v1.11.0/google-java-format-1.11.0-all-deps.jar -O google-java-format.jar
+          wget https://github.com/google/google-java-format/releases/download/v1.15.0/google-java-format-1.15.0-all-deps.jar -O /tmp/google-java-format.jar
 
-      - name: Apply google-java-format to all Java files
+      # Step 4: Run Google Java Format to fix Java formatting
+      - name: Fix Java formatting with google-java-format
         run: |
           java --add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED -jar /tmp/google-java-format.jar --replace $(find . -name "*.java")
-
+      
       - name: Commit formatted code
         run: |
           git config --global user.name "flyingapricot"
