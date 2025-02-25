@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      JAVA_FILE_NAME: ../../config/checkstyle/checkstyle.xml
+      JAVA_FILE_NAME: /github/workspace/config/checkstyle/checkstyle.xml
       RUN-LOCAL: false
       VALIDATE_ALL_CODEBASE: true
       VALIDATE_JAVA: true
