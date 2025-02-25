@@ -1,5 +1,9 @@
 name: Lint Code Base
-on: [push, pull_request]
+on:
+  workflow_run:
+    workflows: ["Auto Java Formatter"]
+    types:
+      - completed
 
 jobs:
   build:
