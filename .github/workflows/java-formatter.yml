@@ -23,7 +23,7 @@ jobs:
 
       - name: Apply google-java-format to all Java files
         run: |
-          java -jar google-java-format.jar --replace $(find . -name "*.java")
+          java --add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED -jar /tmp/google-java-format.jar --replace $(find . -name "*.java")
 
       - name: Commit formatted code
         run: |
