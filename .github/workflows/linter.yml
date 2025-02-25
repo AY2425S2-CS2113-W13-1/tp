@@ -9,6 +9,7 @@ jobs:
     env:
       RUN-LOCAL: false
       CHECKSTYLE_FILE_PATH: config/checkstyle/checkstyle.xml  # Set it at the job level
+      LINTER_RULES_PATH: config/checkstyle/checkstyle.xml  # Ensure this points to your custom config
       VALIDATE_ALL_CODEBASE: true
       VALIDATE_JAVA: true
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -22,6 +23,7 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter@v4
         env:
+          LINTER_RULES_PATH: ${{ env.LINTER_RULES_PATH }}
           CHECKSTYLE_FILE_PATH: ${{ env.CHECKSTYLE_FILE_PATH }}  # Reference the job-level variable
           VALIDATE_ALL_CODEBASE: ${{ env.VALIDATE_ALL_CODEBASE }}
           VALIDATE_JAVA: ${{ env.VALIDATE_JAVA }}
