@@ -8,6 +8,7 @@ jobs:
 
     env:
       RUN-LOCAL: false
+      JAVA_FILE_NAME: ${{ github.workspace }}/config/checkstyle/checkstyle.xml
       VALIDATE_ALL_CODEBASE: true
       VALIDATE_JAVA: true
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -22,7 +23,7 @@ jobs:
         uses: github/super-linter@v4
         env:
           RUN-LOCAL: ${{ env.RUN-LOCAL }}
-          JAVA_FILE_NAME: ${{ github.workspace }}/config/checkstyle/checkstyle.xml
+          JAVA_FILE_NAME: ${{ env.JAVA_FILE_NAME }}
           VALIDATE_ALL_CODEBASE: ${{ env.VALIDATE_ALL_CODEBASE }}
           VALIDATE_JAVA: ${{ env.VALIDATE_JAVA }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
