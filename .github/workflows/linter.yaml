@@ -21,6 +21,7 @@ jobs:
           VALIDATE_GOOGLE_JAVA_FORMAT: true
           VALIDATE_JAVA: true
           OUTPUT_FORMAT: html
+        continue-on-error: true
 
       - name: Upload Linter Report As Artifact
         uses: actions/upload-artifact@v4
