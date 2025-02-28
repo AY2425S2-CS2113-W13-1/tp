@@ -1,6 +1,6 @@
 name: Auto Java Formatter
 on:
-  pull_request:
+  push:
     branches:
       - master
 
