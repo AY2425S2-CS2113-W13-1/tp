@@ -1,5 +1,8 @@
 name: Auto Java Formatter
-on: [push]
+on:
+  pull_request:
+    branches:
+      - master
 
 permissions:
   contents: write
