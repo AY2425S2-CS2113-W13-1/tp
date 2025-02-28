@@ -30,7 +30,7 @@ jobs:
       # Step 4: Run Google Java Format to fix Java formatting
       - name: Fix Java formatting with google-java-format
         run: |
-          java --add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED -jar /tmp/google-java-format.jar --replace $(find . -name "*.java")
+          java --add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED -jar /tmp/google-java-format.jar -a --replace $(find . -name "*.java")
       
       - name: Commit formatted code
         run: |
