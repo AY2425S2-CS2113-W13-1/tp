@@ -1,6 +1,11 @@
 name: Java CI
 
-on: [push, pull_request]
+on:
+  workflow_run:
+    workflows: ["Lint Code Base"]
+    types:
+      - completed
+
 
 jobs:
   build:
@@ -8,6 +13,7 @@ jobs:
       matrix:
         platform: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - name: Set up repository
@@ -30,8 +36,9 @@ jobs:
           java-version: '17'
           java-package: jdk+fx
 
-      - name: Build and check with Gradle
-        run: ./gradlew check
+      # Not needed since we do it before.
+      # - name: Build and check with Gradle
+      #   run: ./gradlew check
 
       - name: Perform IO redirection test (*NIX)
         if: runner.os == 'Linux'
