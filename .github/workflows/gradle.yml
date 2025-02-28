@@ -16,13 +16,10 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
-      - name: Set up repository
-        uses: actions/checkout@master
-
-      - name: Set up repository
-        uses: actions/checkout@master
+      - name: Checkout code
+        uses: actions/checkout@v3
         with:
-          ref: master
+          fetch-depth: 0  # Ensures full history is fetched
 
       - name: Merge to master
         run: git checkout --progress --force ${{ github.sha }}
