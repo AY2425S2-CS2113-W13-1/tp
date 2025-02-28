@@ -1,0 +1,34 @@
+name: Lint Code Base
+on:
+  workflow_run:
+    workflows: ["Auto Java Formatter"]
+    types:
+      - completed
+
+jobs:
+  build:
+    name: Lint Code Base
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+  
+      - name: Lint Code Base
+        uses: github/super-linter@v4
+        env:
+          RUN-LOCAL: false
+          LINTER_RULES_PATH: config/checkstyle
+          JAVA_FILE_NAME: ../../config/checkstyle/checkstyle.xml
+          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_JAVA: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+      - name: Show environment variables for debugging
+        run: |
+            echo "LINTER_RULES_PATH=${{ env.LINTER_RULES_PATH }}"
+
+
