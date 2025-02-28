@@ -4,9 +4,6 @@ import java.util.Scanner;
 
 public final class Duke {
   // Private constructor to prevent instantiation
-  private Duke() {
-    throw new UnsupportedOperationException("Duke is a utility class and cannot be instantiated.");
-  }
   /**
    * Main entry-point for the java.duke.Duke application.
    *
