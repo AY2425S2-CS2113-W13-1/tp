@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '17'
-          java-package: jdk+fx
+          distribution: 'jdk+fx'
 
       - name: Download google-java-format
         run: |
@@ -34,25 +34,41 @@ jobs:
         run: |
           git config --global user.name "Auto Formatter"
           git config --global user.email "auto_formatter@gmail.com"
-          git add .
-          git commit -m "Apply google-java-format to Java files" || echo "No changes to commit"
 
-      - name: Push changes
-        run: |
-          git push
+          # Check if there are any changes
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git add .
+            git commit -m "Apply google-java-format to Java files"
+            git push
+            echo "CHANGES_PUSHED=true" >> $GITHUB_ENV
+          else
+            echo "No formatting changes detected."
+            echo "CHANGES_PUSHED=false" >> $GITHUB_ENV
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   lint:
     name: Lint Code Base
     runs-on: ubuntu-latest
-    needs: format  # Runs only after formatting
+    needs: format
+    if: always() 
     steps:
-      - name: Checkout code
+      - name: Checkout latest code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-  
+          ref: ${{ github.head_ref }}
+
+      - name: Detect and pull latest changes from the same branch
+        run: |
+          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+          echo "Current branch: $BRANCH_NAME"
+          git fetch origin $BRANCH_NAME  # Fetch the latest changes from the current branch
+          git reset --hard origin/$BRANCH_NAME  # Ensure we are using the latest commit from the branch
+          git log -1  # Show latest commit for debugging
+
+
       - name: Lint Code Base
         uses: github/super-linter@v4
         env:
@@ -63,24 +79,30 @@ jobs:
           VALIDATE_JAVA: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Show environment variables for debugging
-        run: echo "LINTER_RULES_PATH=${{ env.LINTER_RULES_PATH }}"
-
   test:
     name: Run Tests with Gradle
     runs-on: ubuntu-latest
-    needs: lint  # Runs only after linting
+    needs: lint
     steps:
-      - name: Checkout code
+      - name: Checkout latest code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          ref: ${{ github.head_ref }}
+
+      - name: Detect and pull latest changes from the same branch
+        run: |
+          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+          echo "Current branch: $BRANCH_NAME"
+          git fetch origin $BRANCH_NAME  # Fetch the latest changes from the current branch
+          git reset --hard origin/$BRANCH_NAME  # Ensure we are using the latest commit from the branch
+          git log -1  # Show latest commit for debugging
 
       - name: Setup JDK 17
         uses: actions/setup-java@v1
         with:
           java-version: '17'
-          java-package: jdk+fx
+          distribution: 'jdk+fx'
 
       - name: Grant execute permission for Gradle
         run: chmod +x gradlew
@@ -91,24 +113,33 @@ jobs:
   build:
     name: Build & Upload JAR
     runs-on: ubuntu-latest
-    needs: test  # Runs only after tests pass
+    needs: test
     steps:
-      - name: Checkout code
+      - name: Checkout latest code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          ref: ${{ github.head_ref }}
+
+      - name: Detect and pull latest changes from the same branch
+        run: |
+          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+          echo "Current branch: $BRANCH_NAME"
+          git fetch origin $BRANCH_NAME  # Fetch the latest changes from the current branch
+          git reset --hard origin/$BRANCH_NAME  # Ensure we are using the latest commit from the branch
+          git log -1  # Show latest commit for debugging
 
       - name: Setup JDK 17
         uses: actions/setup-java@v1
         with:
           java-version: '17'
-          java-package: jdk+fx
+          distribution: 'jdk+fx'
 
       - name: Grant execute permission for Gradle
         run: chmod +x gradlew
 
       - name: Build JAR without Checkstyle
-        run: ./gradlew build -x checkstyleMain -x checkstyleTest # Skip Checkstyle, since it is done earlier
+        run: ./gradlew build -x checkstyleMain -x checkstyleTest
 
       - name: Find JAR File
         run: |
@@ -119,4 +150,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: javatro-jar
-          path: ${{ env.JAR_PATH }}  # Upload the JAR file
+          path: ${{ env.JAR_PATH }}
