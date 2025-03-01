@@ -1,6 +1,10 @@
 name: Auto Java Formatter
 
-on: [push,pull_request]
+on:
+  push:
+  pull_request:
+    branches:
+      - master  # Adjust to match the main branch of your upstream repo
 
 permissions:
   contents: write
@@ -11,16 +15,17 @@ jobs:
     name: Auto Java Formatter
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout latest code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.ref_name }}  # Handles both push & PR
 
       - name: Setup JDK 17
         uses: actions/setup-java@v1
         with:
           java-version: '17'
-          distribution: 'jdk+fx'
+          distribution: 'temurin'
 
       - name: Download google-java-format
         run: |
@@ -29,6 +34,18 @@ jobs:
       - name: Fix Java formatting with google-java-format
         run: |
           java --add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED -jar /tmp/google-java-format.jar -a --replace $(find . -name "*.java")
+
+      - name: Ensure branch is correct for push
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            BRANCH_NAME=${{ github.head_ref }}
+            echo "Switching back to PR branch: $BRANCH_NAME"
+            git checkout -b $BRANCH_NAME  # Create and switch to the branch
+          else
+            BRANCH_NAME=${{ github.ref_name }}
+            echo "Push event detected, staying on branch: $BRANCH_NAME"
+          fi
+          echo "Final branch: $(git branch --show-current)"
 
       - name: Commit formatted code
         run: |
@@ -39,7 +56,7 @@ jobs:
           if [[ -n "$(git status --porcelain)" ]]; then
             git add .
             git commit -m "Apply google-java-format to Java files"
-            git push
+            git push origin $BRANCH_NAME  # Push back to the correct branch
             echo "CHANGES_PUSHED=true" >> $GITHUB_ENV
           else
             echo "No formatting changes detected."
@@ -52,22 +69,13 @@ jobs:
     name: Lint Code Base
     runs-on: ubuntu-latest
     needs: format
-    if: always() 
+    if: always()
     steps:
       - name: Checkout latest code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: ${{ github.head_ref }}
-
-      - name: Detect and pull latest changes from the same branch
-        run: |
-          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
-          echo "Current branch: $BRANCH_NAME"
-          git fetch origin $BRANCH_NAME  # Fetch the latest changes from the current branch
-          git reset --hard origin/$BRANCH_NAME  # Ensure we are using the latest commit from the branch
-          git log -1  # Show latest commit for debugging
-
+          ref: ${{ github.event.pull_request.head.sha || github.ref_name }}
 
       - name: Lint Code Base
         uses: github/super-linter@v4
@@ -83,26 +91,19 @@ jobs:
     name: Run Tests with Gradle
     runs-on: ubuntu-latest
     needs: lint
+    if: always()
     steps:
       - name: Checkout latest code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: ${{ github.head_ref }}
-
-      - name: Detect and pull latest changes from the same branch
-        run: |
-          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
-          echo "Current branch: $BRANCH_NAME"
-          git fetch origin $BRANCH_NAME  # Fetch the latest changes from the current branch
-          git reset --hard origin/$BRANCH_NAME  # Ensure we are using the latest commit from the branch
-          git log -1  # Show latest commit for debugging
+          ref: ${{ github.event.pull_request.head.sha || github.ref_name }}
 
       - name: Setup JDK 17
         uses: actions/setup-java@v1
         with:
           java-version: '17'
-          distribution: 'jdk+fx'
+          distribution: 'temurin'
 
       - name: Grant execute permission for Gradle
         run: chmod +x gradlew
@@ -114,26 +115,19 @@ jobs:
     name: Build & Upload JAR
     runs-on: ubuntu-latest
     needs: test
+    if: always()
     steps:
       - name: Checkout latest code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: ${{ github.head_ref }}
-
-      - name: Detect and pull latest changes from the same branch
-        run: |
-          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
-          echo "Current branch: $BRANCH_NAME"
-          git fetch origin $BRANCH_NAME  # Fetch the latest changes from the current branch
-          git reset --hard origin/$BRANCH_NAME  # Ensure we are using the latest commit from the branch
-          git log -1  # Show latest commit for debugging
+          ref: ${{ github.event.pull_request.head.sha || github.ref_name }}
 
       - name: Setup JDK 17
         uses: actions/setup-java@v1
         with:
           java-version: '17'
-          distribution: 'jdk+fx'
+          distribution: 'temurin'
 
       - name: Grant execute permission for Gradle
         run: chmod +x gradlew
