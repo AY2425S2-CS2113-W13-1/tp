@@ -18,8 +18,8 @@ public class PokerHand {
         // Counts occurrences of each suit.
         Map<Card.Suit, Integer> suitCount = new HashMap<>();
 
-        // card.rank() retrieves the rank of the card (e.g., Rank.ACE, Rank.KING, Rank.TEN, etc.). 
-        //rankCount.getOrDefault(card.rank(), 0) checks if the rank is already in the map:
+        // card.rank() retrieves the rank of the card (e.g., Rank.ACE, Rank.KING, Rank.TEN, etc.).
+        // rankCount.getOrDefault(card.rank(), 0) checks if the rank is already in the map:
         //   - If yes, it gets the current count.
         //   - If not, it returns 0 (default value).
         // +1 increments the count for that rank.
