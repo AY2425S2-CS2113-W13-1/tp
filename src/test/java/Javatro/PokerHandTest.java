@@ -2,6 +2,10 @@ package Javatro;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import javatro_core.Card;
+import javatro_core.HandResult;
+import javatro_core.PokerHand;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

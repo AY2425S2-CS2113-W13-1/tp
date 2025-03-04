@@ -1,4 +1,4 @@
-package Javatro;
+package javatro_core;
 
 public record Card(Rank rank, Suit suit) {
     public enum Rank {

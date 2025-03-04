@@ -1,4 +1,4 @@
-package Javatro;
+package javatro_core;
 
 import java.util.HashMap;
 import java.util.List;

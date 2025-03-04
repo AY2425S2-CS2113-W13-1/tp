@@ -1,4 +1,4 @@
-package Javatro;
+package javatro_core;
 
 public record HandResult(String handName, int chips, int multiplier) {
     @Override
