@@ -1,4 +1,4 @@
-package Javatro;
+package javatro_core;
 
 /**
  * Represents the result of evaluating a poker hand.

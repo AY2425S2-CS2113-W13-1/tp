@@ -1,5 +1,7 @@
 package Javatro;
 
+import javatro_core.HandResult;
+
 public class Ui {
 
     /**

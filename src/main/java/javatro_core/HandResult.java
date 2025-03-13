@@ -1,24 +1,26 @@
-package Javatro;
+package javatro_core;
 
-import static Javatro.Card.Rank.ACE;
-import static Javatro.Card.Rank.FIVE;
-import static Javatro.Card.Rank.FOUR;
-import static Javatro.Card.Rank.JACK;
-import static Javatro.Card.Rank.KING;
-import static Javatro.Card.Rank.QUEEN;
-import static Javatro.Card.Rank.TEN;
-import static Javatro.Card.Rank.THREE;
-import static Javatro.Card.Rank.TWO;
-import static Javatro.PokerHand.HandType.FLUSH;
-import static Javatro.PokerHand.HandType.FOUR_OF_A_KIND;
-import static Javatro.PokerHand.HandType.FULL_HOUSE;
-import static Javatro.PokerHand.HandType.HIGH_CARD;
-import static Javatro.PokerHand.HandType.PAIR;
-import static Javatro.PokerHand.HandType.ROYAL_FLUSH;
-import static Javatro.PokerHand.HandType.STRAIGHT;
-import static Javatro.PokerHand.HandType.STRAIGHT_FLUSH;
-import static Javatro.PokerHand.HandType.THREE_OF_A_KIND;
-import static Javatro.PokerHand.HandType.TWO_PAIR;
+import static javatro_core.Card.Rank.ACE;
+import static javatro_core.Card.Rank.FIVE;
+import static javatro_core.Card.Rank.FOUR;
+import static javatro_core.Card.Rank.JACK;
+import static javatro_core.Card.Rank.KING;
+import static javatro_core.Card.Rank.QUEEN;
+import static javatro_core.Card.Rank.TEN;
+import static javatro_core.Card.Rank.THREE;
+import static javatro_core.Card.Rank.TWO;
+import static javatro_core.PokerHand.HandType.FLUSH;
+import static javatro_core.PokerHand.HandType.FOUR_OF_A_KIND;
+import static javatro_core.PokerHand.HandType.FULL_HOUSE;
+import static javatro_core.PokerHand.HandType.HIGH_CARD;
+import static javatro_core.PokerHand.HandType.PAIR;
+import static javatro_core.PokerHand.HandType.ROYAL_FLUSH;
+import static javatro_core.PokerHand.HandType.STRAIGHT;
+import static javatro_core.PokerHand.HandType.STRAIGHT_FLUSH;
+import static javatro_core.PokerHand.HandType.THREE_OF_A_KIND;
+import static javatro_core.PokerHand.HandType.TWO_PAIR;
+
+import Javatro.JavatroException;
 
 import java.util.HashMap;
 import java.util.List;

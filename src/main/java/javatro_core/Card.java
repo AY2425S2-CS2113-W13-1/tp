@@ -1,4 +1,4 @@
-package Javatro;
+package javatro_core;
 
 /**
  * Represents a playing card with a rank and a suit. Each card has a rank (e.g., ACE, KING, QUEEN)
