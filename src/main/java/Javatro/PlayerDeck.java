@@ -1,6 +1,5 @@
 package Javatro;
 import javatro_core.Card;
-
 import java.util.ArrayList;
 
 public class PlayerDeck {
@@ -14,6 +13,7 @@ public class PlayerDeck {
     }
 
     public ArrayList<Card> getPlayerDeck() {
+
         return playerDeck;
     }
 
