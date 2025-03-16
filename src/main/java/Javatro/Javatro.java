@@ -20,5 +20,13 @@ public class Javatro {
 
     public static void main(String[] args) throws IOException {
         JavatroManager.setScreen(new StartScreen());
+        Deck deck = new Deck();
+        deck.showDeck();
+        Command cmd = new Command(deck);
+        cmd.startNewGame();
+        cmd.showDeck();
+
+        System.out.println("\n\n");
+        deck.showDeck();
     }
 }
