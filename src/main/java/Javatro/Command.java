@@ -13,7 +13,7 @@ public class Command {
 
     // Method to start a new game and shuffle a fresh deck
     public void startNewGame() {
-        score = 0;  // Reset score
+        score = 0; // Reset score
         System.out.println("Welcome to Javatro!");
         System.out.println("Your game has started.");
         System.out.println("You have 8 cards in your hand.");
@@ -40,7 +40,6 @@ public class Command {
         System.out.println("- help: Display this help message.");
         System.out.println("- quit: Quit the game.");
     }
-
 
     // Quit the game
     public void quitGame() {

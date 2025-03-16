@@ -43,10 +43,10 @@ public class Deck {
         Collections.shuffle(newDeck);
         return newDeck;
     }
-    public void showDeck(){
-        for(Card card : deck){
+
+    public void showDeck() {
+        for (Card card : deck) {
             System.out.println(card);
         }
     }
 }
-
