@@ -8,8 +8,9 @@ import java.util.List;
 
 public class HoldingHandTest {
 
+    // Test deck add, draw functions
     @Test
-    void testDeck() {
+    void testDeck() throws JavatroException {
         Deck deck = new Deck();
         int cardsRemaining = deck.getRemainingCards();
         assertEquals(52, cardsRemaining);
@@ -17,8 +18,9 @@ public class HoldingHandTest {
         assertEquals(51, deck.getRemainingCards());
     }
 
+    // Test HoldingHand add, draw, and discard functions
     @Test
-    void testHoldingHand() {
+    void testHoldingHand() throws JavatroException {
         Deck deck = new Deck();
         HoldingHand holdingHand = new HoldingHand();
         for (int i = 0; i < 8; i++) {

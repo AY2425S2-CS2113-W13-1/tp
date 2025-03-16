@@ -17,7 +17,7 @@ public class Javatro {
      */
     public static void main(String[] args) throws JavatroException {
 
-        //        Create a hand of cards
+        // Create a hand of cards
         List<Card> hand =
                 List.of(
                         new Card(ACE, HEARTS), // Using static imports for Rank and Suit
@@ -26,23 +26,28 @@ public class Javatro {
                         new Card(TEN, HEARTS),
                         new Card(TEN, HEARTS));
 
-        //    Calculate total chips from the cards in the hand
+        State state = new State(100, 3, new Deck());
+        // Create a new round
+        Round round = new Round(state);
+
+        // Calculate total chips from the cards in the hand
         int totalChips = 0;
         for (Card card : hand) {
             System.out.println(card + " - Chips: " + card.getChips());
             totalChips += card.getChips();
         }
-        //       Evaluate the poker hand and get the result
+
+        // Evaluate the poker hand and get the result
         PokerHand result = HandResult.evaluateHand(hand);
         System.out.println("Hand: " + result);
 
-        //         Add the base chips from the hand result to the total chips
+        // Add the base chips from the hand result to the total chips
         totalChips += result.getChips();
 
-        //      Calculate the total score by multiplying total chips with the multiplier
+        // Calculate the total score by multiplying total chips with the multiplier
         int totalScore = totalChips * result.getMultiplier();
 
-        //       Display the results
+        // Display the results
         System.out.printf(
                 "\nTotal Score Gained: %s Chips x %d Multiplier = %d\n",
                 totalChips, result.getMultiplier(), totalScore);
