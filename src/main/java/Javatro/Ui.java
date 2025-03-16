@@ -1,5 +1,7 @@
 package Javatro;
 
+import javatro_core.PokerHand;
+
 public class Ui {
 
     /**
