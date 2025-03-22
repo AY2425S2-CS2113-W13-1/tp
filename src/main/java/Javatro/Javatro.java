@@ -1,9 +1,10 @@
 package Javatro;
 
 import Javatro.Core.JavatroCore;
+import Javatro.Core.JavatroException;
+import Javatro.Display.Screens.StartScreen;
+import Javatro.Display.UI;
 import Javatro.Manager.JavatroManager;
-import Javatro.UI.Screens.StartScreen;
-import Javatro.UI.UI;
 
 /**
  * The {@code Javatro} class serves as the main entry point for the application. It initializes the
@@ -26,7 +27,7 @@ public class Javatro {
      *
      * @param args Command-line arguments (not used in this application).
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws JavatroException {
         JavatroManager.setScreen(new StartScreen());
     }
 }

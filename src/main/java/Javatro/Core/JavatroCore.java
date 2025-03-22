@@ -4,8 +4,6 @@
  */
 package Javatro.Core;
 
-import Javatro.Exception.JavatroException;
-
 /** The core game logic class that manages the game state and rounds. */
 public class JavatroCore {
 

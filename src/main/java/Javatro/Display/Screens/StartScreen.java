@@ -1,5 +1,6 @@
-package Javatro.UI.Screens;
+package Javatro.Display.Screens;
 
+import Javatro.Core.JavatroException;
 import Javatro.Manager.Options.ExitGameOption;
 import Javatro.Manager.Options.HelpOption;
 import Javatro.Manager.Options.LoadGameScreenOption;
@@ -11,7 +12,7 @@ import Javatro.Manager.Options.LoadGameScreenOption;
 public class StartScreen extends Screen {
 
     /** Constructs a {@code StartScreen} and initializes available commands. */
-    public StartScreen() {
+    public StartScreen() throws JavatroException {
         super("START MENU");
         commandMap.add(new LoadGameScreenOption());
         commandMap.add(new HelpOption());

@@ -1,7 +1,8 @@
 package Javatro.Manager.Options;
 
+import Javatro.Core.JavatroException;
+import Javatro.Display.UI;
 import Javatro.Manager.JavatroManager;
-import Javatro.UI.UI;
 
 /**
  * The HelpIntroOption class provides an introduction to Javatro. This command is executed when the
@@ -13,7 +14,7 @@ public class HelpIntroOption implements Option {
 
     /** Executes the command to display the introduction message. */
     @Override
-    public void execute() {
+    public void execute() throws JavatroException {
         //        System.out.println("\n=== Welcome to Javatro ===");
         //        System.out.println(
         //                "Javatro is a text-based roguelike deck-building game inspired by
@@ -28,7 +29,7 @@ public class HelpIntroOption implements Option {
         //                "\nThink strategically, manage your deck wisely, and see how far you can
         // go!");
 
-        JavatroManager.setScreen(UI.getHelpIntroScreen());
+        JavatroManager.setScreen(UI.getHelpScreen());
     }
 
     /**

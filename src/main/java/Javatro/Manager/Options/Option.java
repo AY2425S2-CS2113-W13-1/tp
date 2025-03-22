@@ -1,6 +1,6 @@
 package Javatro.Manager.Options;
 
-import Javatro.Exception.JavatroException;
+import Javatro.Core.JavatroException;
 
 public interface Option {
     /**

@@ -1,8 +1,9 @@
-package Javatro.Parser;
+package Javatro.Manager;
 
-import static Javatro.UI.UI.getCurrentScreen;
+import static Javatro.Display.UI.getCurrentScreen;
 
-import Javatro.UI.UI;
+import Javatro.Core.JavatroException;
+import Javatro.Display.UI;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -11,13 +12,19 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+/**
+ * Handles parsing and validation of user input for the Javatro application.
+ *
+ * <p>This class is responsible for processing user input, such as card selections and menu
+ * navigation, and notifying observers (e.g., {@code JavatroManager}) of changes in user input.
+ */
 public class Parser {
 
     /** Property change support for notifying observers of user input changes. */
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
 
     /**
-     * Registers an observer (JavatroManager) to listen for user input changes.
+     * Registers an observer to listen for user input changes.
      *
      * @param pcl the property change listener to register
      */
@@ -31,8 +38,10 @@ public class Parser {
      * @param maxCardsAvailable the maximum number of available cards
      * @param maxCardsToSelect the maximum number of cards a user can select
      * @return a list of selected card indices
+     * @throws JavatroException if the input is invalid or exceeds the allowed number of cards
      */
-    public static List<Integer> getCardInput(int maxCardsAvailable, int maxCardsToSelect) {
+    public static List<Integer> getCardInput(int maxCardsAvailable, int maxCardsToSelect)
+            throws JavatroException {
         Scanner scanner = new Scanner(System.in);
         List<Integer> userInput;
 
@@ -61,12 +70,16 @@ public class Parser {
                             .filter(num -> num != null && num >= 0 && num < maxCardsAvailable)
                             .collect(Collectors.toList());
 
-            if (!userInput.isEmpty()) {
-                System.out.println("You selected the numbers: " + userInput);
-                break;
-            } else {
-                System.out.println("Invalid Input! Please enter valid numbers.");
+            if (userInput.isEmpty()) {
+                throw JavatroException.invalidCardInput();
             }
+
+            if (userInput.size() > maxCardsToSelect) {
+                throw JavatroException.exceedsMaxCardSelection(maxCardsToSelect);
+            }
+
+            System.out.println("You selected the numbers: " + userInput);
+            break;
         }
         return userInput;
     }
@@ -78,25 +91,31 @@ public class Parser {
         int maxRange = getCurrentScreen().getOptionsSize();
 
         while (true) {
-            getCurrentScreen().displayOptions();
-            System.out.print("Enter a number (1 to " + maxRange + "): ");
+            try {
+                getCurrentScreen().displayOptions();
+                System.out.print("Enter a number (1 to " + maxRange + "): ");
 
-            if (scanner.hasNextInt()) {
-                userInput = scanner.nextInt();
-                if (userInput >= 1 && userInput <= maxRange) {
-                    break;
+                if (scanner.hasNextInt()) {
+                    userInput = scanner.nextInt();
+                    if (userInput >= 1 && userInput <= maxRange) {
+                        break; // Exit the loop if input is valid
+                    } else {
+                        throw JavatroException.invalidMenuInput(maxRange);
+                    }
                 } else {
-                    System.out.println(
-                            "Invalid input! Please enter a number between 1 and " + maxRange + ".");
+                    throw JavatroException.invalidInputType();
                 }
-            } else {
-                System.out.println("Invalid input! Please enter a number.");
-                scanner.next();
+            } catch (JavatroException e) {
+                System.err.println(e.getMessage()); // Print the error message
+                scanner.nextLine(); // Clear the invalid input from the scanner
+            } catch (Exception e) {
+                System.err.println("An unexpected error occurred: " + e.getMessage());
+                scanner.nextLine(); // Clear the invalid input from the scanner
             }
         }
 
-        // Update listeners (JavatroManager)  on the value of user input being updated
+        // Notify listeners (e.g., JavatroManager) of the updated user input
         support.firePropertyChange("userInput", null, userInput);
-        UI.clearConsole();
+        UI.clearScreen();
     }
 }

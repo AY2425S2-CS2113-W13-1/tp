@@ -1,7 +1,8 @@
 package Javatro.Manager.Options;
 
+import Javatro.Core.JavatroException;
+import Javatro.Display.UI;
 import Javatro.Manager.JavatroManager;
-import Javatro.UI.UI;
 
 public class HelpHowToPlayOption implements Option {
 
@@ -13,7 +14,7 @@ public class HelpHowToPlayOption implements Option {
 
     /** Executes the command to display instructions on how to play. */
     @Override
-    public void execute() {
+    public void execute() throws JavatroException {
         System.out.println("\n=== How to Play Javatro ===");
         System.out.println("1. Start a new game with 'start'.");
         System.out.println("2. Draw cards using 'draw'.");

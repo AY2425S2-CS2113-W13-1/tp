@@ -4,9 +4,9 @@
  */
 package Javatro.Manager.Options;
 
-import Javatro.Exception.JavatroException;
+import Javatro.Core.JavatroException;
+import Javatro.Display.UI;
 import Javatro.Manager.JavatroManager;
-import Javatro.UI.UI;
 
 /** A command that starts the game and loads the game screen. */
 public class LoadGameScreenOption implements Option {
@@ -23,7 +23,7 @@ public class LoadGameScreenOption implements Option {
     @Override
     public void execute() throws JavatroException {
         JavatroManager.beginGame();
-        Javatro.UI.UI.getGameScreen().restoreGameCommands();
+        Javatro.Display.UI.getGameScreen().restoreGameCommands();
 
         // Update the main screen to show the game screen
         JavatroManager.setScreen(UI.getGameScreen());

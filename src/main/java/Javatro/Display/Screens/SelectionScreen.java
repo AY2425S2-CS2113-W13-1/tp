@@ -1,7 +1,8 @@
-package Javatro.UI.Screens;
+package Javatro.Display.Screens;
 
 import Javatro.Core.Card;
 import Javatro.Core.JavatroCore;
+import Javatro.Core.JavatroException;
 import Javatro.Manager.Options.ResumeGameOption;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * The {@code SelectionScreen} class represents an abstract screen where users select cards from
  * their hand. It provides methods for updating and displaying the player's current hand. (Used for
- * the SelectCardsToDiscard and SelectCardsToPlay)
+ * the DiscardScreen and PlayScreen)
  */
 public class SelectionScreen extends Screen {
 
@@ -20,7 +21,7 @@ public class SelectionScreen extends Screen {
     List<Card> holdingHand;
 
     /** Constructs a {@code SelectionScreen} and initializes it with a resume game command. */
-    public SelectionScreen() {
+    public SelectionScreen() throws JavatroException {
         super("SELECT CARDS");
         commandMap.add(new ResumeGameOption());
     }

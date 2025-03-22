@@ -1,15 +1,16 @@
-package Javatro.UI.Screens;
+package Javatro.Display.Screens;
 
+import Javatro.Core.JavatroException;
 import Javatro.Manager.Options.HelpHowToPlayOption;
 import Javatro.Manager.Options.HelpIntroOption;
 import Javatro.Manager.Options.HelpRulesOption;
 import Javatro.Manager.Options.HelpTipsOption;
 import Javatro.Manager.Options.LoadStartScreenOption;
 
-public class HelpIntroScreen extends Screen {
+public class HelpScreen extends Screen {
 
     /** Constructs a {@code StartScreen} and initializes available commands. */
-    public HelpIntroScreen() {
+    public HelpScreen() throws JavatroException {
         super("HELP SCREEN");
         commandMap.add(new HelpIntroOption());
         commandMap.add(new HelpRulesOption());

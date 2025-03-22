@@ -1,14 +1,14 @@
 /**
  * The {@code JavatroManager} class serves as the main controller (manager) of the game,
- * coordinating interactions between the model ({@code JavatroCore}) and the view ({@code UI}). It
- * listens for property changes and updates the game state accordingly.
+ * coordinating interactions between the model ({@code JavatroCore}) and the view ({@code Display}).
+ * It listens for property changes and updates the game state accordingly.
  */
 package Javatro.Manager;
 
 import Javatro.Core.JavatroCore;
-import Javatro.Exception.JavatroException;
-import Javatro.UI.Screens.Screen;
-import Javatro.UI.UI;
+import Javatro.Core.JavatroException;
+import Javatro.Display.Screens.Screen;
+import Javatro.Display.UI;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -43,7 +43,7 @@ public class JavatroManager implements PropertyChangeListener {
      *
      * @param destinationScreen The new screen to be displayed.
      */
-    public static void setScreen(Screen destinationScreen) {
+    public static void setScreen(Screen destinationScreen) throws JavatroException {
         ui.setCurrentScreen(destinationScreen);
     }
 
@@ -54,7 +54,7 @@ public class JavatroManager implements PropertyChangeListener {
      */
     public static void beginGame() throws JavatroException {
         jc.beginGame();
-        JavatroCore.currentRound.addPropertyChangeListener(Javatro.UI.UI.getGameScreen());
+        JavatroCore.currentRound.addPropertyChangeListener(Javatro.Display.UI.getGameScreen());
         // Fire property changes here
         JavatroCore.currentRound.updateRoundVariables();
     }
@@ -73,7 +73,11 @@ public class JavatroManager implements PropertyChangeListener {
                 UI.getCurrentScreen().getCommand((int) evt.getNewValue() - 1).execute();
             } catch (JavatroException e) {
                 System.out.println(e.getMessage());
-                ui.setCurrentScreen(UI.getCurrentScreen());
+                try {
+                    ui.setCurrentScreen(UI.getCurrentScreen());
+                } catch (JavatroException ex) {
+                    throw new RuntimeException(ex);
+                }
                 // throw new RuntimeException(e);
             }
         }
