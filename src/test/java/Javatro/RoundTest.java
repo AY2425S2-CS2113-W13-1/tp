@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import Javatro.Core.Deck;
-import Javatro.Core.Round;
 import Javatro.Core.JavatroException;
+import Javatro.Core.Round;
 
 import org.junit.jupiter.api.Test;
 

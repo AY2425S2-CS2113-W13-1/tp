@@ -5,8 +5,8 @@
 package Javatro.Manager.Options;
 
 import Javatro.Core.JavatroException;
-import Javatro.Manager.JavatroManager;
 import Javatro.Display.UI;
+import Javatro.Manager.JavatroManager;
 
 /** A command that loads the main menu (start screen) when executed. */
 public class LoadStartScreenOption implements Option {

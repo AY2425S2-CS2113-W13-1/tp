@@ -1,8 +1,8 @@
 package Javatro.Manager.Options;
 
 import Javatro.Core.JavatroException;
-import Javatro.Manager.JavatroManager;
 import Javatro.Display.UI;
+import Javatro.Manager.JavatroManager;
 
 public class HelpRulesOption implements Option {
 

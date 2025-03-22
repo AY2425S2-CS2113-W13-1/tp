@@ -4,8 +4,8 @@ import Javatro.Core.JavatroException;
 import Javatro.Manager.Options.MakeSelectionOption;
 
 /**
- * The {@code DiscardScreen} class represents a screen where the user selects cards to
- * discard. It extends {@code SelectionScreen} and includes commands for making a selection.
+ * The {@code DiscardScreen} class represents a screen where the user selects cards to discard. It
+ * extends {@code SelectionScreen} and includes commands for making a selection.
  */
 public class DiscardScreen extends SelectionScreen {
 

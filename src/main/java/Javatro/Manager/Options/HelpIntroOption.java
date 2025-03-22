@@ -1,8 +1,8 @@
 package Javatro.Manager.Options;
 
 import Javatro.Core.JavatroException;
-import Javatro.Manager.JavatroManager;
 import Javatro.Display.UI;
+import Javatro.Manager.JavatroManager;
 
 /**
  * The HelpIntroOption class provides an introduction to Javatro. This command is executed when the

@@ -1,7 +1,7 @@
 /**
  * The {@code JavatroManager} class serves as the main controller (manager) of the game,
- * coordinating interactions between the model ({@code JavatroCore}) and the view ({@code Display}). It
- * listens for property changes and updates the game state accordingly.
+ * coordinating interactions between the model ({@code JavatroCore}) and the view ({@code Display}).
+ * It listens for property changes and updates the game state accordingly.
  */
 package Javatro.Manager;
 

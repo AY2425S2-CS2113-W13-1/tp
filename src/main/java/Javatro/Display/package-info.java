@@ -1,6 +1,6 @@
 /**
- * The {@code View} package contains all the classes related to the game's user interface (Display). This
- * includes screen management, user interactions, and visual representation of game elements.
+ * The {@code View} package contains all the classes related to the game's user interface (Display).
+ * This includes screen management, user interactions, and visual representation of game elements.
  *
  * <p>This package is responsible for rendering different game screens, handling user input, and
  * managing screen transitions.

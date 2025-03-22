@@ -40,7 +40,8 @@ public class Parser {
      * @return a list of selected card indices
      * @throws JavatroException if the input is invalid or exceeds the allowed number of cards
      */
-    public static List<Integer> getCardInput(int maxCardsAvailable, int maxCardsToSelect) throws JavatroException {
+    public static List<Integer> getCardInput(int maxCardsAvailable, int maxCardsToSelect)
+            throws JavatroException {
         Scanner scanner = new Scanner(System.in);
         List<Integer> userInput;
 
@@ -83,9 +84,7 @@ public class Parser {
         return userInput;
     }
 
-    /**
-     * Handles user input for navigating the current screen and notifies observers.
-     */
+    /** Handles user input for navigating the current screen and notifies observers. */
     public void getInput() {
         Scanner scanner = new Scanner(System.in);
         int userInput;

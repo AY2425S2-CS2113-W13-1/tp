@@ -1,13 +1,14 @@
 package Javatro.Display;
 
 import Javatro.Core.JavatroException;
-import Javatro.Manager.Parser;
 import Javatro.Display.Screens.*;
+import Javatro.Manager.Parser;
 
 /**
- * The {@code Display} class is responsible for managing and displaying different screens in the application.
- * It handles user input, manages screen transitions, and notifies observers of user actions.
- * This class follows the Singleton pattern to ensure a single instance manages all Display-related operations.
+ * The {@code Display} class is responsible for managing and displaying different screens in the
+ * application. It handles user input, manages screen transitions, and notifies observers of user
+ * actions. This class follows the Singleton pattern to ensure a single instance manages all
+ * Display-related operations.
  */
 public class UI {
 
@@ -16,6 +17,7 @@ public class UI {
 
     /** Predefined game-related screens. */
     private static final GameScreen GAME_SCREEN;
+
     private static final DiscardScreen DISCARD_SCREEN;
     private static final PlayScreen PLAY_SCREEN;
     private static final HelpScreen HELP_SCREEN;
@@ -117,10 +119,7 @@ public class UI {
         return HELP_SCREEN;
     }
 
-    /**
-     * Clears the console screen.
-     * This method uses ANSI escape codes to clear the console.
-     */
+    /** Clears the console screen. This method uses ANSI escape codes to clear the console. */
     public static void clearScreen() {
         final String FLUSH = "\033[H\033[2J";
         System.out.print(FLUSH);

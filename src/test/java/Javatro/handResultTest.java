@@ -23,8 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import Javatro.Core.Card;
 import Javatro.Core.HandResult;
-import Javatro.Core.PokerHand;
 import Javatro.Core.JavatroException;
+import Javatro.Core.PokerHand;
 
 import org.junit.jupiter.api.Test;
 

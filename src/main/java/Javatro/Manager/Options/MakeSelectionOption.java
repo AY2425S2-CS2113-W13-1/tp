@@ -6,11 +6,11 @@ package Javatro.Manager.Options;
 
 import Javatro.Core.JavatroCore;
 import Javatro.Core.JavatroException;
-import Javatro.Manager.JavatroManager;
-import Javatro.Manager.Parser;
 import Javatro.Display.Screens.DiscardScreen;
 import Javatro.Display.Screens.PlayScreen;
 import Javatro.Display.UI;
+import Javatro.Manager.JavatroManager;
+import Javatro.Manager.Parser;
 
 import java.util.List;
 
@@ -55,9 +55,7 @@ public class MakeSelectionOption implements Option {
                             JavatroCore.currentRound.getPlayerHand().size(),
                             JavatroCore.currentRound.getPlayerHand().size());
         } else {
-            userInput =
-                    Parser.getCardInput(
-                            JavatroCore.currentRound.getPlayerHand().size(), LIMIT);
+            userInput = Parser.getCardInput(JavatroCore.currentRound.getPlayerHand().size(), LIMIT);
         }
 
         if (Javatro.Display.UI.getCurrentScreen() instanceof PlayScreen) {

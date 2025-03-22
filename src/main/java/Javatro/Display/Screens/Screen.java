@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The {@code Screen} class serves as an abstract base class for all screens in the application.
- * It defines common behaviors such as displaying options for the user to select and handling commands.
+ * The {@code Screen} class serves as an abstract base class for all screens in the application. It
+ * defines common behaviors such as displaying options for the user to select and handling commands.
  * Subclasses must implement the {@link #displayScreen()} method to define their specific content.
  */
 public abstract class Screen {
@@ -38,14 +38,14 @@ public abstract class Screen {
     }
 
     /**
-     * Displays the screen content. This method must be implemented by subclasses to define
-     * the specific behavior and layout of the screen.
+     * Displays the screen content. This method must be implemented by subclasses to define the
+     * specific behavior and layout of the screen.
      */
     public abstract void displayScreen();
 
     /**
-     * Displays the available options in a formatted menu style.
-     * The menu includes a border, a centered title, and a list of options with descriptions.
+     * Displays the available options in a formatted menu style. The menu includes a border, a
+     * centered title, and a list of options with descriptions.
      */
     public void displayOptions() {
         String border = String.valueOf(BORDER_CHAR).repeat(MENU_WIDTH);
@@ -56,7 +56,8 @@ public abstract class Screen {
         System.out.println(border);
 
         for (int i = 0; i < commandMap.size(); i++) {
-            System.out.printf("%c  [%d] %s%n", BORDER_CHAR, i + 1, commandMap.get(i).getDescription());
+            System.out.printf(
+                    "%c  [%d] %s%n", BORDER_CHAR, i + 1, commandMap.get(i).getDescription());
         }
 
         System.out.println(border);
@@ -71,9 +72,16 @@ public abstract class Screen {
     private String centerText(String text) {
         int paddingSize = (Screen.MENU_WIDTH - text.length() - 2) / 2;
         return String.format(
-                "%c%" + paddingSize + "s%s%" + (Screen.MENU_WIDTH - text.length() - paddingSize - 2) + "s%c",
-                BORDER_CHAR, "", text, "", BORDER_CHAR
-        );
+                "%c%"
+                        + paddingSize
+                        + "s%s%"
+                        + (Screen.MENU_WIDTH - text.length() - paddingSize - 2)
+                        + "s%c",
+                BORDER_CHAR,
+                "",
+                text,
+                "",
+                BORDER_CHAR);
     }
 
     /**

@@ -5,8 +5,8 @@ package Javatro.Core;
  * application.
  *
  * <p>This class extends {@link Exception} and provides static factory methods to create exceptions
- * for different error scenarios. It is used to handle errors related to invalid game states,
- * such as invalid card plays, invalid deck configurations, and more.
+ * for different error scenarios. It is used to handle errors related to invalid game states, such
+ * as invalid card plays, invalid deck configurations, and more.
  *
  * @see Exception
  */
@@ -28,7 +28,8 @@ public final class JavatroException extends Exception {
      * Constructs a {@code JavatroException} with the specified error message and cause.
      *
      * @param message The detailed error message explaining the exception.
-     * @param cause The cause of the exception (which is saved for later retrieval by the {@link #getCause()} method).
+     * @param cause The cause of the exception (which is saved for later retrieval by the {@link
+     *     #getCause()} method).
      */
     public JavatroException(String message, Throwable cause) {
         super(message, cause);
@@ -54,7 +55,8 @@ public final class JavatroException extends Exception {
      * @return A {@code JavatroException} indicating the correct number of plays per round.
      */
     public static JavatroException invalidPlaysPerRound() {
-        return new JavatroException(RED + "Number of plays per round must be greater than 0." + END);
+        return new JavatroException(
+                RED + "Number of plays per round must be greater than 0." + END);
     }
 
     /**
@@ -102,7 +104,8 @@ public final class JavatroException extends Exception {
     }
 
     /**
-     * Creates an exception indicating that the user has exceeded the maximum allowed card selection.
+     * Creates an exception indicating that the user has exceeded the maximum allowed card
+     * selection.
      *
      * <p>This exception is thrown when the user selects more cards than allowed.
      *
@@ -110,7 +113,8 @@ public final class JavatroException extends Exception {
      * @return A {@code JavatroException} indicating the maximum allowed card selection.
      */
     public static JavatroException exceedsMaxCardSelection(int maxCardsToSelect) {
-        return new JavatroException(RED + "You can only select up to " + maxCardsToSelect + " cards." + END);
+        return new JavatroException(
+                RED + "You can only select up to " + maxCardsToSelect + " cards." + END);
     }
 
     /**
@@ -122,13 +126,15 @@ public final class JavatroException extends Exception {
      * @return A {@code JavatroException} indicating the valid input range.
      */
     public static JavatroException invalidMenuInput(int maxRange) {
-        return new JavatroException(RED + "Invalid input! Please enter a number between 1 and " + maxRange + "." + END);
+        return new JavatroException(
+                RED + "Invalid input! Please enter a number between 1 and " + maxRange + "." + END);
     }
 
     /**
      * Creates an exception indicating invalid input type.
      *
-     * <p>This exception is thrown when the user provides non-numeric input where a number is expected.
+     * <p>This exception is thrown when the user provides non-numeric input where a number is
+     * expected.
      *
      * @return A {@code JavatroException} indicating that a number is required.
      */
