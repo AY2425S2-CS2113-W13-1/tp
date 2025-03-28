@@ -1,12 +1,7 @@
 package javatro.storage;
 
-import javatro.Javatro;
 import javatro.core.JavatroException;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,18 +10,24 @@ import java.nio.file.StandardOpenOption;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 
-
-//Defined as a singleton class
+// Defined as a singleton class
 public class Storage {
     /** Path to the task storage file. */
     private static final String SAVEFILE_LOCATION = "./savefile.dat";
-    private static final String SECRET_KEY = "mySecretEncrypti";  //Use Github Environment Variable
+
+    private static final String SECRET_KEY = "mySecretEncrypti"; // Use Github Environment Variable
     private static final String ALGORITHM = "AES";
-    private static Storage instance; //Private static instance variable
+    private static Storage instance; // Private static instance variable
     /** Indicates if the save file is valid and can be used. */
     private static boolean saveFileValid = true;
+
     private static final Path path = Paths.get(SAVEFILE_LOCATION);
 
     private Storage() throws JavatroException {
@@ -41,10 +42,11 @@ public class Storage {
             System.out.println("Task File created at: " + SAVEFILE_LOCATION);
         } catch (IOException e) {
             saveFileValid = false;
-            throw new JavatroException("Save File could not be created, current session will not have saving features.");
+            throw new JavatroException(
+                    "Save File could not be created, current session will not have saving"
+                        + " features.");
         }
     }
-
 
     private void initialiseTaskfile() throws JavatroException {
 
@@ -52,29 +54,39 @@ public class Storage {
 
         // Check if the file exists
         if (Files.exists(path)) {
-            System.out.println("File exists, reading and decrypting task file: " + SAVEFILE_LOCATION);
+            System.out.println(
+                    "File exists, reading and decrypting task file: " + SAVEFILE_LOCATION);
             try {
                 // Read and decrypt the content if the file exists
                 byte[] fileData = Files.readAllBytes(path);
 
-                if(fileData.length < 64) return;
+                if (fileData.length < 64) return;
 
-                byte[] encryptedData = Arrays.copyOfRange(fileData, 0, fileData.length - 64); // Assuming SHA-256 hash is 64 bytes
-                byte[] savedHash = Arrays.copyOfRange(fileData, fileData.length - 64, fileData.length);
+                byte[] encryptedData =
+                        Arrays.copyOfRange(
+                                fileData,
+                                0,
+                                fileData.length - 64); // Assuming SHA-256 hash is 64 bytes
+                byte[] savedHash =
+                        Arrays.copyOfRange(fileData, fileData.length - 64, fileData.length);
 
                 String savedHashString = new String(savedHash);
                 // Verify the integrity of the data
-                boolean isDataValid = FileIntegrity.verifyHash(new String(encryptedData), savedHashString);
+                boolean isDataValid =
+                        FileIntegrity.verifyHash(new String(encryptedData), savedHashString);
                 if (!isDataValid) {
-                    throw new JavatroException("Data integrity check failed: file has been tampered with.");
+                    throw new JavatroException(
+                            "Data integrity check failed: file has been tampered with.");
                 }
 
                 String decryptedData = decrypt(encryptedData);
-                System.out.println("Decrypted data: " + decryptedData);  // Replace with actual task data processing
+                System.out.println(
+                        "Decrypted data: "
+                                + decryptedData); // Replace with actual task data processing
 
-                } catch (Exception e) {
-                    throw new JavatroException("Error reading/decrypting save file: " + e.getMessage());
-                }
+            } catch (Exception e) {
+                throw new JavatroException("Error reading/decrypting save file: " + e.getMessage());
+            }
         } else {
             createTaskFile();
         }
@@ -127,7 +139,7 @@ public class Storage {
 
     // Method to save sample data into the task file (encrypted)
     public void saveSampleData() throws JavatroException {
-        String sampleData = "This is a sample task data.";  // Sample data to be saved in the file
+        String sampleData = "This is a sample task data."; // Sample data to be saved in the file
         byte[] encryptedData;
         try {
             encryptedData = encrypt(sampleData);
@@ -146,12 +158,13 @@ public class Storage {
         try {
             Path path = Paths.get(SAVEFILE_LOCATION);
             Files.write(path, encryptedData, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-            Files.write(path, dataHash.getBytes(),StandardOpenOption.APPEND);  // Append the hash after the data
+            Files.write(
+                    path,
+                    dataHash.getBytes(),
+                    StandardOpenOption.APPEND); // Append the hash after the data
         } catch (IOException e) {
             throw new JavatroException("SAVING ISSUE: " + e.getMessage());
         }
         System.out.println("Encrypted sample data saved successfully.");
     }
-
-
 }
