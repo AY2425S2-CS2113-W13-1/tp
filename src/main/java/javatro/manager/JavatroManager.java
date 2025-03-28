@@ -37,6 +37,7 @@ public class JavatroManager implements PropertyChangeListener {
     public JavatroManager(UI ui, JavatroCore jc) throws JavatroException {
         JavatroManager.ui = ui;
         JavatroManager.jc = jc;
+        storage.saveSampleData();
         UI.getParser().addPropertyChangeListener(this); // Register as an observer
     }
 

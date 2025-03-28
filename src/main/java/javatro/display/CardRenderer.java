@@ -52,8 +52,8 @@ public class CardRenderer {
     private static String getRightSpacing(Card.Suit suit) {
         return switch (suit) {
             case HEARTS, CLUBS -> HAIR_SPACE.repeat(13);
-            case DIAMONDS -> HAIR_SPACE.repeat(14);
-            case SPADES -> HAIR_SPACE.repeat(12) + THIN_SPACE;
+            case DIAMONDS -> HAIR_SPACE.repeat(13);
+            case SPADES -> HAIR_SPACE.repeat(11) + THIN_SPACE;
         };
     }
 
