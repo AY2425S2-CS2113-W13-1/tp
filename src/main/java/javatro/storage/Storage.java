@@ -1,6 +1,5 @@
 package javatro.storage;
 
-import javatro.Javatro;
 import javatro.core.JavatroException;
 
 import javax.crypto.BadPaddingException;
@@ -27,26 +26,27 @@ public class Storage {
     private static Storage instance; //Private static instance variable
     /** Indicates if the save file is valid and can be used. */
     private static boolean saveFileValid = true;
-
+    private static final Path path = Paths.get(SAVEFILE_LOCATION);
 
     private Storage() throws JavatroException {
         // Initialize resources
         initialiseTaskfile();
     }
 
-    private void loadFile(String filePath) throws Exception {
-        // Read the encrypted data from the file
-        byte[] encryptedData = Files.readAllBytes(Path.of(filePath));
-
-        // Decrypt the data
-        String decryptedData = decrypt(encryptedData);
-
-        // Convert the decrypted data back into a GameState object (you can use serialization or JSON for this)
-        //return GameState.fromString(decryptedData);  // Assuming you have a method to convert the string back to a GameState object
+    private void createTaskFile() throws JavatroException {
+        try {
+            // Create the file if it doesn't exist
+            Files.createFile(path);
+            System.out.println("Task File created at: " + SAVEFILE_LOCATION);
+        } catch (IOException e) {
+            saveFileValid = false;
+            throw new JavatroException("Save File could not be created, current session will not have saving features.");
+        }
     }
 
 
     private void initialiseTaskfile() throws JavatroException {
+
         Path path = Paths.get(SAVEFILE_LOCATION);
 
         // Check if the file exists
@@ -55,6 +55,9 @@ public class Storage {
             try {
                 // Read and decrypt the content if the file exists
                 byte[] fileData = Files.readAllBytes(path);
+
+                if(fileData.length < 64) return;
+
                 byte[] encryptedData = Arrays.copyOfRange(fileData, 0, fileData.length - 64); // Assuming SHA-256 hash is 64 bytes
                 byte[] savedHash = Arrays.copyOfRange(fileData, fileData.length - 64, fileData.length);
 
@@ -65,25 +68,16 @@ public class Storage {
                     throw new JavatroException("Data integrity check failed: file has been tampered with.");
                 }
 
-                //byte[] encryptedData = Files.readAllBytes(path);
                 String decryptedData = decrypt(encryptedData);
                 System.out.println("Decrypted data: " + decryptedData);  // Replace with actual task data processing
-            } catch (IOException e) {
-                throw new JavatroException("Error reading save file: " + e.getMessage());
-            } catch (Exception e) {
-                throw new JavatroException("Error decrypting save file: " + e.getMessage());
-            }
+
+                } catch (Exception e) {
+                    throw new JavatroException("Error reading/decrypting save file: " + e.getMessage());
+                }
         } else {
-            try {
-                // Create the file if it doesn't exist
-                Files.createFile(path);
-                System.out.println("Task File created at: " + SAVEFILE_LOCATION);
-            } catch (IOException e) {
-                throw new JavatroException("Save File could not be created, current session will not have saving features.");
-            }
+            createTaskFile();
         }
     }
-
 
     public static Storage getInstance() throws JavatroException {
         if (instance == null) {
@@ -102,6 +96,10 @@ public class Storage {
 
     // Decrypt the byte array and return the decrypted String
     public String decrypt(byte[] encryptedData) throws JavatroException {
+        if (encryptedData.length == 0) {
+            return "";
+        }
+
         SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(), ALGORITHM);
         Cipher cipher = null;
         try {
@@ -153,9 +151,6 @@ public class Storage {
         }
         System.out.println("Encrypted sample data saved successfully.");
     }
-
-
-
 
 
 }
