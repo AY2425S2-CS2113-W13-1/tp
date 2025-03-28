@@ -50,8 +50,6 @@ public class Storage {
 
     private void initialiseTaskfile() throws JavatroException {
 
-        Path path = Paths.get(SAVEFILE_LOCATION);
-
         // Check if the file exists
         if (Files.exists(path)) {
             System.out.println(

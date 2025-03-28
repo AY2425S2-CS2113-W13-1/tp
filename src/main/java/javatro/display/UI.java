@@ -27,6 +27,8 @@ public class UI {
     private static final StartScreen START_SCREEN;
     private static final PokerHandScreen POKER_SCREEN;
     private static final DeckScreen DECK_SCREEN;
+    private static final RunsScreen RUNS_SCREEN;
+
 
     /** Parser instance for handling user input. */
     private static final Parser PARSER = new Parser();
@@ -43,6 +45,7 @@ public class UI {
             START_SCREEN = new StartScreen();
             POKER_SCREEN = new PokerHandScreen();
             DECK_SCREEN = new DeckScreen();
+            RUNS_SCREEN = new RunsScreen();
         } catch (JavatroException e) {
             System.err.println("Failed to initialize screens: " + e.getMessage());
             e.printStackTrace();
@@ -382,6 +385,15 @@ public class UI {
      */
     public static DeckScreen getDeckScreen() {
         return DECK_SCREEN;
+    }
+
+    /**
+     * Gets the Runs Menu screen.
+     *
+     * @return the {@link DeckScreen} instance
+     */
+    public static RunsScreen getRunsScreen() {
+        return RUNS_SCREEN;
     }
     // endregion
 }
