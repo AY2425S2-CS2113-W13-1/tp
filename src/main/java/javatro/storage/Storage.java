@@ -1,31 +1,30 @@
 package javatro.storage;
 
-import javatro.Javatro;
 import javatro.core.JavatroException;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 
-
-//Defined as a singleton class
+// Defined as a singleton class
 public class Storage {
     /** Path to the task storage file. */
     private static final String SAVEFILE_LOCATION = "./savefile.dat";
-    private static final String SECRET_KEY = "mySecretEncrypti";  //Use Github Environment Variable
+
+    private static final String SECRET_KEY = "mySecretEncrypti"; // Use Github Environment Variable
     private static final String ALGORITHM = "AES";
-    private static Storage instance; //Private static instance variable
+    private static Storage instance; // Private static instance variable
     /** Indicates if the save file is valid and can be used. */
     private static boolean saveFileValid = true;
-
 
     private Storage() throws JavatroException {
         // Initialize resources
@@ -39,22 +38,26 @@ public class Storage {
         // Decrypt the data
         String decryptedData = decrypt(encryptedData);
 
-        // Convert the decrypted data back into a GameState object (you can use serialization or JSON for this)
-        //return GameState.fromString(decryptedData);  // Assuming you have a method to convert the string back to a GameState object
+        // Convert the decrypted data back into a GameState object (you can use serialization or
+        // JSON for this)
+        // return GameState.fromString(decryptedData);  // Assuming you have a method to convert the
+        // string back to a GameState object
     }
-
 
     private void initialiseTaskfile() throws JavatroException {
         Path path = Paths.get(SAVEFILE_LOCATION);
 
         // Check if the file exists
         if (Files.exists(path)) {
-            System.out.println("File exists, reading and decrypting task file: " + SAVEFILE_LOCATION);
+            System.out.println(
+                    "File exists, reading and decrypting task file: " + SAVEFILE_LOCATION);
             try {
                 // Read and decrypt the content if the file exists
                 byte[] encryptedData = Files.readAllBytes(path);
                 String decryptedData = decrypt(encryptedData);
-                System.out.println("Decrypted data: " + decryptedData);  // Replace with actual task data processing
+                System.out.println(
+                        "Decrypted data: "
+                                + decryptedData); // Replace with actual task data processing
             } catch (IOException e) {
                 throw new JavatroException("Error reading save file: " + e.getMessage());
             } catch (Exception e) {
@@ -66,11 +69,12 @@ public class Storage {
                 Files.createFile(path);
                 System.out.println("Task File created at: " + SAVEFILE_LOCATION);
             } catch (IOException e) {
-                throw new JavatroException("Save File could not be created, current session will not have saving features.");
+                throw new JavatroException(
+                        "Save File could not be created, current session will not have saving"
+                            + " features.");
             }
         }
     }
-
 
     public static Storage getInstance() throws JavatroException {
         if (instance == null) {
@@ -115,7 +119,7 @@ public class Storage {
 
     // Method to save sample data into the task file (encrypted)
     public void saveSampleData() throws JavatroException {
-        String sampleData = "This is a sample task data.";  // Sample data to be saved in the file
+        String sampleData = "This is a sample task data."; // Sample data to be saved in the file
         byte[] encryptedData;
         try {
             encryptedData = encrypt(sampleData);
@@ -129,9 +133,4 @@ public class Storage {
         }
         System.out.println("Encrypted sample data saved successfully.");
     }
-
-
-
-
-
 }

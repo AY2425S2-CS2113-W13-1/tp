@@ -2,11 +2,12 @@ package javatro.storage;
 
 import javatro.core.JavatroException;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import java.security.NoSuchAlgorithmException;
 
-//Use this class to generate a key used for encryption and decryption.
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+
+// Use this class to generate a key used for encryption and decryption.
 public class KeyGeneration {
 
     public static void generateKey() throws JavatroException {
@@ -15,8 +16,7 @@ public class KeyGeneration {
         KeyGenerator keyGenerator = null;
         try {
             keyGenerator = KeyGenerator.getInstance("AES");
-        }
-        catch (NoSuchAlgorithmException n) {
+        } catch (NoSuchAlgorithmException n) {
             throw new JavatroException(n.getMessage());
         }
 
@@ -31,4 +31,3 @@ public class KeyGeneration {
         System.out.println("Generated AES Key (Base64): " + encodedKey);
     }
 }
-
