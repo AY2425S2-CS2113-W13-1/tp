@@ -73,7 +73,10 @@ public class DeckScreen extends Screen {
         String[] rankOrder = {"A", "K", "Q", "J", "10", "9", "8", "7", "6", "5", "4", "3", "2"};
         // Y-axis (rows): Spades, Hearts, Clubs, Diamonds.
         String[] suitOrder = {"Spades", "Hearts", "Clubs", "Diamonds"};
-        String[] suitIcons = {"♠️", "♥️", "♣️", "♦️"};
+        // Suit Colours
+        String[] suitColour = {PURPLE, RED, BLUE, ORANGE};
+        // Suit Colour Backgrounds
+        String[] suitColourB = {PURPLE_B, RED_B, BLUE_B, ORANGE_B};
 
         // Step 3: Build the 4-box table manually.
         StringBuilder sb = new StringBuilder();
@@ -126,19 +129,16 @@ public class DeckScreen extends Screen {
         // --- Bottom Content Rows ---
         // We need to print 5 rows: 4 suit rows and 1 totals row (merged into the same box).
         // For each suit row:
-        String[] suitSpace = {
-            HAIR_SPACE.repeat(9) + THIN_SPACE,
-            HAIR_SPACE.repeat(10),
-            HAIR_SPACE.repeat(10),
-            HAIR_SPACE.repeat(8)
-        };
+        //        String[] suitSpace = {
+        //            HAIR_SPACE.repeat(9) + THIN_SPACE,
+        //            HAIR_SPACE.repeat(10),
+        //            HAIR_SPACE.repeat(10),
+        //            HAIR_SPACE.repeat(8)
+        //        };
         for (int i = 0; i < suitOrder.length; i++) {
             // Left box: Suit label
-            String redC = (i == 1 || i == 3) ? RED : WHITE;
-            String leftContent =
-                    String.format(
-                            "   %s%-10s%s%s",
-                            redC, suitIcons[i] + " " + suitOrder[i], suitSpace[i], END);
+            String suitLabel = String.format("%s%s%s", suitColour[i], suitOrder[i], END);
+            String leftContent = centerText(suitLabel, LEFT_WIDTH + 2);
             // Right box: For this suit, print 13 numbers (each in 5 chars) then pad the totals
             // column with spaces (15 chars).
             StringBuilder rightContent = new StringBuilder();
@@ -146,15 +146,12 @@ public class DeckScreen extends Screen {
                 rightContent.append(String.format("%5d", counts[i][j]));
             }
             rightContent.append(String.format("%15s", suitTotals[i] + "      "));
-            String redB = (i == 1 || i == 3) ? RED_B : BLACK_B;
-            String rightRow = redB + padToWidth(rightContent.toString(), RIGHT_WIDTH);
+            String rightRow = suitColourB[i] + padToWidth(rightContent.toString(), RIGHT_WIDTH);
             // Print the row with vertical borders.
             sb.append(BLACK_B)
                     .append(BOLD)
-                    .append(VERTICAL)
                     .append(leftContent)
                     .append(BLACK_B)
-                    .append(VERTICAL)
                     .append(WHITE)
                     .append(rightRow)
                     .append(END)

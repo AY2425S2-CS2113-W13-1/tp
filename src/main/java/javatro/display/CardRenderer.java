@@ -15,15 +15,16 @@ public class CardRenderer {
     public static String[] renderCard(Card card) {
         String rank = card.rank().getSymbol();
         String suitSymbol = getSuitSymbol(card.suit());
-        String leftSpacing = HAIR_SPACE.repeat(14);
-        String rightSpacing = getRightSpacing(card.suit());
+        //        String leftSpacing = HAIR_SPACE.repeat(14);
+        //        String rightSpacing = getRightSpacing(card.suit());
         String colour = getColour(card.suit());
 
         // The card art is 7 lines tall
         String[] cardArt = new String[5];
         cardArt[0] = WHITE_B + String.format(" %s%s%-2s      ", colour, BOLD, rank) + END;
         cardArt[1] = WHITE_B + "         " + END;
-        cardArt[2] = WHITE_B + leftSpacing + suitSymbol + rightSpacing + END;
+        //        cardArt[2] = WHITE_B + leftSpacing + suitSymbol + rightSpacing + END;
+        cardArt[2] = WHITE_B + String.format("    %s%s    ", colour, suitSymbol) + END;
         cardArt[3] = WHITE_B + "         " + END;
         cardArt[4] = WHITE_B + String.format("      %s%s%2s ", colour, BOLD, rank) + END;
         return cardArt;
@@ -37,14 +38,18 @@ public class CardRenderer {
      */
     private static String getSuitSymbol(Card.Suit suit) {
         return switch (suit) {
-            case HEARTS -> "♥️";
-            case DIAMONDS -> "♦️";
-            case CLUBS -> "♣️";
-            case SPADES -> "♠️";
+                //            case HEARTS -> "♥️";
+                //            case DIAMONDS -> "♦️";
+                //            case CLUBS -> "♣️";
+                //            case SPADES -> "♠️";
                 //            case HEARTS -> "♥";
                 //            case DIAMONDS -> "♦";
                 //            case CLUBS -> "♣";
                 //            case SPADES -> "♠";
+            case HEARTS -> "H";
+            case DIAMONDS -> "D";
+            case CLUBS -> "C";
+            case SPADES -> "S";
         };
     }
 
@@ -59,8 +64,10 @@ public class CardRenderer {
 
     private static String getColour(Card.Suit suit) {
         return switch (suit) {
-            case HEARTS, DIAMONDS -> UI.RED;
-            case CLUBS, SPADES -> UI.BLACK;
+            case HEARTS -> UI.RED;
+            case DIAMONDS -> UI.ORANGE;
+            case CLUBS -> UI.BLUE;
+            case SPADES -> UI.PURPLE;
         };
     }
 }

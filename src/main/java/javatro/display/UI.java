@@ -73,14 +73,17 @@ public class UI {
     public static final String GREEN = "\033[92m";
     public static final String YELLOW = "\033[93m";
     public static final String BLUE = "\033[94m";
-    public static final String PURPLE = "\033[35m";
+    //    public static final String PURPLE = "\033[95m";
+    public static final String PURPLE = "\033[38;2;115;14;147m";
     public static final String CYAN = "\033[36m";
     public static final String ORANGE = "\033[38;2;255;165;0m";
     public static final String BLACK = "\033[30m";
     public static final String WHITE_B = "\033[107m";
     public static final String BLACK_B = "\033[40m";
-    public static final String BLUE_B = "\033[44m";
+    public static final String BLUE_B = "\033[104m";
     public static final String RED_B = "\033[41m";
+    public static final String PURPLE_B = "\033[48;2;115;14;147m";
+    public static final String ORANGE_B = "\033[48;2;255;165;0m";
 
     /** Custom border characters */
     public static final char TOP_LEFT = '╔';

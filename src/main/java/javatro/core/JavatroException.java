@@ -20,7 +20,7 @@ public final class JavatroException extends Exception {
      * @param message The detailed error message explaining the exception.
      */
     public JavatroException(String message) {
-        super(UI.WARNING + UI.RED + message + UI.END);
+        super(UI.RED + message + UI.END);
     }
 
     /**
