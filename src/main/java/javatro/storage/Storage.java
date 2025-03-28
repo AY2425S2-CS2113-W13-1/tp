@@ -1,5 +1,6 @@
 package javatro.storage;
 
+import javatro.Javatro;
 import javatro.core.JavatroException;
 
 import javax.crypto.BadPaddingException;

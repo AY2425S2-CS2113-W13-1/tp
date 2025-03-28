@@ -17,7 +17,8 @@ public class FileIntegrity {
     }
 
     // Verify that the hash matches the expected hash
-    public static boolean verifyHash(String originalData, String expectedHash) throws NoSuchAlgorithmException {
+    public static boolean verifyHash(String originalData, String expectedHash)
+            throws NoSuchAlgorithmException {
         String generatedHash = generateSHA256Hash(originalData);
         return generatedHash.equals(expectedHash);
     }
