@@ -4,7 +4,6 @@ import javatro.core.JavatroException;
 import javatro.manager.options.ExitGameOption;
 import javatro.manager.options.HelpMenuOption;
 import javatro.manager.options.RunMenuOption;
-import javatro.manager.options.StartGameOption;
 
 import java.io.IOException;
 import java.io.InputStream;

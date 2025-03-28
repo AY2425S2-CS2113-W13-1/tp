@@ -29,7 +29,6 @@ public class UI {
     private static final DeckScreen DECK_SCREEN;
     private static final RunsScreen RUNS_SCREEN;
 
-
     /** Parser instance for handling user input. */
     private static final Parser PARSER = new Parser();
 

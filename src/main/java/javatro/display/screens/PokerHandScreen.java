@@ -17,20 +17,8 @@ public class PokerHandScreen extends Screen {
     private static final String TITLE =
             String.format(
                     "%s%s%-5s     %s%-15s       %s%-5s%s × %s%-5s%s     %s%-6s%s",
-                    BOLD,
-                    GREEN,
-                    "ROUND",
-                    WHITE,
-                    "ANTE",
-                    BLUE_B,
-                    "CHIPS",
-                    BLACK_B,
-                    RED_B,
-                    "MULTI",
-                    BLACK_B,
-                    ORANGE,
-                    "PLAYS",
-                    END);
+                    BOLD, GREEN, "ROUND", WHITE, "ANTE", BLUE_B, "CHIPS", BLACK_B, RED_B, "MULTI",
+                    BLACK_B, ORANGE, "PLAYS", END);
 
     private final List<PokerHand> pokerHands;
 

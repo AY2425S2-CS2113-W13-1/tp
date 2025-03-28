@@ -44,7 +44,7 @@ public class Storage {
             saveFileValid = false;
             throw new JavatroException(
                     "Save File could not be created, current session will not have saving"
-                        + " features.");
+                            + " features.");
         }
     }
 

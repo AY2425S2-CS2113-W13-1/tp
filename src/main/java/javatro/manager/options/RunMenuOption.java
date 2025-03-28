@@ -1,11 +1,10 @@
 package javatro.manager.options;
 
-
 import javatro.core.JavatroException;
 import javatro.display.UI;
 import javatro.manager.JavatroManager;
 
-/** A command that loads the run menu  when executed. */
+/** A command that loads the run menu when executed. */
 public class RunMenuOption implements Option {
 
     /**
