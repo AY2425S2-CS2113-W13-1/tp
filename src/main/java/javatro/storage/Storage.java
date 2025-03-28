@@ -11,8 +11,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import javax.crypto.Cipher;
 
 
@@ -52,7 +54,18 @@ public class Storage {
             System.out.println("File exists, reading and decrypting task file: " + SAVEFILE_LOCATION);
             try {
                 // Read and decrypt the content if the file exists
-                byte[] encryptedData = Files.readAllBytes(path);
+                byte[] fileData = Files.readAllBytes(path);
+                byte[] encryptedData = Arrays.copyOfRange(fileData, 0, fileData.length - 64); // Assuming SHA-256 hash is 64 bytes
+                byte[] savedHash = Arrays.copyOfRange(fileData, fileData.length - 64, fileData.length);
+
+                String savedHashString = new String(savedHash);
+                // Verify the integrity of the data
+                boolean isDataValid = FileIntegrity.verifyHash(new String(encryptedData), savedHashString);
+                if (!isDataValid) {
+                    throw new JavatroException("Data integrity check failed: file has been tampered with.");
+                }
+
+                //byte[] encryptedData = Files.readAllBytes(path);
                 String decryptedData = decrypt(encryptedData);
                 System.out.println("Decrypted data: " + decryptedData);  // Replace with actual task data processing
             } catch (IOException e) {
@@ -122,8 +135,19 @@ public class Storage {
         } catch (Exception ex) {
             throw new JavatroException(ex.getMessage());
         }
+
+        // Generate a hash of the encrypted data
+        String dataHash = null;
         try {
-            Files.write(Paths.get(SAVEFILE_LOCATION), encryptedData);
+            dataHash = FileIntegrity.generateSHA256Hash(new String(encryptedData));
+        } catch (NoSuchAlgorithmException e) {
+            throw new JavatroException(e.getMessage());
+        }
+
+        try {
+            Path path = Paths.get(SAVEFILE_LOCATION);
+            Files.write(path, encryptedData, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+            Files.write(path, dataHash.getBytes(),StandardOpenOption.APPEND);  // Append the hash after the data
         } catch (IOException e) {
             throw new JavatroException("SAVING ISSUE: " + e.getMessage());
         }
