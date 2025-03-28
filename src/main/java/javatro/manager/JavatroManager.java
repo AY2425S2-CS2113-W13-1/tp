@@ -9,6 +9,7 @@ import javatro.core.JavatroCore;
 import javatro.core.JavatroException;
 import javatro.display.UI;
 import javatro.display.screens.Screen;
+import javatro.storage.Storage;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -25,6 +26,7 @@ public class JavatroManager implements PropertyChangeListener {
     private static JavatroCore jc;
     /** Stores the last recorded user input. */
     private static int userInput;
+    private Storage storage = Storage.getInstance();
 
     /**
      * Constructs a {@code JavatroManager} and registers it as an observer to the view.
