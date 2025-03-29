@@ -11,7 +11,8 @@ import java.util.stream.Collectors;
 
 public class RunsScreen extends Screen {
 
-    private static final String TITLE = String.format(
+    private static final String TITLE =
+            String.format(
                     "%s%s%-10s  %s%-15s  %s%-10s",
                     BOLD, GREEN, "ROUND", WHITE, "ANTE", BLUE_B, "DECK");
 
