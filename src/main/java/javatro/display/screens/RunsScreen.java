@@ -13,8 +13,8 @@ public class RunsScreen extends Screen {
 
     private static final String TITLE =
             String.format(
-                    "%s%s%-10s  %s%-15s  %s%-10s",
-                    BOLD, GREEN, "ROUND", WHITE, "ANTE", BLUE_B, "DECK");
+                    "%s%s%-10s  %s%-10s  %s%-10s%s",
+                    BOLD, GREEN, "ROUND", WHITE, "ANTE", BLUE_B, "DECK",END);
 
     /**
      * Constructs a screen with the specified options title.
@@ -29,21 +29,26 @@ public class RunsScreen extends Screen {
         // Choose From Saved Runs
     }
 
-    @Override
-    public void displayScreen() {
-
-        List<String> formattedDisplays =
-                Storage.getInstance().getRunData().stream()
-                        .flatMap(innerList -> innerList.stream()) // Flatten the inner lists
-                        .map(
-                                item -> {
-                                    // Your formatted output for each item, similar to TITLE format
-                                    return String.format(
-                                            "%s%s%-10s  %s%-15s  %s%-10s",
-                                            BOLD, GREEN, "ROUND", WHITE, "ANTE", BLUE_B, "DECK");
-                                })
-                        .collect(Collectors.toList());
+    public void runOverview() {
+        List<String> formattedDisplays = Storage.getInstance().getRunData().stream()
+                .filter(innerList -> innerList.size() >= 3)
+                .map(innerList -> String.format(
+                        "%s%-10s  %s%-10s  %s%-10s%s",
+                        GREEN,
+                        innerList.get(0), // ROUND value
+                        WHITE,
+                        innerList.get(1), // ANTE value
+                        BLUE_B,
+                        innerList.get(2), // DECK value
+                        END)
+                )
+                .collect(Collectors.toList());
 
         printBorderedContent(TITLE, formattedDisplays);
+    }
+
+    @Override
+    public void displayScreen() {
+        runOverview();
     }
 }
