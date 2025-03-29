@@ -9,7 +9,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -30,6 +32,39 @@ public class Storage {
 
     private static final Path saveFilePath = Paths.get(SAVEFILE_LOCATION);
 
+    private static String decryptedDataRaw = "";
+
+    private static List<List<String>> runData = new ArrayList<>();
+
+    private void parseDecryptedRawData() {
+        //Each row is 1 run
+        //Columns: Round, Ante, Deck
+
+        //Each row is separated by "\n"
+        //Each column is separated by commas
+
+        String[] runs = decryptedDataRaw.split("\n");
+
+        for(String run: runs) {
+            String[] currentRunInfo = run.split(",");
+            runData.add(List.of(currentRunInfo));
+        }
+    }
+
+    private void convertRunDataIntoRawData() {
+        decryptedDataRaw = "";
+        for(List<String> run: runData) {
+            String runDataRaw = "";
+            for(String runAttribute: run) {
+                runDataRaw = runAttribute + ",";
+            }
+            //Remove last ","
+            runDataRaw = runDataRaw.substring(0, runDataRaw.length() - 1);
+            runDataRaw = runDataRaw + "\n";
+            decryptedDataRaw = decryptedDataRaw + runDataRaw;
+        }
+    }
+
     private Storage() {
         // Initialize resources
         try {
@@ -46,6 +81,8 @@ public class Storage {
                 }
             }
         }
+
+        parseDecryptedRawData(); //Convert decryptedDataRaw into runData (Basically initalise runData here)
     }
 
     private void createTaskFile() throws JavatroException {
@@ -90,7 +127,7 @@ public class Storage {
                             "Data integrity check failed: file has been tampered with.");
                 }
 
-                String decryptedData = decrypt(encryptedData);
+                decryptedDataRaw = decrypt(encryptedData);
 
             } catch (Exception e) {
                 throw new JavatroException("Error reading/decrypting save file: " + e.getMessage());
@@ -189,5 +226,13 @@ public class Storage {
             throw new JavatroException("SAVING ISSUE: " + e.getMessage());
         }
         System.out.println("Encrypted sample data saved successfully.");
+    }
+
+    public void setRunData(List<List<String>> runData) {
+        Storage.runData = runData;
+    }
+
+    public List<List<String>> getRunData() {
+        return runData;
     }
 }
