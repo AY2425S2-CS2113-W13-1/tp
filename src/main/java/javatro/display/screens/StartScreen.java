@@ -3,7 +3,7 @@ package javatro.display.screens;
 import javatro.core.JavatroException;
 import javatro.manager.options.ExitGameOption;
 import javatro.manager.options.HelpMenuOption;
-import javatro.manager.options.StartGameOption;
+import javatro.manager.options.RunMenuOption;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,7 +49,7 @@ public class StartScreen extends Screen {
      */
     public StartScreen() throws JavatroException {
         super("MAIN MENU");
-        commandMap.add(new StartGameOption());
+        commandMap.add(new RunMenuOption());
         commandMap.add(new HelpMenuOption());
         commandMap.add(new ExitGameOption());
     }
