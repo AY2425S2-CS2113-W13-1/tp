@@ -32,6 +32,8 @@ public class PokerHandScreen extends Screen {
                     "PLAYS",
                     END);
 
+
+
     private final List<PokerHand> pokerHands;
 
     public PokerHandScreen() throws JavatroException {
@@ -88,10 +90,20 @@ public class PokerHandScreen extends Screen {
      * @param handType The hand type to retrieve
      * @return The PokerHand instance
      */
-    public PokerHand getHand(PokerHand.HandType handType) {
+    public PokerHand getHand(PokerHand.HandType handType) throws JavatroException {
+
+        if(handType == null) {
+            throw new JavatroException("Invalid Hand Type");
+        }
+
         return pokerHands.stream()
                 .filter(hand -> hand.handType() == handType)
                 .findFirst()
                 .orElseThrow();
     }
+
+    public List<PokerHand> getPokerHands() {
+        return pokerHands;
+    }
+
 }
