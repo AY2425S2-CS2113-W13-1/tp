@@ -32,8 +32,6 @@ public class PokerHandScreen extends Screen {
                     "PLAYS",
                     END);
 
-
-
     private final List<PokerHand> pokerHands;
 
     public PokerHandScreen() throws JavatroException {
@@ -92,7 +90,7 @@ public class PokerHandScreen extends Screen {
      */
     public PokerHand getHand(PokerHand.HandType handType) throws JavatroException {
 
-        if(handType == null) {
+        if (handType == null) {
             throw new JavatroException("Invalid Hand Type");
         }
 
@@ -105,5 +103,4 @@ public class PokerHandScreen extends Screen {
     public List<PokerHand> getPokerHands() {
         return pokerHands;
     }
-
 }

@@ -1,10 +1,13 @@
 package javatro.display.screens;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import javatro.core.JavatroCore;
 import javatro.core.JavatroException;
 import javatro.core.PokerHand;
 import javatro.display.UI;
 import javatro.manager.JavatroManager;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,8 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class PokerHandScreenTest {
 
@@ -27,7 +28,9 @@ public class PokerHandScreenTest {
         pokerHands = new ArrayList<>();
         UI javatroView = new UI();
 
-        /** The manager responsible for handling interactions between the view and core components. */
+        /**
+         * The manager responsible for handling interactions between the view and core components.
+         */
         JavatroManager javatroManager;
 
         JavatroCore javatroCore = new JavatroCore();
@@ -40,15 +43,14 @@ public class PokerHandScreenTest {
 
         JavatroManager.runningTests = true;
 
-
         pokerHandScreen = new PokerHandScreen();
         javatroView.setCurrentScreen(UI.getPokerHandScreen());
 
         // Get Poker Hands
-        pokerHands = Stream.of(PokerHand.HandType.values())
+        pokerHands =
+                Stream.of(PokerHand.HandType.values())
                         .map(PokerHand::new)
                         .collect(Collectors.toList());
-
     }
 
     @Test
@@ -102,7 +104,10 @@ public class PokerHandScreenTest {
             throw new RuntimeException(e);
         }
 
-        assertEquals(previousPlayCount + 1, updatedHand.playCount(), "Play count should be incremented by 1");
+        assertEquals(
+                previousPlayCount + 1,
+                updatedHand.playCount(),
+                "Play count should be incremented by 1");
     }
 
     @Test
@@ -124,12 +129,11 @@ public class PokerHandScreenTest {
         assertThrows(JavatroException.class, () -> pokerHandScreen.getHand(null));
     }
 
-
     @Test
     public void testDisplayScreenWithEmptyHands() throws JavatroException {
         // Clearing the list directly via the increment method to simulate an empty state
         for (PokerHand.HandType handType : PokerHand.HandType.values()) {
-            pokerHandScreen.incrementPlayed(handType);  // Ensure all hands are modified
+            pokerHandScreen.incrementPlayed(handType); // Ensure all hands are modified
         }
 
         PrintStream originalOut = System.out;
@@ -141,7 +145,9 @@ public class PokerHandScreenTest {
         System.setOut(originalOut);
 
         String output = outputStream.toString();
-        assertTrue(output.contains("POKER HAND"), "Output should include title even if no hands are available");
+        assertTrue(
+                output.contains("POKER HAND"),
+                "Output should include title even if no hands are available");
     }
 
     @Test
