@@ -14,7 +14,6 @@ public class JavatroCore {
      * Starts a new round and assigns it to the current round.
      *
      * @param round The new round to start.
-     * @throws JavatroException If an error occurs while initializing the round.
      */
     private void startNewRound(Round round) {
         currentRound = round;
@@ -23,7 +22,6 @@ public class JavatroCore {
      * Creates a new classic round with predefined settings.
      *
      * @return A {@code Round} instance configured as a classic round.
-     * @throws JavatroException If an error occurs while creating the round.
      */
     private Round classicRound() {
         Deck d = new Deck();
@@ -38,9 +36,25 @@ public class JavatroCore {
     /**
      * Starts the game by initializing a new round. This method is called when the game begins.
      *
-     * @throws JavatroException If an error occurs while starting the game.
      */
     public void beginGame() {
         startNewRound(classicRound());
     }
+
+
+    // A method to initialize the deck from a string value
+//    private void Deck createDeckFromString(String deckTypeString) {
+//        DeckType deckType;
+//        try {
+//            // Convert the string to the corresponding DeckType enum
+//            deckType = DeckType.valueOf(deckTypeString);  // Convert to uppercase to handle case insensitivity
+//        } catch (IllegalArgumentException e) {
+//            // Handle the case where the string doesn't match a valid DeckType
+//            deckType = DeckType.DEFAULT;  // Defaulting to "DEFAULT" Decktype
+//        }
+//
+//        // Return a new Deck initialized with the valid DeckType
+//        return new Deck(deckType);
+//    }
+
 }

@@ -24,8 +24,6 @@ public class JavatroManager implements PropertyChangeListener {
     private static UI ui;
     /** The main model responsible for handling game logic. */
     private static JavatroCore jc;
-    /** Stores the last recorded user input. */
-    private static int userInput;
 
     private Storage storage = Storage.getInstance();
 
@@ -38,7 +36,6 @@ public class JavatroManager implements PropertyChangeListener {
     public JavatroManager(UI ui, JavatroCore jc) throws JavatroException {
         JavatroManager.ui = ui;
         JavatroManager.jc = jc;
-        // storage.saveSampleData();
         UI.getParser().addPropertyChangeListener(this); // Register as an observer
     }
 
@@ -59,13 +56,14 @@ public class JavatroManager implements PropertyChangeListener {
     public static void beginGame() throws JavatroException {
         jc.beginGame();
         JavatroCore.currentRound.addPropertyChangeListener(javatro.display.UI.getGameScreen());
+        JavatroCore.currentRound.addPropertyChangeListener(Storage.getInstance());
         // Fire property changes here
         JavatroCore.currentRound.updateRoundVariables();
     }
 
     /**
-     * Handles property change events from the view. If the property change corresponds to user
-     * input, it executes the appropriate command.
+     * Handles property change events from the view and from JavatroCore's Round. If the property change corresponds to user
+     * input, it executes the appropriate command. If the property change corresponds to game variables, it updates the save file
      *
      * @param evt The property change event.
      */
@@ -82,7 +80,6 @@ public class JavatroManager implements PropertyChangeListener {
                 } catch (JavatroException ex) {
                     throw new RuntimeException(ex);
                 }
-                // throw new RuntimeException(e);
             }
         }
     }

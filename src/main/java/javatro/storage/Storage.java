@@ -1,7 +1,12 @@
 package javatro.storage;
 
+import javatro.core.Card;
 import javatro.core.JavatroException;
+import javatro.manager.options.ExitGameOption;
+import javatro.manager.options.MainMenuOption;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,9 +14,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -20,7 +25,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 // Defined as a singleton class
-public class Storage {
+public class Storage implements PropertyChangeListener {
     /** Path to the task storage file. */
     private static final String SAVEFILE_LOCATION = "./savefile.dat";
 
@@ -228,11 +233,56 @@ public class Storage {
         System.out.println("Encrypted sample data saved successfully.");
     }
 
-    public void setRunData(List<List<String>> runData) {
-        Storage.runData = runData;
+    public void setDecryptedDataRaw(String decryptedDataRaw) {
+        Storage.decryptedDataRaw = decryptedDataRaw;
     }
 
     public List<List<String>> getRunData() {
         return runData;
     }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+
+//        String propertyName = evt.getPropertyName();
+//        Object newValue = evt.getNewValue();
+//
+//        // Map for property handlers
+//        Map<String, Consumer<Object>> propertyHandlers = new HashMap<>();
+//
+//        propertyHandlers.put("roundName", value -> roundName = value.toString());
+//        propertyHandlers.put("remainingPlays", value -> handsLeft = (Integer) value);
+//        propertyHandlers.put("remainingDiscards", value -> discardsLeft = (Integer) value);
+//        propertyHandlers.put("currentScore", value -> roundScore = (Integer) value);
+//        propertyHandlers.put("roundDescription", value -> roundDescription = value.toString());
+//        propertyHandlers.put("blindScore", value -> blindScore = (Integer) value);
+//        propertyHandlers.put(
+//                "holdingHand",
+//                value -> {
+//                    List<?> list = (List<?>) value;
+//                    holdingHand =
+//                            list.stream()
+//                                    .filter(
+//                                            Card.class
+//                                                    ::isInstance) // Ensures only Card instances are
+//                                    // collected
+//                                    .map(Card.class::cast) // Safely cast to Card
+//                                    .collect(Collectors.toList());
+//                });
+//        propertyHandlers.put(
+//                "roundComplete",
+//                value -> {
+//                    roundOver = (Integer) value;
+//                    if (roundOver != 0) {
+//                        commandMap.clear();
+//                        commandMap.add(new MainMenuOption());
+//                        commandMap.add(new ExitGameOption());
+//                    }
+//                });
+//
+//        // Execute the appropriate handler if it exists and update its value
+//        propertyHandlers.getOrDefault(propertyName, v -> {}).accept(newValue);
+    }
+
+
 }
