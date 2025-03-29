@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -83,8 +82,8 @@ public class Storage implements PropertyChangeListener {
             }
         }
 
-        saveSampleData(); //Add test sample data
-        //parseDecryptedRawData(); // Convert decryptedDataRaw into runData (Basically initalise
+        saveSampleData(); // Add test sample data
+        // parseDecryptedRawData(); // Convert decryptedDataRaw into runData (Basically initalise
         // runData here)
     }
 
@@ -202,33 +201,35 @@ public class Storage implements PropertyChangeListener {
     public void saveSampleData() {
         decryptedDataRaw = "5,10,Deck 1\n20,80,Deck 2\n";
         parseDecryptedRawData();
-//        String sampleData = "This is a sample task data."; // Sample data to be saved in the file
-//        byte[] encryptedData;
-//        try {
-//            encryptedData = encrypt(sampleData);
-//        } catch (Exception ex) {
-//            throw new JavatroException(ex.getMessage());
-//        }
-//
-//        // Generate a hash of the encrypted data
-//        String dataHash = null;
-//        try {
-//            dataHash = FileIntegrity.generateSHA256Hash(new String(encryptedData));
-//        } catch (NoSuchAlgorithmException e) {
-//            throw new JavatroException(e.getMessage());
-//        }
-//
-//        try {
-//            Path path = Paths.get(SAVEFILE_LOCATION);
-//            Files.write(path, encryptedData, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-//            Files.write(
-//                    path,
-//                    dataHash.getBytes(),
-//                    StandardOpenOption.APPEND); // Append the hash after the data
-//        } catch (IOException e) {
-//            throw new JavatroException("SAVING ISSUE: " + e.getMessage());
-//        }
-//        System.out.println("Encrypted sample data saved successfully.");
+        //        String sampleData = "This is a sample task data."; // Sample data to be saved in
+        // the file
+        //        byte[] encryptedData;
+        //        try {
+        //            encryptedData = encrypt(sampleData);
+        //        } catch (Exception ex) {
+        //            throw new JavatroException(ex.getMessage());
+        //        }
+        //
+        //        // Generate a hash of the encrypted data
+        //        String dataHash = null;
+        //        try {
+        //            dataHash = FileIntegrity.generateSHA256Hash(new String(encryptedData));
+        //        } catch (NoSuchAlgorithmException e) {
+        //            throw new JavatroException(e.getMessage());
+        //        }
+        //
+        //        try {
+        //            Path path = Paths.get(SAVEFILE_LOCATION);
+        //            Files.write(path, encryptedData, StandardOpenOption.CREATE,
+        // StandardOpenOption.APPEND);
+        //            Files.write(
+        //                    path,
+        //                    dataHash.getBytes(),
+        //                    StandardOpenOption.APPEND); // Append the hash after the data
+        //        } catch (IOException e) {
+        //            throw new JavatroException("SAVING ISSUE: " + e.getMessage());
+        //        }
+        //        System.out.println("Encrypted sample data saved successfully.");
     }
 
     public void setDecryptedDataRaw(String decryptedDataRaw) {

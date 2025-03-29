@@ -14,7 +14,7 @@ public class RunsScreen extends Screen {
     private static final String TITLE =
             String.format(
                     "%s%s%-10s  %s%-10s  %s%-10s%s",
-                    BOLD, GREEN, "ROUND", WHITE, "ANTE", BLUE_B, "DECK",END);
+                    BOLD, GREEN, "ROUND", WHITE, "ANTE", BLUE_B, "DECK", END);
 
     /**
      * Constructs a screen with the specified options title.
@@ -30,19 +30,21 @@ public class RunsScreen extends Screen {
     }
 
     public void runOverview() {
-        List<String> formattedDisplays = Storage.getInstance().getRunData().stream()
-                .filter(innerList -> innerList.size() >= 3)
-                .map(innerList -> String.format(
-                        "%s%-10s  %s%-10s  %s%-10s%s",
-                        GREEN,
-                        innerList.get(0), // ROUND value
-                        WHITE,
-                        innerList.get(1), // ANTE value
-                        BLUE_B,
-                        innerList.get(2), // DECK value
-                        END)
-                )
-                .collect(Collectors.toList());
+        List<String> formattedDisplays =
+                Storage.getInstance().getRunData().stream()
+                        .filter(innerList -> innerList.size() >= 3)
+                        .map(
+                                innerList ->
+                                        String.format(
+                                                "%s%-10s  %s%-10s  %s%-10s%s",
+                                                GREEN,
+                                                innerList.get(0), // ROUND value
+                                                WHITE,
+                                                innerList.get(1), // ANTE value
+                                                BLUE_B,
+                                                innerList.get(2), // DECK value
+                                                END))
+                        .collect(Collectors.toList());
 
         printBorderedContent(TITLE, formattedDisplays);
     }
