@@ -35,13 +35,14 @@ public class Storage {
         try {
             initialiseTaskfile();
         } catch (JavatroException javatroException) {
-            //Means either the task file could not be created or task file was present, but corrupted
-            if(saveFileValid) {
-                //Delete existing savefile and replace with new empty save file
+            // Means either the task file could not be created or task file was present, but
+            // corrupted
+            if (saveFileValid) {
+                // Delete existing savefile and replace with new empty save file
                 try {
                     Files.deleteIfExists(saveFilePath);
                 } catch (IOException e) {
-                    //There is no file to delete/ failed to delete
+                    // There is no file to delete/ failed to delete
                     saveFileValid = false;
                 }
             }
@@ -68,13 +69,11 @@ public class Storage {
                 // Read and decrypt the content if the file exists
                 byte[] fileData = Files.readAllBytes(saveFilePath);
 
-                if (fileData.length < 64) return; //Empty file, no need to decrypt
+                if (fileData.length < 64) return; // Empty file, no need to decrypt
 
                 byte[] encryptedData =
                         Arrays.copyOfRange(
-                                fileData,
-                                0,
-                                fileData.length - 64); // SHA-256 hash is 64 bytes
+                                fileData, 0, fileData.length - 64); // SHA-256 hash is 64 bytes
 
                 byte[] savedHash =
                         Arrays.copyOfRange(fileData, fileData.length - 64, fileData.length);
