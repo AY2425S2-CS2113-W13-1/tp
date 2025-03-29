@@ -26,6 +26,10 @@ public class JavatroManager implements PropertyChangeListener {
     /** Stores the last recorded user input. */
     private static int userInput;
 
+    public static boolean isExitTriggered = false; // Check if exit was triggered
+    public static boolean runningTests =
+            false; // If tests are running, some settings will be adjusted
+
     /**
      * Constructs a {@code JavatroManager} and registers it as an observer to the view.
      *
