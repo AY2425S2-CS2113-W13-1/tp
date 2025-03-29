@@ -33,28 +33,25 @@ public class JavatroCore {
         return null;
     }
 
-    /**
-     * Starts the game by initializing a new round. This method is called when the game begins.
-     *
-     */
+    /** Starts the game by initializing a new round. This method is called when the game begins. */
     public void beginGame() {
         startNewRound(classicRound());
     }
 
-
     // A method to initialize the deck from a string value
-//    private void Deck createDeckFromString(String deckTypeString) {
-//        DeckType deckType;
-//        try {
-//            // Convert the string to the corresponding DeckType enum
-//            deckType = DeckType.valueOf(deckTypeString);  // Convert to uppercase to handle case insensitivity
-//        } catch (IllegalArgumentException e) {
-//            // Handle the case where the string doesn't match a valid DeckType
-//            deckType = DeckType.DEFAULT;  // Defaulting to "DEFAULT" Decktype
-//        }
-//
-//        // Return a new Deck initialized with the valid DeckType
-//        return new Deck(deckType);
-//    }
+    //    private void Deck createDeckFromString(String deckTypeString) {
+    //        DeckType deckType;
+    //        try {
+    //            // Convert the string to the corresponding DeckType enum
+    //            deckType = DeckType.valueOf(deckTypeString);  // Convert to uppercase to handle
+    // case insensitivity
+    //        } catch (IllegalArgumentException e) {
+    //            // Handle the case where the string doesn't match a valid DeckType
+    //            deckType = DeckType.DEFAULT;  // Defaulting to "DEFAULT" Decktype
+    //        }
+    //
+    //        // Return a new Deck initialized with the valid DeckType
+    //        return new Deck(deckType);
+    //    }
 
 }

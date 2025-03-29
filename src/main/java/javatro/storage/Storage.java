@@ -1,9 +1,6 @@
 package javatro.storage;
 
-import javatro.core.Card;
 import javatro.core.JavatroException;
-import javatro.manager.options.ExitGameOption;
-import javatro.manager.options.MainMenuOption;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -15,8 +12,6 @@ import java.nio.file.StandardOpenOption;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -89,7 +84,7 @@ public class Storage implements PropertyChangeListener {
         }
 
         parseDecryptedRawData(); // Convert decryptedDataRaw into runData (Basically initalise
-                                 // runData here)
+        // runData here)
     }
 
     private void createTaskFile() throws JavatroException {
@@ -244,45 +239,46 @@ public class Storage implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
 
-//        String propertyName = evt.getPropertyName();
-//        Object newValue = evt.getNewValue();
-//
-//        // Map for property handlers
-//        Map<String, Consumer<Object>> propertyHandlers = new HashMap<>();
-//
-//        propertyHandlers.put("roundName", value -> roundName = value.toString());
-//        propertyHandlers.put("remainingPlays", value -> handsLeft = (Integer) value);
-//        propertyHandlers.put("remainingDiscards", value -> discardsLeft = (Integer) value);
-//        propertyHandlers.put("currentScore", value -> roundScore = (Integer) value);
-//        propertyHandlers.put("roundDescription", value -> roundDescription = value.toString());
-//        propertyHandlers.put("blindScore", value -> blindScore = (Integer) value);
-//        propertyHandlers.put(
-//                "holdingHand",
-//                value -> {
-//                    List<?> list = (List<?>) value;
-//                    holdingHand =
-//                            list.stream()
-//                                    .filter(
-//                                            Card.class
-//                                                    ::isInstance) // Ensures only Card instances are
-//                                    // collected
-//                                    .map(Card.class::cast) // Safely cast to Card
-//                                    .collect(Collectors.toList());
-//                });
-//        propertyHandlers.put(
-//                "roundComplete",
-//                value -> {
-//                    roundOver = (Integer) value;
-//                    if (roundOver != 0) {
-//                        commandMap.clear();
-//                        commandMap.add(new MainMenuOption());
-//                        commandMap.add(new ExitGameOption());
-//                    }
-//                });
-//
-//        // Execute the appropriate handler if it exists and update its value
-//        propertyHandlers.getOrDefault(propertyName, v -> {}).accept(newValue);
+        //        String propertyName = evt.getPropertyName();
+        //        Object newValue = evt.getNewValue();
+        //
+        //        // Map for property handlers
+        //        Map<String, Consumer<Object>> propertyHandlers = new HashMap<>();
+        //
+        //        propertyHandlers.put("roundName", value -> roundName = value.toString());
+        //        propertyHandlers.put("remainingPlays", value -> handsLeft = (Integer) value);
+        //        propertyHandlers.put("remainingDiscards", value -> discardsLeft = (Integer)
+        // value);
+        //        propertyHandlers.put("currentScore", value -> roundScore = (Integer) value);
+        //        propertyHandlers.put("roundDescription", value -> roundDescription =
+        // value.toString());
+        //        propertyHandlers.put("blindScore", value -> blindScore = (Integer) value);
+        //        propertyHandlers.put(
+        //                "holdingHand",
+        //                value -> {
+        //                    List<?> list = (List<?>) value;
+        //                    holdingHand =
+        //                            list.stream()
+        //                                    .filter(
+        //                                            Card.class
+        //                                                    ::isInstance) // Ensures only Card
+        // instances are
+        //                                    // collected
+        //                                    .map(Card.class::cast) // Safely cast to Card
+        //                                    .collect(Collectors.toList());
+        //                });
+        //        propertyHandlers.put(
+        //                "roundComplete",
+        //                value -> {
+        //                    roundOver = (Integer) value;
+        //                    if (roundOver != 0) {
+        //                        commandMap.clear();
+        //                        commandMap.add(new MainMenuOption());
+        //                        commandMap.add(new ExitGameOption());
+        //                    }
+        //                });
+        //
+        //        // Execute the appropriate handler if it exists and update its value
+        //        propertyHandlers.getOrDefault(propertyName, v -> {}).accept(newValue);
     }
-
-
 }

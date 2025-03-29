@@ -62,8 +62,9 @@ public class JavatroManager implements PropertyChangeListener {
     }
 
     /**
-     * Handles property change events from the view and from JavatroCore's Round. If the property change corresponds to user
-     * input, it executes the appropriate command. If the property change corresponds to game variables, it updates the save file
+     * Handles property change events from the view and from JavatroCore's Round. If the property
+     * change corresponds to user input, it executes the appropriate command. If the property change
+     * corresponds to game variables, it updates the save file
      *
      * @param evt The property change event.
      */
