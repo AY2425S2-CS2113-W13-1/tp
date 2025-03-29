@@ -32,18 +32,18 @@ public class RunsScreen extends Screen {
     @Override
     public void displayScreen() {
 
-        List<String> formattedDisplays = Storage.getInstance().getRunData().stream()
-                .flatMap(innerList -> innerList.stream())  // Flatten the inner lists
-                .map(item -> {
-                    // Your formatted output for each item, similar to TITLE format
-                    return String.format(
-                            "%s%s%-10s  %s%-15s  %s%-10s",
-                            BOLD, GREEN, "ROUND", WHITE, "ANTE", BLUE_B, "DECK"
-                    );
-                })
-                .collect(Collectors.toList());
+        List<String> formattedDisplays =
+                Storage.getInstance().getRunData().stream()
+                        .flatMap(innerList -> innerList.stream()) // Flatten the inner lists
+                        .map(
+                                item -> {
+                                    // Your formatted output for each item, similar to TITLE format
+                                    return String.format(
+                                            "%s%s%-10s  %s%-15s  %s%-10s",
+                                            BOLD, GREEN, "ROUND", WHITE, "ANTE", BLUE_B, "DECK");
+                                })
+                        .collect(Collectors.toList());
 
         printBorderedContent(TITLE, formattedDisplays);
-
     }
 }

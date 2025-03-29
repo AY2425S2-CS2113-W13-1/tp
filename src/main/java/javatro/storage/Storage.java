@@ -37,15 +37,15 @@ public class Storage {
     private static List<List<String>> runData = new ArrayList<>();
 
     private void parseDecryptedRawData() {
-        //Each row is 1 run
-        //Columns: Round, Ante, Deck
+        // Each row is 1 run
+        // Columns: Round, Ante, Deck
 
-        //Each row is separated by "\n"
-        //Each column is separated by commas
+        // Each row is separated by "\n"
+        // Each column is separated by commas
 
         String[] runs = decryptedDataRaw.split("\n");
 
-        for(String run: runs) {
+        for (String run : runs) {
             String[] currentRunInfo = run.split(",");
             runData.add(List.of(currentRunInfo));
         }
@@ -53,12 +53,12 @@ public class Storage {
 
     private void convertRunDataIntoRawData() {
         decryptedDataRaw = "";
-        for(List<String> run: runData) {
+        for (List<String> run : runData) {
             String runDataRaw = "";
-            for(String runAttribute: run) {
+            for (String runAttribute : run) {
                 runDataRaw = runAttribute + ",";
             }
-            //Remove last ","
+            // Remove last ","
             runDataRaw = runDataRaw.substring(0, runDataRaw.length() - 1);
             runDataRaw = runDataRaw + "\n";
             decryptedDataRaw = decryptedDataRaw + runDataRaw;
@@ -83,7 +83,8 @@ public class Storage {
             }
         }
 
-        parseDecryptedRawData(); //Convert decryptedDataRaw into runData (Basically initalise runData here)
+        parseDecryptedRawData(); // Convert decryptedDataRaw into runData (Basically initalise
+                                 // runData here)
     }
 
     private void createTaskFile() throws JavatroException {
