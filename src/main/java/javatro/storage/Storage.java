@@ -28,18 +28,30 @@ public class Storage {
     /** Indicates if the save file is valid and can be used. */
     private static boolean saveFileValid = true;
 
-    private static final Path path = Paths.get(SAVEFILE_LOCATION);
+    private static final Path saveFilePath = Paths.get(SAVEFILE_LOCATION);
 
-    private Storage() throws JavatroException {
+    private Storage() {
         // Initialize resources
-        initialiseTaskfile();
+        try {
+            initialiseTaskfile();
+        } catch (JavatroException javatroException) {
+            //Means either the task file could not be created or task file was present, but corrupted
+            if(saveFileValid) {
+                //Delete existing savefile and replace with new empty save file
+                try {
+                    Files.deleteIfExists(saveFilePath);
+                } catch (IOException e) {
+                    //There is no file to delete/ failed to delete
+                    saveFileValid = false;
+                }
+            }
+        }
     }
 
     private void createTaskFile() throws JavatroException {
         try {
             // Create the file if it doesn't exist
-            Files.createFile(path);
-            System.out.println("Task File created at: " + SAVEFILE_LOCATION);
+            Files.createFile(saveFilePath);
         } catch (IOException e) {
             saveFileValid = false;
             throw new JavatroException(
@@ -51,36 +63,34 @@ public class Storage {
     private void initialiseTaskfile() throws JavatroException {
 
         // Check if the file exists
-        if (Files.exists(path)) {
-            System.out.println(
-                    "File exists, reading and decrypting task file: " + SAVEFILE_LOCATION);
+        if (Files.exists(saveFilePath)) {
             try {
                 // Read and decrypt the content if the file exists
-                byte[] fileData = Files.readAllBytes(path);
+                byte[] fileData = Files.readAllBytes(saveFilePath);
 
-                if (fileData.length < 64) return;
+                if (fileData.length < 64) return; //Empty file, no need to decrypt
 
                 byte[] encryptedData =
                         Arrays.copyOfRange(
                                 fileData,
                                 0,
-                                fileData.length - 64); // Assuming SHA-256 hash is 64 bytes
+                                fileData.length - 64); // SHA-256 hash is 64 bytes
+
                 byte[] savedHash =
                         Arrays.copyOfRange(fileData, fileData.length - 64, fileData.length);
 
                 String savedHashString = new String(savedHash);
+
                 // Verify the integrity of the data
                 boolean isDataValid =
                         FileIntegrity.verifyHash(new String(encryptedData), savedHashString);
+
                 if (!isDataValid) {
                     throw new JavatroException(
                             "Data integrity check failed: file has been tampered with.");
                 }
 
                 String decryptedData = decrypt(encryptedData);
-                System.out.println(
-                        "Decrypted data: "
-                                + decryptedData); // Replace with actual task data processing
 
             } catch (Exception e) {
                 throw new JavatroException("Error reading/decrypting save file: " + e.getMessage());
@@ -90,7 +100,7 @@ public class Storage {
         }
     }
 
-    public static Storage getInstance() throws JavatroException {
+    public static Storage getInstance() {
         if (instance == null) {
             instance = new Storage();
         }
@@ -98,11 +108,26 @@ public class Storage {
     }
 
     // Encrypt a String and return the encrypted bytes
-    public byte[] encrypt(String data) throws Exception {
+    public byte[] encrypt(String data) throws JavatroException {
         SecretKeySpec keySpec = new SecretKeySpec(SECRET_KEY.getBytes(), ALGORITHM);
-        Cipher cipher = Cipher.getInstance(ALGORITHM);
-        cipher.init(Cipher.ENCRYPT_MODE, keySpec);
-        return cipher.doFinal(data.getBytes());
+        Cipher cipher = null;
+        try {
+            cipher = Cipher.getInstance(ALGORITHM);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            throw new JavatroException(e.getMessage());
+        }
+
+        try {
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+        } catch (InvalidKeyException e) {
+            throw new JavatroException(e.getMessage());
+        }
+
+        try {
+            return cipher.doFinal(data.getBytes());
+        } catch (IllegalBlockSizeException | BadPaddingException e) {
+            throw new JavatroException(e.getMessage());
+        }
     }
 
     // Decrypt the byte array and return the decrypted String

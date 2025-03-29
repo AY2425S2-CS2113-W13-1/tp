@@ -7,9 +7,8 @@ import javatro.manager.options.*;
 
 public class RunsScreen extends Screen {
 
-    private static final String TITLE =
-            String.format(
-                    "%s%s%-5s     %s%-15s       %s%-5s%s × %s%-5s%s     %s%-6s%s",
+    private static final String TITLE = String.format(
+                    "%s%s%-10s  %s%-15s  %s%-10s",
                     BOLD, GREEN, "ROUND", WHITE, "ANTE", BLUE_B, "DECK");
 
     /**
