@@ -6,6 +6,7 @@ import javatro.manager.options.*;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class GameScreen extends Screen implements PropertyChangeListener {
     /** The number of discards remaining. */
     private static int discardsLeft = 0;
     /** The player's current hand of cards. */
-    private static List<Card> holdingHand;
+    private static List<Card> holdingHand = new ArrayList<>();
 
     /** The name of the current round. */
     private String roundName = "";

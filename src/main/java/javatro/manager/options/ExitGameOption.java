@@ -5,6 +5,7 @@ import static javatro.display.UI.*;
 import javatro.core.JavatroException;
 import javatro.display.UI;
 import javatro.display.screens.StartScreen;
+import javatro.manager.JavatroManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,6 +61,9 @@ public class ExitGameOption implements Option {
         String[] lines = {RED + "WE KNOW YOU WILL BE BACK SOON" + END};
 
         UI.printBorderedContent(title, List.of(lines));
-        System.exit(0); // Terminate the application
+        JavatroManager.isExitTriggered = true;
+        if(!JavatroManager.runningTests) {
+            System.exit(0); // Terminate the application
+        }
     }
 }

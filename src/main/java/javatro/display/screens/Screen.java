@@ -87,4 +87,13 @@ public abstract class Screen {
         }
         return commandMap.get(index);
     }
+
+    public List<Option> getCommandMap() {
+        return commandMap;
+    }
+
+    public String getOptionsTitle() {
+        return optionsTitle;
+    }
+
 }

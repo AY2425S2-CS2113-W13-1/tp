@@ -2,6 +2,7 @@ package javatro.display;
 
 import javatro.core.JavatroException;
 import javatro.display.screens.*;
+import javatro.manager.JavatroManager;
 
 import java.util.List;
 
@@ -271,7 +272,9 @@ public class UI {
                 ORANGE, UNDERLINE, screen.getClass().getSimpleName(), END);
         currentScreen = screen;
         currentScreen.displayScreen();
-        PARSER.getOptionInput(); // This will handle retries internally
+        if(!JavatroManager.runningTests) {
+            PARSER.getOptionInput(); // This will handle retries internally
+        }
     }
 
     /**
