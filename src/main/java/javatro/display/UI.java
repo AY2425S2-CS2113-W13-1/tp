@@ -272,7 +272,7 @@ public class UI {
                 ORANGE, UNDERLINE, screen.getClass().getSimpleName(), END);
         currentScreen = screen;
         currentScreen.displayScreen();
-        if(!JavatroManager.runningTests) {
+        if (!JavatroManager.runningTests) {
             PARSER.getOptionInput(); // This will handle retries internally
         }
     }

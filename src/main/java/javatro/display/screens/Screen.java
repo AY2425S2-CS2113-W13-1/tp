@@ -95,5 +95,4 @@ public abstract class Screen {
     public String getOptionsTitle() {
         return optionsTitle;
     }
-
 }

@@ -1,19 +1,17 @@
 package javatro.display.screens;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import javatro.core.JavatroCore;
+import javatro.core.JavatroException;
 import javatro.display.UI;
 import javatro.manager.JavatroManager;
+import javatro.manager.options.Option;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import javatro.core.JavatroException;
-import javatro.manager.options.Option;
-
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +27,9 @@ public class StartScreenTest {
 
         JavatroCore javatroCore = new JavatroCore();
 
-        /** The manager responsible for handling interactions between the view and core components. */
+        /**
+         * The manager responsible for handling interactions between the view and core components.
+         */
         JavatroManager javatroManager;
 
         try {
@@ -68,6 +68,7 @@ public class StartScreenTest {
     public void testInvalidCommandHandling() {
         assertThrows(IndexOutOfBoundsException.class, () -> startScreen.getCommandMap().get(100));
     }
+
     @Test
     public void testStressTestStartScreen() {
         for (int i = 0; i < 500; i++) {
@@ -169,7 +170,8 @@ public class StartScreenTest {
         String output = outputStream.toString();
 
         // Verify the logo is printed
-        assertTrue(output.contains("javatro Logo") || !output.trim().isEmpty(),
+        assertTrue(
+                output.contains("javatro Logo") || !output.trim().isEmpty(),
                 "The logo should be printed to the console");
     }
 

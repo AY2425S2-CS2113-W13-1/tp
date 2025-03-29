@@ -62,7 +62,7 @@ public class ExitGameOption implements Option {
 
         UI.printBorderedContent(title, List.of(lines));
         JavatroManager.isExitTriggered = true;
-        if(!JavatroManager.runningTests) {
+        if (!JavatroManager.runningTests) {
             System.exit(0); // Terminate the application
         }
     }

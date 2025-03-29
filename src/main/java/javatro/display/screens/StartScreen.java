@@ -26,20 +26,21 @@ public class StartScreen extends Screen {
     protected static String JAVATRO_LOGO;
 
     // Static block to initialize the javatro logo from a file
-//    static {
-//        try (InputStream inputStream =
-//                StartScreen.class.getResourceAsStream("/javatro/display/javatro_logo.txt")) {
-//            if (inputStream == null) {
-//                throw JavatroException.errorLoadingLogo("javatro_logo.txt");
-//            }
-//            try (Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8)) {
-//                JAVATRO_LOGO = scanner.useDelimiter("\\A").next(); // Read the entire file
-//            }
-//        } catch (IOException | JavatroException e) {
-//            JAVATRO_LOGO = "javatro Logo"; // Fallback in case of error
-//            System.err.println(JavatroException.errorLoadingLogo("javatro_logo.txt").getMessage());
-//        }
-//    }
+    //    static {
+    //        try (InputStream inputStream =
+    //                StartScreen.class.getResourceAsStream("/javatro/display/javatro_logo.txt")) {
+    //            if (inputStream == null) {
+    //                throw JavatroException.errorLoadingLogo("javatro_logo.txt");
+    //            }
+    //            try (Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8)) {
+    //                JAVATRO_LOGO = scanner.useDelimiter("\\A").next(); // Read the entire file
+    //            }
+    //        } catch (IOException | JavatroException e) {
+    //            JAVATRO_LOGO = "javatro Logo"; // Fallback in case of error
+    //
+    // System.err.println(JavatroException.errorLoadingLogo("javatro_logo.txt").getMessage());
+    //        }
+    //    }
 
     public static void initializeLogo(String filePath) throws JavatroException {
         try (InputStream inputStream = StartScreen.class.getResourceAsStream(filePath)) {
@@ -63,9 +64,6 @@ public class StartScreen extends Screen {
     public static String getLogo() {
         return JAVATRO_LOGO;
     }
-
-
-
 
     /**
      * Constructs a {@code StartScreen} and initializes available commands.
