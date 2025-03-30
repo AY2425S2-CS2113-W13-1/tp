@@ -18,7 +18,7 @@ import javatro.core.HandResult;
 import javatro.core.JavatroException;
 import javatro.core.PokerHand;
 import javatro.core.Score;
-import javatro.core.jokers.addmult.CounterJoker;
+import javatro.core.jokers.addmult.AbstractJoker;
 import javatro.core.jokers.addmult.GluttonousJoker;
 import javatro.core.jokers.addmult.GreedyJoker;
 import javatro.core.jokers.addmult.LustyJoker;
@@ -93,7 +93,7 @@ public class HeldJokersTest {
     @Test
     void testMultipleJokersSuite() throws JavatroException {
         Joker gluttonousJoker = new GluttonousJoker();
-        Joker counterJoker = new CounterJoker();
+        Joker counterJoker = new AbstractJoker();
         Joker wrathfulJoker = new WrathfulJoker();
         Joker lustyJoker = new LustyJoker();
         Joker greedyJoker = new GreedyJoker();

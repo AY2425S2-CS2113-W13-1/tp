@@ -33,7 +33,6 @@ public class AcceptBlindOption implements Option {
         JavatroManager.jc.beginGame();
         JavatroCore.currentRound.addPropertyChangeListener(javatro.display.UI.getGameScreen());
         JavatroCore.currentRound.updateRoundVariables();
-        javatro.display.UI.getGameScreen().restoreGameCommands();
         JavatroManager.setScreen(UI.getGameScreen());
     }
 }

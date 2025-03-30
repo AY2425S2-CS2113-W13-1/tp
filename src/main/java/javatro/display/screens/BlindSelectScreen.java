@@ -16,14 +16,14 @@ import java.util.List;
  * Represents the screen for selecting the blind in the game. This screen provides options to accept
  * or reject the blind and visually displays the current blind settings.
  */
-public class BlindScreen extends Screen {
+public class BlindSelectScreen extends Screen {
 
     /**
-     * Constructs a BlindScreen and initializes the available options.
+     * Constructs a BlindSelectScreen and initializes the available options.
      *
      * @throws JavatroException if there is an error initializing the screen.
      */
-    public BlindScreen() throws JavatroException {
+    public BlindSelectScreen() throws JavatroException {
         super("BLIND MENU");
 
         commandMap.add(new AcceptBlindOption());

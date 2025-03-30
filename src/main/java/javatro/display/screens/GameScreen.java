@@ -1,361 +1,254 @@
 package javatro.display.screens;
 
+import static javatro.display.UI.*;
+import static javatro.display.UI.centerText;
+
 import javatro.core.Card;
 import javatro.core.JavatroCore;
 import javatro.core.JavatroException;
-import javatro.display.UI;
+import javatro.core.jokers.Joker;
 import javatro.manager.options.*;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-/**
- * The {@code GameScreen} class represents the game screen where players interact with the game by
- * playing cards, discarding cards, and viewing their hand. It also listens for property changes to
- * update the game state dynamically.
- */
 public class GameScreen extends Screen implements PropertyChangeListener {
 
-    /** Indicator for whether the round is over. 1 for won, -1 for lost, 0 for ongoing. */
-    public static int roundOver = 0;
-
-    /** The fixed width of the screen for display formatting. */
-    private static final int screenWidth = 80;
-
-    /** The score required to pass the round. */
     private static int blindScore = 0;
-    /** The player's score for the current round. */
     private static long roundScore = 0;
-    /** The number of hands left to play. */
     private static int handsLeft = 0;
-    /** The number of discards remaining. */
     private static int discardsLeft = 0;
-    /** The player's current hand of cards. */
     private static List<Card> holdingHand;
 
-    /** The name of the current round. */
     private String roundName = "";
-    /** The description of the current round. */
     private String roundDescription = "";
 
-    /** Constructs a {@code GameScreen} and initializes the available commands. */
     public GameScreen() throws JavatroException {
         super("GAME MENU");
         commandMap.add(new PlayCardOption());
         commandMap.add(new DiscardCardOption());
+        commandMap.add(new PokerHandOption());
+        commandMap.add(new DeckViewOption());
         commandMap.add(new MainMenuOption());
         commandMap.add(new ExitGameOption());
     }
 
-    /** Restores the default game commands after the round ends. */
-    public void restoreGameCommands() {
-        commandMap.clear();
-        commandMap.add(new PlayCardOption());
-        commandMap.add(new DiscardCardOption());
-        commandMap.add(new DeckOption());
-        commandMap.add(new MainMenuOption());
-        commandMap.add(new ExitGameOption());
-    }
+    // 100 = 32 + 32 + 32 + 4 borders
+    private static final int COLUMN_WIDTH = 32;
 
-    /**
-     * Formats a string to be centered within a specified width.
-     *
-     * @param toDisplay The string to center.
-     * @param width The width to center within.
-     * @return The formatted string.
-     */
-    public static String getDisplayStringCenter(String toDisplay, int width) {
-
-        if (toDisplay.length() > width - 2) {
-            toDisplay = toDisplay.substring(0, width - 2);
-        }
-
-        StringBuilder toReturn = new StringBuilder();
-        int numberOfBlanks = (width - toDisplay.length()) / 2;
-        toReturn.append(" ".repeat(Math.max(0, numberOfBlanks)));
-        toReturn.append(toDisplay);
-        toReturn.append(" ".repeat(Math.max(0, numberOfBlanks)));
-        if (numberOfBlanks * 2 + toDisplay.length() < width) {
-            int blanksToAppend = width - (numberOfBlanks * 2 + toDisplay.length());
-            toReturn.append(" ".repeat(Math.max(0, blanksToAppend)));
-        }
-
-        return toReturn.toString();
-    }
-
-    /**
-     * Formats a string to be left-aligned within a specified width.
-     *
-     * @param toDisplay The string to align.
-     * @param width The width to align within.
-     * @return The formatted string.
-     */
-    private static String getDisplayStringLeft(String toDisplay, int width) {
-
-        if (toDisplay.length() > width - 2) {
-            toDisplay = toDisplay.substring(0, width - 2);
-        }
-
-        StringBuilder toReturn = new StringBuilder("|");
-        int numberOfBlanks = width - toDisplay.length() - 1;
-        toReturn.append(" " + toDisplay);
-        toReturn.append(" ".repeat(Math.max(0, numberOfBlanks)));
-        toReturn.append("|");
-
-        return toReturn.toString();
-    }
-
-    /**
-     * Generates a header string for table formatting.
-     *
-     * @param width The width of the header.
-     * @return The formatted header string.
-     */
-    public static String getHeaderString(int width) {
-        String headerString = "+";
-        headerString += "-".repeat(width);
-        headerString += "+";
-        return headerString;
-    }
-
-    /**
-     * Displays the round name and status.
-     *
-     * @param header The formatted header string.
-     */
-    private void displayRoundName(String header) {
-        System.out.println(header);
-        String winStatus = roundOver == 1 ? "YOU WON!" : roundOver == -1 ? "YOU LOST!" : "";
-        if (roundOver == 1 || roundOver == -1) {
-            System.out.println("|" + getDisplayStringCenter(winStatus, screenWidth) + "|");
-        } else {
-            System.out.println("|" + getDisplayStringCenter(roundName, screenWidth) + "|");
-        }
-        System.out.println(header);
-    }
-
-    /** Displays the round description and the current game status. */
-    private void displayRoundDesc() {
-        // Prints round description + score (on left hand side) and Current Table Text (on right
-        // hand side)
-        System.out.println(
-                "|"
-                        + getDisplayStringCenter(roundDescription, screenWidth / 8 * 3)
-                        + "|"
-                        + getDisplayStringCenter("Jokers", (screenWidth / 8 * 5) - 1)
-                        + "|");
-    }
-    /**
-     * Displays the Joker Cards On The Game
-     *
-     * @param header The formatted header string.
-     */
-    private void displayJokers(String header) {
-        // Get the card header for all 5 cards chosen to play
-        String cardHeaders = (getHeaderString(5) + "  ").repeat(5);
-
-        System.out.println(
-                "|"
-                        + getDisplayStringCenter("", screenWidth / 8 * 3)
-                        + "|"
-                        + getDisplayStringCenter(cardHeaders, (screenWidth / 8 * 5) - 1)
-                        + "|");
-
-        String cardValues = "";
-        for (int i = 0; i < 5; i++) {
-            cardValues += "|" + getDisplayStringCenter("X", 5) + "|" + "  ";
-        }
-
-        // Printing the card value itself
-        System.out.println(
-                "|"
-                        + getDisplayStringCenter(
-                                "Score at least " + blindScore, screenWidth / 8 * 3)
-                        + "|"
-                        + getDisplayStringCenter(cardValues, (screenWidth / 8 * 5) - 1)
-                        + "|");
-
-        // Printing the bottom header
-        System.out.println(
-                "|"
-                        + getDisplayStringCenter("", screenWidth / 8 * 3)
-                        + "|"
-                        + getDisplayStringCenter(cardHeaders, (screenWidth / 8 * 5) - 1)
-                        + "|");
-
-        // Print end header
-        System.out.println(header);
-    }
-
-    /** Displays the round score and the player's current hand. */
-    private void displayRoundScore() {
-        // Printing round score (left hand side) and your hand (right hand side)
-        System.out.println(
-                "|"
-                        + getDisplayStringCenter("Round Score: " + roundScore, screenWidth / 8 * 3)
-                        + "|"
-                        + getDisplayStringCenter("Your Hand: ", (screenWidth / 8 * 5) - 1)
-                        + "|");
-    }
-
-    /**
-     * Generates a formatted string representation of the cards.
-     *
-     * @param hand The list of cards.
-     * @param start The starting index.
-     * @param end The ending index.
-     * @return The formatted string.
-     */
-    private String generateCardValues(List<Card> hand, int start, int end) {
-        StringBuilder values = new StringBuilder();
-        for (int i = start; i < end; i++) {
-            values.append("|")
-                    .append(getDisplayStringCenter(hand.get(i).getSimplified(), 5))
-                    .append("|  ");
-        }
-        return values.toString();
-    }
-
-    /**
-     * Prints a formatted row with left and right-aligned content.
-     *
-     * @param leftText The left-aligned text.
-     * @param rightText The right-aligned text.
-     */
-    private void printCardRow(String leftText, String rightText) {
-        System.out.println(
-                "|"
-                        + getDisplayStringCenter(leftText, screenWidth / 8 * 3)
-                        + "|"
-                        + getDisplayStringCenter(rightText, (screenWidth / 8 * 5) - 1)
-                        + "|");
-    }
-
-    private void printRoundOver() {
-        String title = "::: " + UI.BOLD + "Round Ended" + " :::" + UI.END;
-        String message;
-        if (roundOver == 1) {
-            message = "YOU WON!!!!";
-        } else {
-            message = "YOU LOST!!!!";
-        }
-
-        String[] lines = {
-            "", "", message, "", "",
-        };
-
-        UI.printBorderedContent(title, List.of(lines));
-    }
-
-    /** Displays the game screen on the display */
     @Override
     public void displayScreen() {
-        if (roundOver != 0) {
-            printRoundOver();
+        clearScreen();
+        StringBuilder sb = new StringBuilder();
+
+        // --- Top Border ---
+        sb.append(BLACK_B)
+                .append(TOP_LEFT)
+                .append(String.valueOf(HORIZONTAL).repeat(BORDER_WIDTH - 2))
+                .append(TOP_RIGHT)
+                .append(END)
+                .append("\n");
+
+        // --- Blind Name / Description ---
+        String blindHeader = BOLD + PURPLE + roundName + END;
+        String blindDesc = ITALICS + roundDescription + END;
+        sb.append(centerText(blindHeader, BORDER_WIDTH)).append("\n");
+        sb.append(centerText(blindDesc, BORDER_WIDTH)).append("\n");
+
+        // --- Separator Border ---
+        sb.append(BLACK_B)
+                .append(T_RIGHT)
+                .append(String.valueOf(HORIZONTAL).repeat(COLUMN_WIDTH))
+                .append(T_DOWN)
+                .append(String.valueOf(HORIZONTAL).repeat(COLUMN_WIDTH))
+                .append(T_DOWN)
+                .append(String.valueOf(HORIZONTAL).repeat(COLUMN_WIDTH))
+                .append(T_LEFT)
+                .append(END)
+                .append("\n");
+
+        // --- Blind Score / Ante / Round ---
+        String bs = String.format("Score to beat: %d", blindScore);
+        String bScore = centerText(bs, COLUMN_WIDTH + 2);
+        String anteCount =
+                String.format("          Ante: %d / 8", JavatroCore.getAnte().getAnteCount());
+        String roundCount = String.format("            Round: %d", JavatroCore.getRoundCount());
+        // Print the row with vertical borders.
+        sb.append(bScore)
+                .append(BLACK_B)
+                .append(padToWidth(anteCount, COLUMN_WIDTH))
+                .append(VERTICAL)
+                .append(padToWidth(roundCount, COLUMN_WIDTH))
+                .append(VERTICAL)
+                .append(END)
+                .append("\n");
+
+        // --- Separator Border ---
+        sb.append(BLACK_B)
+                .append(T_RIGHT)
+                .append(String.valueOf(HORIZONTAL).repeat(COLUMN_WIDTH))
+                .append(CROSS)
+                .append(String.valueOf(HORIZONTAL).repeat(COLUMN_WIDTH))
+                .append(CROSS)
+                .append(String.valueOf(HORIZONTAL).repeat(COLUMN_WIDTH))
+                .append(T_LEFT)
+                .append(END)
+                .append("\n");
+
+        // --- Round Score / Hands / Discards ---
+        String rs = String.format("Round Score: %d", roundScore);
+        String rScore = centerText(rs, COLUMN_WIDTH + 2);
+        String handCount = String.format("            Hands: %d", handsLeft);
+        String discardCount = String.format("          Discards: %d", discardsLeft);
+        // Print the row with vertical borders.
+        sb.append(rScore)
+                .append(BLACK_B)
+                .append(padToWidth(handCount, COLUMN_WIDTH))
+                .append(VERTICAL)
+                .append(padToWidth(discardCount, COLUMN_WIDTH))
+                .append(VERTICAL)
+                .append(END)
+                .append("\n");
+
+        // --- Separator Border ---
+        sb.append(BLACK_B)
+                .append(T_RIGHT)
+                .append(String.valueOf(HORIZONTAL).repeat(COLUMN_WIDTH))
+                .append(CROSS)
+                .append(String.valueOf(HORIZONTAL).repeat(COLUMN_WIDTH))
+                .append(T_UP)
+                .append(String.valueOf(HORIZONTAL).repeat(COLUMN_WIDTH))
+                .append(T_LEFT)
+                .append(END)
+                .append("\n");
+
+        sb.append(BLACK_B)
+                .append(VERTICAL)
+                .append(" ".repeat(COLUMN_WIDTH))
+                .append(VERTICAL)
+                .append(" ".repeat(COLUMN_WIDTH * 2 + 1))
+                .append(VERTICAL)
+                .append(END)
+                .append("\n");
+
+        // --- Deck Name / Jokers / Holding Hand ---
+        List<String> extraContent = new ArrayList<>();
+        extraContent.add("Current Deck:");
+        extraContent.add("Deck Name");
+        extraContent.add("");
+        extraContent.add("");
+        extraContent.add("Jokers' Effects:");
+
+        // Iterate through heldJokers and print their toString() or "Empty" if null
+        List<Joker> jokers = JavatroCore.heldJokers.getJokers();
+        for (int i = 0; i < 5; i++) {
+            if (i < jokers.size() && jokers.get(i) != null) {
+                extraContent.add(jokers.get(i).toString());
+            } else {
+                extraContent.add("No Joker Available");
+            }
         }
 
-        String header = getHeaderString(screenWidth);
+        // Split into two groups of 4
+        List<Card> firstHalf = holdingHand.subList(0, 4);
+        List<Card> secondHalf = holdingHand.subList(4, 8);
 
-        // Prints the round name
-        displayRoundName(header);
+        // Get card art for both halves
+        List<String> firstCardArt = getCardArtLines(firstHalf);
+        List<String> secondCardArt = getCardArtLines(secondHalf);
 
-        // Displays round description + Hand Chosen To Play
-        displayRoundDesc();
+        // Print side-by-side
+        for (int i = 0; i < firstCardArt.size(); i++) {
+            String extraLine = extraContent.get(i); // Get the corresponding line of extra content
+            String cardLine = firstCardArt.get(i); // Get the corresponding line of card art
 
-        // Displays Jokers
-        displayJokers(header);
-
-        displayRoundScore();
-
-        // Your hand, it can have up to 8 cards, so print 4 on first row, 4 on second row
-        int firstRowCount = Math.min(4, holdingHand.size());
-        int secondRowCount = Math.max(0, holdingHand.size() - firstRowCount);
-
-        String firstRowHeader = (getHeaderString(5) + "  ").repeat(firstRowCount);
-        String firstRowValues = generateCardValues(holdingHand, 0, firstRowCount);
-
-        printCardRow("", firstRowHeader);
-        printCardRow("", firstRowValues);
-
-        // display hands and discards info along with second row headers (if any cards left)
-        String handsAndDiscards = "Hands: " + handsLeft + "  Discards: " + discardsLeft;
-        String secondRowHeader = (getHeaderString(5) + "  ").repeat(secondRowCount);
-        printCardRow(handsAndDiscards, secondRowHeader);
-
-        // display cash info
-        printCardRow("Cash: $ - ", "");
-
-        // display ante info
-        printCardRow("Ante: " + JavatroCore.getAnte().getAnteCount() + " / 8", secondRowHeader);
-
-        // Generate the values for the second row (if applicable)
-        if (secondRowCount > 0) {
-            String secondRowValues =
-                    generateCardValues(holdingHand, firstRowCount, holdingHand.size());
-            printCardRow("", secondRowValues);
+            sb.append(centerText(extraLine, COLUMN_WIDTH + 2))
+                    .append(BLACK_B)
+                    .append(" ".repeat(11))
+                    .append(cardLine)
+                    .append(BLACK_B)
+                    .append(" ".repeat(12))
+                    .append(VERTICAL)
+                    .append(END)
+                    .append("\n");
         }
 
-        // display current round info
-        printCardRow("Current Round: " + JavatroCore.getRoundCount(), secondRowHeader);
+        sb.append(BLACK_B)
+                .append(VERTICAL)
+                .append(" ".repeat(COLUMN_WIDTH))
+                .append(VERTICAL)
+                .append(" ".repeat(COLUMN_WIDTH * 2 + 1))
+                .append(VERTICAL)
+                .append(END)
+                .append("\n");
 
-        // Print end header
-        System.out.println(header);
+        // Print side-by-side
+        for (int i = 0; i < secondCardArt.size(); i++) {
+            String extraLine =
+                    extraContent.get(
+                            i + firstCardArt.size()); // Get the corresponding line of extra content
+            String cardLine = secondCardArt.get(i); // Get the corresponding line of card art
+
+            sb.append(centerText(extraLine, COLUMN_WIDTH + 2))
+                    .append(BLACK_B)
+                    .append(" ".repeat(12))
+                    .append(cardLine)
+                    .append(BLACK_B)
+                    .append(" ".repeat(11))
+                    .append(VERTICAL)
+                    .append(END)
+                    .append("\n");
+        }
+
+        sb.append(BLACK_B)
+                .append(VERTICAL)
+                .append(" ".repeat(COLUMN_WIDTH))
+                .append(VERTICAL)
+                .append(" ".repeat(COLUMN_WIDTH * 2 + 1))
+                .append(VERTICAL)
+                .append(END)
+                .append("\n");
+
+        // --- Bottom Border ---
+        sb.append(BLACK_B)
+                .append(BOTTOM_LEFT)
+                .append(String.valueOf(HORIZONTAL).repeat(COLUMN_WIDTH))
+                .append(T_UP)
+                .append(String.valueOf(HORIZONTAL).repeat(COLUMN_WIDTH * 2 + 1))
+                .append(BOTTOM_RIGHT)
+                .append(END);
+
+        // Finally, print the complete table.
+        System.out.println(sb);
     }
 
-    /**
-     * Updates the display when a change to a game variable occurs in the Round Class.
-     *
-     * @param evt The property change event containing the updated value.
-     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-
         String propertyName = evt.getPropertyName();
         Object newValue = evt.getNewValue();
 
-        // Map for property handlers
-        Map<String, Consumer<Object>> propertyHandlers = new HashMap<>();
+        Map<String, Consumer<Object>> handlers = new HashMap<>();
+        handlers.put("roundName", v -> roundName = v.toString());
+        handlers.put("roundDescription", v -> roundDescription = v.toString());
+        handlers.put("remainingPlays", v -> handsLeft = (Integer) v);
+        handlers.put("remainingDiscards", v -> discardsLeft = (Integer) v);
+        handlers.put("blindScore", v -> blindScore = (Integer) v);
+        handlers.put("currentScore", v -> roundScore = (Long) v);
 
-        propertyHandlers.put("roundName", value -> roundName = value.toString());
-        propertyHandlers.put("remainingPlays", value -> handsLeft = (Integer) value);
-        propertyHandlers.put("remainingDiscards", value -> discardsLeft = (Integer) value);
-        propertyHandlers.put("currentScore", value -> roundScore = (Long) value);
-        propertyHandlers.put("roundDescription", value -> roundDescription = value.toString());
-        propertyHandlers.put("blindScore", value -> blindScore = (Integer) value);
-        propertyHandlers.put(
+        handlers.put(
                 "holdingHand",
-                value -> {
-                    List<?> list = (List<?>) value;
+                v -> {
+                    List<?> rawList = (List<?>) v;
                     holdingHand =
-                            list.stream()
-                                    .filter(
-                                            Card.class
-                                                    ::isInstance) // Ensures only Card instances are
-                                    // collected
-                                    .map(Card.class::cast) // Safely cast to Card
+                            rawList.stream()
+                                    .filter(Card.class::isInstance)
+                                    .map(Card.class::cast)
                                     .collect(Collectors.toList());
                 });
-        propertyHandlers.put(
-                "roundComplete",
-                value -> {
-                    roundOver = (Integer) value;
-                    if (roundOver == 1) {
-                        commandMap.clear();
-                        commandMap.add(new NextRoundOption());
-                        commandMap.add(new ExitGameOption());
-                    } else if (roundOver == -1) {
-                        commandMap.clear();
-                        commandMap.add(new MainMenuOption());
-                        commandMap.add(new ExitGameOption());
-                    }
-                });
 
-        // Execute the appropriate handler if it exists and update its value
-        propertyHandlers.getOrDefault(propertyName, v -> {}).accept(newValue);
+        handlers.getOrDefault(propertyName, val -> {}).accept(newValue);
     }
 }
