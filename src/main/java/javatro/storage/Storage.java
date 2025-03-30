@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -56,16 +57,22 @@ public class Storage implements PropertyChangeListener {
 
     private void convertRunDataIntoRawData() {
         decryptedDataRaw = "";
+
         for (List<String> run : runData) {
-            String runDataRaw = "";
+            StringBuilder runDataRawBuilder = new StringBuilder(); // Use StringBuilder for efficient string concatenation
             for (String runAttribute : run) {
-                runDataRaw = runAttribute + ",";
+                runDataRawBuilder.append(runAttribute).append(","); // Append the attribute and a comma
             }
-            // Remove last ","
-            runDataRaw = runDataRaw.substring(0, runDataRaw.length() - 1);
-            runDataRaw = runDataRaw + "\n";
-            decryptedDataRaw = decryptedDataRaw + runDataRaw;
+            // Remove the last comma if run is not empty
+            if (!runDataRawBuilder.isEmpty()) {
+                runDataRawBuilder.setLength(runDataRawBuilder.length() - 1); // Remove the trailing comma
+            }
+            runDataRawBuilder.append("\n"); // Add a newline after each run
+
+            // Append the run data to decryptedDataRaw
+            decryptedDataRaw += runDataRawBuilder.toString();
         }
+        System.out.println("RAW: " + decryptedDataRaw);
     }
 
     private Storage() {
@@ -86,8 +93,8 @@ public class Storage implements PropertyChangeListener {
             }
         }
 
-        saveSampleData(); // Add test sample data
-        // parseDecryptedRawData(); // Convert decryptedDataRaw into runData (Basically initalise
+        //saveSampleData(); // Add test sample data
+        if(!decryptedDataRaw.isEmpty()) parseDecryptedRawData(); // Convert decryptedDataRaw into runData (Basically initalise
         // runData here)
     }
 
@@ -132,6 +139,7 @@ public class Storage implements PropertyChangeListener {
                 }
 
                 decryptedDataRaw = decrypt(encryptedData);
+                System.out.println("DATA: " + decryptedDataRaw);
 
             } catch (Exception e) {
                 throw new JavatroException("Error reading/decrypting save file: " + e.getMessage());
@@ -201,45 +209,49 @@ public class Storage implements PropertyChangeListener {
         return new String(decryptedBytes);
     }
 
+    public static void addNewRun(List<String> newRun) {
+        runData.add(newRun);
+    }
+
+    public void updateSaveFile() throws JavatroException {
+        convertRunDataIntoRawData();
+
+        byte[] encryptedData;
+        try {
+            encryptedData = encrypt(decryptedDataRaw);
+        } catch (Exception ex) {
+            throw new JavatroException(ex.getMessage());
+        }
+
+        // Generate a hash of the encrypted data
+        String dataHash = null;
+        try {
+            dataHash = FileIntegrity.generateSHA256Hash(new String(encryptedData));
+        } catch (NoSuchAlgorithmException e) {
+            throw new JavatroException(e.getMessage());
+        }
+
+        try {
+            Path path = Paths.get(SAVEFILE_LOCATION);
+            Files.write(path, encryptedData, StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING);
+            Files.write(
+                    path,
+                    dataHash.getBytes(),
+                    StandardOpenOption.APPEND); // Append the hash after the data
+        } catch (IOException e) {
+            throw new JavatroException("SAVING ISSUE: " + e.getMessage());
+        }
+        System.out.println("Encrypted sample data saved successfully.");
+
+    }
+
     // Method to save sample data into the task file (encrypted)
     public void saveSampleData() {
         // Round,Ante,Deck (3-10 are decks)
         decryptedDataRaw = "5,5,Checkered,2D,2S,3S,4S,5S,6S,7S,8S\n20,80,Deck 2\n";
         parseDecryptedRawData();
 
-        //        String sampleData = "This is a sample task data."; // Sample data to be saved in
-        // the file
-        //        byte[] encryptedData;
-        //        try {
-        //            encryptedData = encrypt(sampleData);
-        //        } catch (Exception ex) {
-        //            throw new JavatroException(ex.getMessage());
-        //        }
-        //
-        //        // Generate a hash of the encrypted data
-        //        String dataHash = null;
-        //        try {
-        //            dataHash = FileIntegrity.generateSHA256Hash(new String(encryptedData));
-        //        } catch (NoSuchAlgorithmException e) {
-        //            throw new JavatroException(e.getMessage());
-        //        }
-        //
-        //        try {
-        //            Path path = Paths.get(SAVEFILE_LOCATION);
-        //            Files.write(path, encryptedData, StandardOpenOption.CREATE,
-        // StandardOpenOption.APPEND);
-        //            Files.write(
-        //                    path,
-        //                    dataHash.getBytes(),
-        //                    StandardOpenOption.APPEND); // Append the hash after the data
-        //        } catch (IOException e) {
-        //            throw new JavatroException("SAVING ISSUE: " + e.getMessage());
-        //        }
-        //        System.out.println("Encrypted sample data saved successfully.");
-    }
-
-    public void setDecryptedDataRaw(String decryptedDataRaw) {
-        Storage.decryptedDataRaw = decryptedDataRaw;
     }
 
     public List<List<String>> getRunData() {
@@ -317,9 +329,6 @@ public class Storage implements PropertyChangeListener {
                 cardString.substring(0, cardString.length() - 1); // All but the last character
         char suitChar = cardString.charAt(cardString.length() - 1); // Last character
 
-        System.out.println(rankStr);
-        System.out.println(suitChar);
-
         // Parse the rank
         Card.Rank rank =
                 switch (rankStr) {
@@ -359,6 +368,21 @@ public class Storage implements PropertyChangeListener {
         // Return the constructed Card
         return new Card(rank, suit);
     }
+
+    public static String cardToString(Card card) {
+        // Get the rank and suit from the card
+        String rankStr = card.rank().getSymbol(); // Get the symbol (e.g., "A", "K", "10")
+        String suitStr = switch (card.suit()) {
+            case HEARTS -> "H";
+            case CLUBS -> "C";
+            case SPADES -> "S";
+            case DIAMONDS -> "D";
+        };
+
+        // Combine rank and suit to form the card string
+        return rankStr + suitStr;
+    }
+
 
 
 }

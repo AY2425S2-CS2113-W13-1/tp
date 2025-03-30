@@ -24,7 +24,7 @@ public class RunsScreen extends Screen {
     public RunsScreen() throws JavatroException {
         super("RUNS MENU");
         commandMap.add(new MainMenuOption());
-        for (int run = 0; run < Storage.getInstance().getRunData().size(); run++) {
+        for (int run = 0; run <= Storage.getInstance().getRunData().size(); run++) {
             ChooseRunOption chooseRunOption = new ChooseRunOption();
             chooseRunOption.setRunNumber(run);
             commandMap.add(chooseRunOption);

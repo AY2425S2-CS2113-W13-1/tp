@@ -1,5 +1,7 @@
 package javatro.core;
 
+import javatro.storage.Storage;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
@@ -39,5 +41,26 @@ public class RoundObservable {
         support.firePropertyChange("roundDescription", null, config.getRoundDescription());
         support.firePropertyChange("holdingHand", null, round.getPlayerHand());
         support.firePropertyChange("currentScore", null, state.getCurrentScore());
+
+        //Update Storage's playing hand
+        int i = 0;
+        for(Card card: round.getPlayerHand()) {
+            String hand = Storage.cardToString(card);
+            Storage.getInstance().getRunData().get(Storage.chosenRun).set(i+3,hand);
+            i += 1;
+        }
+
+        //Update Storage's current round
+        Storage.getInstance().getRunData().get(Storage.chosenRun).set(0,Integer.toString(JavatroCore.roundCount));
+
+        //Update Storage's current ante
+        Storage.getInstance().getRunData().get(Storage.chosenRun).set(1,Integer.toString(JavatroCore.getAnte().getAnteCount()));
+
+        try {
+            Storage.getInstance().updateSaveFile();
+        } catch (JavatroException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

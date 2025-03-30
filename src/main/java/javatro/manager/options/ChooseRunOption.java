@@ -26,7 +26,8 @@ public class ChooseRunOption implements Option {
      */
     @Override
     public String getDescription() {
-        return "Choose Run " + runNumber;
+        if(runNumber >= Storage.getInstance().getRunData().size()) return "Start New Run";
+        return "Choose Run " + (runNumber + 1);
     }
 
     /**
@@ -38,36 +39,63 @@ public class ChooseRunOption implements Option {
     @Override
     public void execute() throws JavatroException {
         Storage.chosenRun = runNumber;
-        if (JavatroCore.currentRound == null || JavatroCore.currentRound.isLost()) {
+
+        if (runNumber < Storage.getInstance().getRunData().size() && (JavatroCore.currentRound == null || JavatroCore.currentRound.isLost()) ) {
             JavatroCore.currentRound = null;
-            // New Run
-            if (runNumber > Storage.getInstance().getRunData().size())
-                JavatroManager.setScreen(UI.getDeckSelectScreen());
-            else {
-                JavatroManager.beginGame(
-                        createDeckFromString(
-                                Storage.getInstance().getRunData().get(Storage.chosenRun).get(2)));
-                JavatroCore.getAnte().setBlind(Ante.Blind.SMALL_BLIND);
+//            // New Run
+            JavatroCore.deck = new Deck(createDeckFromString(Storage.getInstance().getRunData().get(Storage.chosenRun).get(2)));
+            JavatroManager.beginGame(createDeckFromString(Storage.getInstance().getRunData().get(Storage.chosenRun).get(2)));
 
-                List<Card> storedPlayingCards = new ArrayList<>();
+            List<Card> storedPlayingCards = new ArrayList<>();
 
-                for (int i = 0; i < 8; i++) {
-                    String card =
-                            Storage.getInstance().getRunData().get(Storage.chosenRun).get(i + 3);
-                    storedPlayingCards.add(Storage.parseCardString(card));
-                }
-
-                JavatroManager.jc.beginGame();
-                JavatroCore.currentRound.getHoldingHand().setHand(storedPlayingCards);
-                JavatroCore.currentRound.addPropertyChangeListener(
-                        javatro.display.UI.getGameScreen());
-                JavatroCore.currentRound.updateRoundVariables();
-                JavatroManager.setScreen(UI.getGameScreen());
+            for (int i = 0; i < 8; i++) {
+                String card =
+                        Storage.getInstance().getRunData().get(Storage.chosenRun).get(i + 3);
+                storedPlayingCards.add(Storage.parseCardString(card));
             }
+
+//                JavatroManager.jc.beginGame();
+//                JavatroCore.currentRound.addPropertyChangeListener(javatro.display.UI.getGameScreen());
+//                JavatroCore.currentRound.getHoldingHand().setHand(storedPlayingCards);
+//                JavatroCore.currentRound.updateRoundVariables();
+            JavatroManager.setScreen(UI.getBlindScreen());
+
+
+//                JavatroManager.beginGame(
+//                        createDeckFromString(
+//                                Storage.getInstance().getRunData().get(Storage.chosenRun).get(2)));
+//                JavatroCore.getAnte().setBlind(Ante.Blind.SMALL_BLIND);
+//
+//                JavatroManager.jc.beginGame();
+//                JavatroCore.currentRound.getHoldingHand().setHand(storedPlayingCards);
+//                JavatroCore.currentRound.addPropertyChangeListener(
+//                        javatro.display.UI.getGameScreen());
+//                JavatroCore.currentRound.updateRoundVariables();
+//                JavatroManager.setScreen(UI.getGameScreen());
+        } else if(runNumber >= Storage.getInstance().getRunData().size()) {
+            //Start a normal game
+            Storage.chosenRun = runNumber;
+            System.out.println("NEW GAME");
+            List<String> newGame = new ArrayList<>();
+            newGame.add("1");
+            newGame.add("1");
+            newGame.add("DEFAULT");
+            newGame.add("-");
+            newGame.add("-");
+            newGame.add("-");
+            newGame.add("-");
+            newGame.add("-");
+            newGame.add("-");
+            newGame.add("-");
+            newGame.add("-");
+            newGame.add("\n");
+            Storage.addNewRun(newGame);
+            JavatroManager.setScreen(UI.getDeckSelectScreen());
         }
-        if (JavatroCore.currentRound != null) {
-            JavatroManager.setScreen(UI.getGameScreen());
-        }
+
+//        if (JavatroCore.currentRound != null) {
+//            JavatroManager.setScreen(UI.getGameScreen());
+//        }
     }
 
     public void setRunNumber(int runNumber) {

@@ -1,9 +1,13 @@
 package javatro.manager.options;
 
+import javatro.core.Deck;
 import javatro.core.JavatroCore;
 import javatro.core.JavatroException;
 import javatro.display.UI;
 import javatro.manager.JavatroManager;
+import javatro.storage.Storage;
+
+import static javatro.storage.Storage.createDeckFromString;
 
 // @@author swethaiscool
 /**
@@ -30,6 +34,7 @@ public class AcceptBlindOption implements Option {
      */
     @Override
     public void execute() throws JavatroException {
+
         JavatroManager.jc.beginGame();
         JavatroCore.currentRound.addPropertyChangeListener(javatro.display.UI.getGameScreen());
         JavatroCore.currentRound.updateRoundVariables();
