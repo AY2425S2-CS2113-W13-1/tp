@@ -5,6 +5,8 @@
  */
 package javatro.manager;
 
+import javatro.core.Ante;
+import javatro.core.Deck;
 import javatro.core.JavatroCore;
 import javatro.core.JavatroException;
 import javatro.display.UI;
@@ -23,9 +25,13 @@ public class JavatroManager implements PropertyChangeListener {
     /** The main view responsible for rendering the user interface. */
     private static UI ui;
     /** The main model responsible for handling game logic. */
-    private static JavatroCore jc;
-
+    public static JavatroCore jc;
+    /** Stores the last recorded user input. */
+    private static int userInput;
     private Storage storage = Storage.getInstance();
+
+    public static Ante ante;
+    public static int roundCount = 1;
 
     /**
      * Constructs a {@code JavatroManager} and registers it as an observer to the view.
@@ -38,7 +44,6 @@ public class JavatroManager implements PropertyChangeListener {
         JavatroManager.jc = jc;
         UI.getParser().addPropertyChangeListener(this); // Register as an observer
     }
-
     /**
      * Changes the currently displayed screen.
      *
@@ -53,8 +58,8 @@ public class JavatroManager implements PropertyChangeListener {
      *
      * @throws JavatroException If an error occurs during game initialization.
      */
-    public static void beginGame() throws JavatroException {
-        jc.beginGame();
+    public static void beginGame(Deck.DeckType deckType) throws JavatroException {
+        jc.setupNewGame(deckType);
         JavatroCore.currentRound.addPropertyChangeListener(javatro.display.UI.getGameScreen());
         JavatroCore.currentRound.addPropertyChangeListener(Storage.getInstance());
         // Fire property changes here

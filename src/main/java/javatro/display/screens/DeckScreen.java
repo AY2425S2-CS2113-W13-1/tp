@@ -1,12 +1,38 @@
 package javatro.display.screens;
 
-import static javatro.display.UI.*;
+import static javatro.display.UI.BLACK_B;
+import static javatro.display.UI.BLUE;
+import static javatro.display.UI.BLUE_B;
+import static javatro.display.UI.BOLD;
+import static javatro.display.UI.BOTTOM_LEFT;
+import static javatro.display.UI.BOTTOM_RIGHT;
+import static javatro.display.UI.CROSS;
+import static javatro.display.UI.END;
+import static javatro.display.UI.HORIZONTAL;
+import static javatro.display.UI.ORANGE;
+import static javatro.display.UI.ORANGE_B;
+import static javatro.display.UI.PURPLE;
+import static javatro.display.UI.PURPLE_B;
+import static javatro.display.UI.RED;
+import static javatro.display.UI.RED_B;
+import static javatro.display.UI.TOP_LEFT;
+import static javatro.display.UI.TOP_RIGHT;
+import static javatro.display.UI.T_DOWN;
+import static javatro.display.UI.T_LEFT;
+import static javatro.display.UI.T_RIGHT;
+import static javatro.display.UI.T_UP;
+import static javatro.display.UI.VERTICAL;
+import static javatro.display.UI.WHITE;
+import static javatro.display.UI.centerText;
+import static javatro.display.UI.padToWidth;
 
-import javatro.core.*;
+import javatro.core.Card;
+import javatro.core.Deck;
+import javatro.core.JavatroException;
+import javatro.core.Round;
 import javatro.manager.options.ReturnOption;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * DeckScreen prints the current deck as a two-dimensional table with totals. - The rows represent
@@ -17,11 +43,11 @@ import java.util.Collections;
  */
 public class DeckScreen extends Screen {
 
-    private static ArrayList<Card> deck;
-
     // Overall dimensions: total width = LEFT_WIDTH + RIGHT_WIDTH + 3 (for the vertical borders)
     private static final int LEFT_WIDTH = 17; // For deck name or suit names (including suit totals)
     private static final int RIGHT_WIDTH = 80; // For rank headers and the numbers matrix
+    private static Deck deck;
+    private static ArrayList<Card> remainingCardList;
     // Total width = 17 + 80 + 3 = 100
 
     /**
@@ -32,23 +58,18 @@ public class DeckScreen extends Screen {
     public DeckScreen() throws JavatroException {
         super("Your Current Deck");
         super.commandMap.add(new ReturnOption());
-
-        // NEED TO CHANGE THIS TO GET CURRENT DECK FROM CURRENT ROUND
-        deck = new ArrayList<>();
-        for (Card.Rank rank : Card.Rank.values()) {
-            for (Card.Suit suit : Card.Suit.values()) {
-                deck.add(new Card(rank, suit));
-            }
-        }
-        Collections.shuffle(deck);
     }
 
     @Override
     public void displayScreen() {
         // Step 1: Build the data matrix.
         // There are 4 suits and 13 ranks.
+
+        deck = Round.deck;
+        remainingCardList = deck.getWholeDeck();
+        String deckType = String.valueOf(deck.getDeckName());
         int[][] counts = new int[4][13];
-        for (Card card : deck) {
+        for (Card card : remainingCardList) {
             int suitIndex = getSuitIndex(card.suit());
             int rankIndex = getRankIndex(card.rank());
             if (suitIndex != -1 && rankIndex != -1) {
@@ -95,8 +116,7 @@ public class DeckScreen extends Screen {
 
         // --------- Top Row Content: Left Box (Deck Name) and Right Box (Rank Header) ---------
         // Left box: deck name centered in LEFT_WIDTH.
-        // NEED TO UPDATE THIS TO GET CURRENT DECK NAME
-        String deckName = centerText("DEFAULT DECK", LEFT_WIDTH + 2);
+        String deckName = centerText(deckType, LEFT_WIDTH + 2);
         // Right box: rank headers.
         // For 13 ranks, use 5 chars each, and for the total header use 15 chars.
         StringBuilder rankHeader = new StringBuilder();

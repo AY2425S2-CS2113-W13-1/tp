@@ -29,7 +29,6 @@ public class PlayCardOption implements Option {
      */
     @Override
     public void execute() throws JavatroException {
-        // Update the main screen to show the "Select Cards to Play" screen
         JavatroManager.setScreen(UI.getPlayScreen());
     }
 }

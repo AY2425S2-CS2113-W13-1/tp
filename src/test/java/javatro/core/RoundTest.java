@@ -1,30 +1,53 @@
 package javatro.core;
 
+import static javatro.core.Deck.DeckType.DEFAULT;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import javatro.core.jokers.HeldJokers;
+import javatro.display.UI;
+
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 public class RoundTest {
-    private static final String RED = "\033[31m";
-    private static final String END = "\033[0m";
-    private static final String INVALIDPLAYEDHANDERROR =
-            RED + "A poker hand must contain between 1 and 5 cards." + END;
-    private static final String INVALIDPLAYSPERROUND =
-            RED + "Number of plays per round must be greater than 0." + END;
-    private static final String INVALIDBLINDSCORE =
-            RED + "Blind score must be greater than or equal to 0." + END;
-    private static final String INVALIDDECK = RED + "Deck cannot be null." + END;
-    private static final String INVALIDPLAYSREMAINING = RED + "No plays remaining." + END;
+    private static String getExceptionMessage(String message) {
+        return UI.RED + message + UI.END;
+    }
 
-    private void assertRoundInitialization(int blindScore, int remainingPlays)
+    private static final String INVALIDPLAYEDHANDERROR =
+            "A poker hand must contain between 1 and 5 cards.";
+    private static final String INVALIDPLAYSPERROUND =
+            "Number of plays per round must be greater than 0.";
+    private static final String INVALIDDECK = "Deck cannot be null.";
+    private static final String INVALIDPLAYSREMAINING = "No plays remaining.";
+
+    enum isWon {
+        WON,
+        LOST,
+        UNKNOWN
+    }
+
+    private static HeldJokers heldJokers;
+
+    @BeforeAll
+    public static void init() {
+        heldJokers = new HeldJokers();
+    }
+
+    private void assertRoundInitialization(int anteCount, Ante.Blind blind, int remainingPlays)
             throws JavatroException {
-        Deck deck = new Deck();
-        Round round = new Round(blindScore, remainingPlays, deck, "", "");
-        assertEquals(blindScore, round.getBlindScore());
+        Deck deck = new Deck(Deck.DeckType.DEFAULT);
+        Ante ante = new Ante();
+        ante.setAnteCount(anteCount);
+        ante.setBlind(blind);
+        int expectedBlindScore = ante.getRoundScore();
+        Round round = new Round(expectedBlindScore, remainingPlays, deck, heldJokers, "", "");
+        assertEquals(expectedBlindScore, round.getBlindScore());
         assertEquals(remainingPlays, round.getRemainingPlays());
         assertEquals(0, round.getCurrentScore());
         assertEquals(4, round.getRemainingDiscards());
@@ -32,42 +55,50 @@ public class RoundTest {
     }
 
     private void assertRoundInitializationFailure(
-            int blindScore, int remainingPlays, Deck deck, String expectedMessage) {
+            int anteCount,
+            Ante.Blind blind,
+            int remainingPlays,
+            Deck deck,
+            String expectedMessage) {
         try {
-            new Round(blindScore, remainingPlays, deck, "", "");
+            Ante ante = new Ante();
+            ante.setAnteCount(anteCount);
+            ante.setBlind(blind);
+            int blindScore = ante.getRoundScore();
+            new Round(blindScore, remainingPlays, deck, heldJokers, "", "");
             fail();
         } catch (JavatroException e) {
-            assertEquals(expectedMessage, e.getMessage());
+            assertEquals(getExceptionMessage(expectedMessage), e.getMessage());
         }
     }
 
     private void assertRoundOverAfterPlays(
-            int blindScore,
-            int totalPlays,
-            int playsToMake,
-            boolean expectedIsOver,
-            boolean expectedIsWon)
+            int blindScore, int totalPlays, int playsToMake, boolean expectedIsOver)
             throws JavatroException {
-        Deck deck = new Deck();
-        Round round = new Round(blindScore, totalPlays, deck, "", "");
+        Deck deck = new Deck(Deck.DeckType.DEFAULT);
+        Round round = new Round(blindScore, totalPlays, deck, heldJokers, "", "");
 
         for (int i = 0; i < playsToMake; i++) {
             round.playCards(List.of(0, 1, 2, 3, 4));
         }
 
         assertEquals(expectedIsOver, round.isRoundOver());
-        if (expectedIsWon) {
-            assertEquals(expectedIsWon, round.isWon());
-        }
     }
 
     private void assertPlayCardsFails(
-            int blindScore, int remainingPlays, int playsToMake, String expectedErrorMessage)
+            int anteCount,
+            Ante.Blind blind,
+            int remainingPlays,
+            int playsToMake,
+            String expectedErrorMessage)
             throws JavatroException {
-
         try {
-            Deck deck = new Deck();
-            Round round = new Round(blindScore, remainingPlays, deck, "", "");
+            Deck deck = new Deck(Deck.DeckType.DEFAULT);
+            Ante ante = new Ante();
+            ante.setAnteCount(anteCount);
+            ante.setBlind(blind);
+            int blindScore = ante.getRoundScore();
+            Round round = new Round(blindScore, remainingPlays, deck, heldJokers, "", "");
 
             // Make the specified number of valid plays
             for (int i = 0; i < playsToMake; i++) {
@@ -78,110 +109,142 @@ public class RoundTest {
             round.playCards(List.of(0, 1, 2, 3, 4));
             fail();
         } catch (JavatroException e) {
-            assertEquals(expectedErrorMessage, e.getMessage());
+            assertEquals(getExceptionMessage(expectedErrorMessage), e.getMessage());
         }
     }
 
     private void assertPlayCardsInvalidHandSize(
-            int blindScore,
+            int anteCount,
+            Ante.Blind blind,
             int remainingPlays,
             List<Integer> cardIndices,
             String expectedErrorMessage)
             throws JavatroException {
-        Deck deck = new Deck();
-        Round round = new Round(blindScore, remainingPlays, deck, "", "");
-
+        Deck deck = new Deck(Deck.DeckType.DEFAULT);
+        Ante ante = new Ante();
+        ante.setAnteCount(anteCount);
+        ante.setBlind(blind);
+        int blindScore = ante.getRoundScore();
+        Round round = new Round(blindScore, remainingPlays, deck, heldJokers, "", "");
         try {
             round.playCards(cardIndices);
             fail();
         } catch (JavatroException e) {
-            assertEquals(expectedErrorMessage, e.getMessage());
+            assertEquals(getExceptionMessage(expectedErrorMessage), e.getMessage());
         }
     }
 
-    private void assertRoundNotOver(int blindScore, int remainingPlays, int playsToMake)
+    private void assertRoundOver(
+            int anteCount,
+            Ante.Blind blind,
+            int remainingPlays,
+            int playsToMake,
+            boolean expectedIsOver)
             throws JavatroException {
-        Deck deck = new Deck();
-        Round round = new Round(blindScore, remainingPlays, deck, "", "");
+        Deck deck = new Deck(Deck.DeckType.DEFAULT);
+        Ante ante = new Ante();
+        ante.setAnteCount(anteCount);
+        ante.setBlind(blind);
+        int blindScore = ante.getRoundScore();
+        Round round = new Round(blindScore, remainingPlays, deck, heldJokers, "", "");
 
         for (int i = 0; i < playsToMake; i++) {
             round.playCards(List.of(0, 1, 2, 3, 4));
         }
 
-        assertEquals(false, round.isRoundOver());
-        assertEquals(false, round.isWon());
+        assertEquals(expectedIsOver, round.isRoundOver());
     }
 
     @Test
     public void round_correctInitialization_success() throws JavatroException {
-        assertRoundInitialization(100, 3);
-        assertRoundInitialization(200, 5);
-        assertRoundInitialization(300, 7);
-        assertRoundInitialization(300, 7);
-        assertRoundInitialization(0, 1);
+        assertRoundInitialization(1, Ante.Blind.SMALL_BLIND, 3);
+        assertRoundInitialization(2, Ante.Blind.SMALL_BLIND, 5);
+        assertRoundInitialization(2, Ante.Blind.LARGE_BLIND, 7);
+        assertRoundInitialization(3, Ante.Blind.BOSS_BLIND, 1);
     }
 
     @Test
     public void round_incorrectInitializatioin() throws JavatroException {
-        assertRoundInitializationFailure(100, 0, new Deck(), INVALIDPLAYSPERROUND);
-        assertRoundInitializationFailure(-100, 3, new Deck(), INVALIDBLINDSCORE);
-        assertRoundInitializationFailure(100, 3, null, INVALIDDECK);
-        assertRoundInitializationFailure(-100, 0, new Deck(), INVALIDBLINDSCORE);
-        assertRoundInitializationFailure(-100, 3, null, INVALIDBLINDSCORE);
-        assertRoundInitializationFailure(100, 0, null, INVALIDPLAYSPERROUND);
-        assertRoundInitializationFailure(-100, 0, null, INVALIDBLINDSCORE);
+        assertRoundInitializationFailure(
+                1, Ante.Blind.SMALL_BLIND, 0, new Deck(DEFAULT), INVALIDPLAYSPERROUND);
+        assertRoundInitializationFailure(1, Ante.Blind.SMALL_BLIND, 3, null, INVALIDDECK);
     }
 
     @Test
     public void round_playCards_roundNotOver() throws JavatroException {
-        // Test with regular blind score and plays
-        assertRoundNotOver(100, 3, 1);
-
+        // Test with first blind score and plays
+        assertRoundOver(1, Ante.Blind.SMALL_BLIND, 3, 1, false);
         // Test with high blind score
-        assertRoundNotOver(1000, 3, 1);
+        assertRoundOver(1, Ante.Blind.LARGE_BLIND, 10000, 1, false);
 
+        // Test with high ante count and plays
+        assertRoundOver(8, Ante.Blind.SMALL_BLIND, 10000, 1, false);
         // Test with many remaining plays
-        assertRoundNotOver(100, 3000, 5);
+        assertRoundOver(8, Ante.Blind.LARGE_BLIND, 10000, 1, false);
+
+        // Test won
+        assertRoundOver(1, Ante.Blind.SMALL_BLIND, 10000, 8, true);
     }
 
     @Test
     public void round_playCards_roundOver() throws JavatroException {
-        // Round is over after using all plays
-        assertRoundOverAfterPlays(99999, 3, 3, true, false);
-        assertRoundOverAfterPlays(99999, 5, 5, true, false);
-        assertRoundOverAfterPlays(99999, 8, 8, true, false);
+        Ante ante = new Ante();
+        ante.setAnteCount(8);
+        ante.setBlind(Ante.Blind.SMALL_BLIND);
+        assertRoundOverAfterPlays(ante.getRoundScore(), 3, 3, true);
 
-        // Round is over and won when blind score is 0
-        assertRoundOverAfterPlays(0, 1, 1, true, true);
+        ante = new Ante();
+        ante.setAnteCount(8);
+        ante.setBlind(Ante.Blind.BOSS_BLIND);
+        assertRoundOverAfterPlays(ante.getRoundScore(), 5, 5, true);
+
+        ante = new Ante();
+        ante.setAnteCount(8);
+        ante.setBlind(Ante.Blind.BOSS_BLIND);
+        assertRoundOverAfterPlays(ante.getRoundScore(), 8, 8, true);
+
+        ante = new Ante();
+        ante.setAnteCount(1);
+        ante.setBlind(Ante.Blind.SMALL_BLIND);
+        assertRoundOverAfterPlays(ante.getRoundScore(), 1, 1, true);
     }
 
     @Test
     public void round_playCards_tooManyPlays() throws JavatroException {
         // Test with 3 plays
-        assertPlayCardsFails(100, 3, 3, INVALIDPLAYSREMAINING);
+        assertPlayCardsFails(1, Ante.Blind.SMALL_BLIND, 3, 3, INVALIDPLAYSREMAINING);
 
         // Test with 5 plays
-        assertPlayCardsFails(100, 2, 2, INVALIDPLAYSREMAINING);
-
+        assertPlayCardsFails(1, Ante.Blind.SMALL_BLIND, 2, 2, INVALIDPLAYSREMAINING);
         // Test with 0 plays
-        assertPlayCardsFails(100, 0, 0, INVALIDPLAYSPERROUND);
+        assertPlayCardsFails(1, Ante.Blind.SMALL_BLIND, 0, 0, INVALIDPLAYSPERROUND);
     }
 
     @Test
     public void round_playCards_invalidHandSize() throws JavatroException {
-        assertPlayCardsInvalidHandSize(100, 3, List.of(0, 1, 2, 3, 4, 5), INVALIDPLAYEDHANDERROR);
         assertPlayCardsInvalidHandSize(
-                100, 3, List.of(0, 1, 2, 3, 4, 5, 6), INVALIDPLAYEDHANDERROR);
+                1, Ante.Blind.SMALL_BLIND, 3, List.of(0, 1, 2, 3, 4, 5), INVALIDPLAYEDHANDERROR);
         assertPlayCardsInvalidHandSize(
-                100, 3, List.of(0, 1, 2, 3, 4, 5, 6, 7), INVALIDPLAYEDHANDERROR);
+                1, Ante.Blind.SMALL_BLIND, 3, List.of(0, 1, 2, 3, 4, 5, 6), INVALIDPLAYEDHANDERROR);
+        assertPlayCardsInvalidHandSize(
+                1,
+                Ante.Blind.SMALL_BLIND,
+                3,
+                List.of(0, 1, 2, 3, 4, 5, 6, 7),
+                INVALIDPLAYEDHANDERROR);
         // Test with 0 cards
-        assertPlayCardsInvalidHandSize(100, 3, List.of(), INVALIDPLAYEDHANDERROR);
+        assertPlayCardsInvalidHandSize(
+                1, Ante.Blind.SMALL_BLIND, 3, List.of(), INVALIDPLAYEDHANDERROR);
     }
 
     @Test
     public void round_discardCards_success() throws JavatroException {
-        Deck deck = new Deck();
-        Round round = new Round(100, 3, deck, "", "");
+        Deck deck = new Deck(Deck.DeckType.DEFAULT);
+        Ante ante = new Ante();
+        ante.setAnteCount(1);
+        ante.setBlind(Ante.Blind.SMALL_BLIND);
+        int blindScore = ante.getRoundScore();
+        Round round = new Round(blindScore, 3, deck, heldJokers, "", "");
 
         // Initial state
         assertEquals(4, round.getRemainingDiscards());
@@ -192,14 +255,17 @@ public class RoundTest {
 
         // Check state after discard
         assertEquals(3, round.getRemainingDiscards());
-        assertEquals(
-                initialHandSize, round.getPlayerHand().size()); // Hand size should remain the same
+        assertEquals(initialHandSize, round.getPlayerHand().size());
     }
 
     @Test
     public void round_discardCards_tooManyDiscards() throws JavatroException {
-        Deck deck = new Deck();
-        Round round = new Round(100, 3, deck, "", "");
+        Deck deck = new Deck(Deck.DeckType.DEFAULT);
+        Ante ante = new Ante();
+        ante.setAnteCount(1);
+        ante.setBlind(Ante.Blind.SMALL_BLIND);
+        int blindScore = ante.getRoundScore();
+        Round round = new Round(blindScore, 3, deck, heldJokers, "", "");
 
         // Use all 4 discards
         round.discardCards(List.of(0));
@@ -212,14 +278,18 @@ public class RoundTest {
             round.discardCards(List.of(0));
             fail("Should have thrown an exception for too many discards");
         } catch (JavatroException e) {
-            assertEquals("No remaining discards available", e.getMessage());
+            assertEquals(getExceptionMessage("No remaining discards available"), e.getMessage());
         }
     }
 
     @Test
     public void round_emptyDiscardList() throws JavatroException {
-        Deck deck = new Deck();
-        Round round = new Round(100, 3, deck, "", "");
+        Deck deck = new Deck(Deck.DeckType.DEFAULT);
+        Ante ante = new Ante();
+        ante.setAnteCount(1);
+        ante.setBlind(Ante.Blind.SMALL_BLIND);
+        int blindScore = ante.getRoundScore();
+        Round round = new Round(blindScore, 3, deck, heldJokers, "", "");
 
         // Initial state
         assertEquals(4, round.getRemainingDiscards());
@@ -230,18 +300,21 @@ public class RoundTest {
             round.discardCards(List.of());
             fail("Should have thrown an exception for discarding zero cards");
         } catch (JavatroException e) {
-            assertEquals("Cannot discard zero cards", e.getMessage());
+            assertEquals(getExceptionMessage("Cannot discard zero cards"), e.getMessage());
         }
 
-        // Should still use a discard
         assertEquals(4, round.getRemainingDiscards());
         assertEquals(initialHandSize, round.getPlayerHand().size());
     }
 
     @Test
     public void round_setNameAndDescription() throws JavatroException {
-        Deck deck = new Deck();
-        Round round = new Round(100, 3, deck, "", "");
+        Deck deck = new Deck(Deck.DeckType.DEFAULT);
+        Ante ante = new Ante();
+        ante.setAnteCount(1);
+        ante.setBlind(Ante.Blind.SMALL_BLIND);
+        int blindScore = ante.getRoundScore();
+        Round round = new Round(blindScore, 3, deck, heldJokers, "", "");
 
         // Set new values
         round.setRoundName("New Round");

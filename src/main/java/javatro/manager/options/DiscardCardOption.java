@@ -29,7 +29,6 @@ public class DiscardCardOption implements Option {
      */
     @Override
     public void execute() throws JavatroException {
-        // Update the main screen to show the "Select Cards to Discard" screen
         JavatroManager.setScreen(UI.getDiscardScreen());
     }
 }

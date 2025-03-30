@@ -8,6 +8,11 @@ import java.util.Objects;
  */
 public record Card(Rank rank, Suit suit) {
 
+    /** Copy Constructor for the Card Class */
+    public Card(Card other) {
+        this(other.rank(), other.suit());
+    }
+
     /** Enum representing the rank of a card, along with its symbol and chip value. */
     public enum Rank {
         TWO("2", 2),
