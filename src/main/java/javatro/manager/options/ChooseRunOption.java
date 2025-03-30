@@ -4,14 +4,14 @@
  */
 package javatro.manager.options;
 
-import javatro.core.Ante;
-import javatro.core.Deck;
-import javatro.core.JavatroCore;
-import javatro.core.JavatroException;
+import javatro.core.*;
 import javatro.display.UI;
 import javatro.display.screens.RunsScreen;
 import javatro.manager.JavatroManager;
 import javatro.storage.Storage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static javatro.storage.Storage.createDeckFromString;
 
@@ -46,7 +46,16 @@ public class ChooseRunOption implements Option {
             else {
                 JavatroManager.beginGame(createDeckFromString(Storage.getInstance().getRunData().get(Storage.chosenRun).get(2)));
                 JavatroCore.getAnte().setBlind(Ante.Blind.SMALL_BLIND);
+
+                List<Card> storedPlayingCards = new ArrayList<>();
+
+                for(int i = 0;i<8;i++) {
+                    String card = Storage.getInstance().getRunData().get(Storage.chosenRun).get(i+3);
+                    storedPlayingCards.add(Storage.parseCardString(card));
+                }
+
                 JavatroManager.jc.beginGame();
+                JavatroCore.currentRound.getHoldingHand().setHand(storedPlayingCards);
                 JavatroCore.currentRound.addPropertyChangeListener(javatro.display.UI.getGameScreen());
                 JavatroCore.currentRound.updateRoundVariables();
                 JavatroManager.setScreen(UI.getGameScreen());

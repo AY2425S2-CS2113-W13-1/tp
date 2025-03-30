@@ -216,6 +216,16 @@ public class Round {
         assert playerHand != null : "Player hand cannot be null";
         return playerHand.getHand();
     }
+
+    /**
+     * Gets the cards currently in the player's hand (Holding Hand).
+     *
+     * @return A list of the player's current cards
+     */
+    public HoldingHand getHoldingHand() {
+        assert playerHand != null : "Player hand cannot be null";
+        return playerHand;
+    }
     /**
      * Checks if the game is lost based on game rules.
      *
