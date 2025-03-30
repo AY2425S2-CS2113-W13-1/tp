@@ -4,14 +4,8 @@ package javatro.core;
  * Represents the result of evaluating a poker hand with tracking for levels and play counts.
  *
  * @param handType The type of poker hand
- * @param playCount How many times this hand has been played (default 0)
  */
-public record PokerHand(HandType handType, int playCount) {
-
-    // Default constructor for when level and playCount aren't specified
-    public PokerHand(HandType handType) {
-        this(handType, 0);
-    }
+public record PokerHand(HandType handType) {
 
     /**
      * Returns the base chips for this poker hand adjusted by level.
@@ -46,23 +40,18 @@ public record PokerHand(HandType handType, int playCount) {
         return handType.getHandName();
     }
 
+    public int getPlayCount() {
+        return JavatroCore.getPlayCount(handType);
+    }
+
     /**
      * Creates a new PokerHand with an incremented played count.
      *
      * @return A new PokerHand instance with playCount + 1
      */
     public PokerHand incrementPlayed() {
-        return new PokerHand(handType, playCount + 1);
-    }
-
-    /**
-     * Creates a new PokerHand with a specific played count.
-     *
-     * @param count The new played count
-     * @return A new PokerHand instance with the specified playCount
-     */
-    public PokerHand withPlayedCount(int count) {
-        return new PokerHand(handType, count);
+        JavatroCore.incrementPlayCount(handType);
+        return this; // Return same instance since stats are managed by JavatroCore
     }
 
     @Override
@@ -73,7 +62,7 @@ public record PokerHand(HandType handType, int playCount) {
                 PlanetCard.getLevel(handType),
                 getChips(),
                 handType.getMultiplier(),
-                playCount);
+                getPlayCount());
     }
 
     /**

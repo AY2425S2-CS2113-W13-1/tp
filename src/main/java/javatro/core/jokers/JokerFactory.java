@@ -2,12 +2,8 @@ package javatro.core.jokers;
 
 import javatro.core.jokers.addchip.OddToddJoker;
 import javatro.core.jokers.addchip.ScaryFaceJoker;
-import javatro.core.jokers.addmult.CounterJoker;
-import javatro.core.jokers.addmult.GluttonousJoker;
-import javatro.core.jokers.addmult.GreedyJoker;
-import javatro.core.jokers.addmult.HalfJoker;
-import javatro.core.jokers.addmult.LustyJoker;
-import javatro.core.jokers.addmult.WrathfulJoker;
+import javatro.core.jokers.addmult.*;
+import javatro.core.jokers.addmult.AbstractJoker;
 
 import java.util.List;
 import java.util.Random;
@@ -19,7 +15,7 @@ public class JokerFactory {
             List.of(
                     OddToddJoker::new,
                     ScaryFaceJoker::new,
-                    CounterJoker::new,
+                    AbstractJoker::new,
                     GluttonousJoker::new,
                     GreedyJoker::new,
                     HalfJoker::new,

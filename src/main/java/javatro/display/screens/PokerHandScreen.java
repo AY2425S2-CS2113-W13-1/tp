@@ -10,6 +10,7 @@ import static javatro.display.UI.RED_B;
 import static javatro.display.UI.WHITE;
 import static javatro.display.UI.printBorderedContent;
 
+import javatro.core.JavatroCore;
 import javatro.core.JavatroException;
 import javatro.core.PlanetCard;
 import javatro.core.PokerHand;
@@ -73,7 +74,7 @@ public class PokerHandScreen extends Screen {
                                             hand.getMultiplier(),
                                             BLACK_B,
                                             ORANGE,
-                                            hand.playCount(),
+                                            JavatroCore.getPlayCount(hand.handType()),
                                             END);
                                 })
                         .collect(Collectors.toList());

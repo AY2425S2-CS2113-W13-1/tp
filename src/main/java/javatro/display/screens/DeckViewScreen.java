@@ -35,19 +35,17 @@ import javatro.manager.options.ReturnOption;
 import java.util.ArrayList;
 
 /**
- * DeckScreen prints the current deck as a two-dimensional table with totals. - The rows represent
- * card suits (Spades, Hearts, Clubs, Diamonds) with an extra column at the end showing the total
- * number of cards in that suit. - The columns represent card ranks in descending order: A, K, Q, J,
- * 10, 9, …, 2, with an extra row at the bottom showing the total count for each rank. The bottom
- * right cell displays the grand total.
+ * DeckViewScreen prints the current deck as a two-dimensional table with totals. - The rows
+ * represent card suits (Spades, Hearts, Clubs, Diamonds) with an extra column at the end showing
+ * the total number of cards in that suit. - The columns represent card ranks in descending order:
+ * A, K, Q, J, 10, 9, …, 2, with an extra row at the bottom showing the total count for each rank.
+ * The bottom right cell displays the grand total.
  */
-public class DeckScreen extends Screen {
+public class DeckViewScreen extends Screen {
 
     // Overall dimensions: total width = LEFT_WIDTH + RIGHT_WIDTH + 3 (for the vertical borders)
     private static final int LEFT_WIDTH = 17; // For deck name or suit names (including suit totals)
     private static final int RIGHT_WIDTH = 80; // For rank headers and the numbers matrix
-    private static Deck deck;
-    private static ArrayList<Card> remainingCardList;
     // Total width = 17 + 80 + 3 = 100
 
     /**
@@ -55,19 +53,20 @@ public class DeckScreen extends Screen {
      *
      * @throws JavatroException if the options title is null or empty
      */
-    public DeckScreen() throws JavatroException {
+    public DeckViewScreen() throws JavatroException {
         super("Your Current Deck");
         super.commandMap.add(new ReturnOption());
     }
 
     @Override
     public void displayScreen() {
+
+        Deck deck = Round.deck;
+        String deckType = String.valueOf(deck.getDeckName());
+        ArrayList<Card> remainingCardList = deck.getWholeDeck();
+
         // Step 1: Build the data matrix.
         // There are 4 suits and 13 ranks.
-
-        deck = Round.deck;
-        remainingCardList = deck.getWholeDeck();
-        String deckType = String.valueOf(deck.getDeckName());
         int[][] counts = new int[4][13];
         for (Card card : remainingCardList) {
             int suitIndex = getSuitIndex(card.suit());

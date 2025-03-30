@@ -1,19 +1,16 @@
 package javatro.display;
 
+import javatro.core.Card;
 import javatro.core.JavatroException;
-import javatro.display.screens.BlindScreen;
-import javatro.display.screens.DeckScreen;
-import javatro.display.screens.DiscardScreen;
-import javatro.display.screens.GameScreen;
-import javatro.display.screens.HelpScreen;
-import javatro.display.screens.PlayScreen;
-import javatro.display.screens.PokerHandScreen;
-import javatro.display.screens.Screen;
-import javatro.display.screens.SelectDeckScreen;
-import javatro.display.screens.StartScreen;
-import javatro.manager.JavatroManager;
+import javatro.display.screens.*;
+import javatro.display.screens.DeckViewScreen;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * The {@code display} class is responsible for managing and displaying different screens in the
@@ -36,11 +33,12 @@ public class UI {
     public static final String WARNING = "⚠️ ";
     public static final String WRITE = "✍️ ";
     public static final String ARROW = "╰┈➤ ";
+
     public static final String END = "\033[0m";
-    // region FORMATTING STRINGS
     public static final String BOLD = "\033[1m";
     public static final String ITALICS = "\033[3m";
     public static final String UNDERLINE = "\033[4m";
+
     public static final String WHITE = "\033[97m";
     public static final String RED = "\033[91m";
     public static final String GREEN = "\033[92m";
@@ -48,7 +46,7 @@ public class UI {
     public static final String BLUE = "\033[94m";
     //    public static final String PURPLE = "\033[95m";
     public static final String PURPLE = "\033[38;2;115;14;147m";
-    public static final String CYAN = "\033[36m";
+    public static final String CYAN = "\033[96m";
     public static final String ORANGE = "\033[38;2;255;165;0m";
     public static final String BLACK = "\033[30m";
     public static final String WHITE_B = "\033[107m";
@@ -57,6 +55,7 @@ public class UI {
     public static final String RED_B = "\033[41m";
     public static final String PURPLE_B = "\033[48;2;115;14;147m";
     public static final String ORANGE_B = "\033[48;2;255;165;0m";
+
     /** Custom border characters */
     public static final char TOP_LEFT = '╔';
 
@@ -70,6 +69,7 @@ public class UI {
     public static final char T_DOWN = '╦';
     public static final char T_LEFT = '╣';
     public static final char T_RIGHT = '╠';
+
     // Unicode spacing characters for experimentation
     public static final String NORMAL_SPACE = " "; // U+0020
     public static final String EN_SPACE = " "; // U+2002 (1.5× normal space)
@@ -79,19 +79,26 @@ public class UI {
     public static final String ZERO_WIDTH_SPACE = "​"; // U+200B (invisible)
     public static final String ZERO_WIDTH_JOINER = "‍"; // U+200D
     public static final String ZERO_WIDTH_NON_JOINER = "‌"; // U+200C
+
+    // endregion
+
     /** Parser instance for handling user input. */
     private static final Parser PARSER = new Parser();
+
     /** Predefined game-related screens. */
     private static final GameScreen GAME_SCREEN;
 
-    private static final DiscardScreen DISCARD_SCREEN;
-    private static final PlayScreen PLAY_SCREEN;
+    private static final DiscardCardScreen DISCARD_SCREEN;
+    private static final PlayCardScreen PLAY_SCREEN;
     private static final HelpScreen HELP_SCREEN;
     private static final StartScreen START_SCREEN;
-    private static final SelectDeckScreen DECK_SELECT_SCREEN;
-    private static final DeckScreen DECK_SCREEN;
+    private static final DeckSelectScreen DECK_SELECT_SCREEN;
+    private static final DeckViewScreen DECK_VIEW_SCREEN;
     private static final PokerHandScreen POKER_SCREEN;
-    private static final BlindScreen BLIND_SCREEN;
+    private static final BlindSelectScreen BLIND_SCREEN;
+    private static final WinRoundScreen WIN_ROUND_SCREEN;
+    private static final WinGameScreen WIN_GAME_SCREEN;
+    private static final LoseScreen LOSE_SCREEN;
 
     /** The current screen being displayed to the user. */
     private static Screen currentScreen;
@@ -101,14 +108,17 @@ public class UI {
     static {
         try {
             GAME_SCREEN = new GameScreen();
-            DISCARD_SCREEN = new DiscardScreen();
-            PLAY_SCREEN = new PlayScreen();
+            DISCARD_SCREEN = new DiscardCardScreen();
+            PLAY_SCREEN = new PlayCardScreen();
             HELP_SCREEN = new HelpScreen();
             START_SCREEN = new StartScreen();
-            DECK_SCREEN = new DeckScreen();
-            DECK_SELECT_SCREEN = new SelectDeckScreen();
+            DECK_VIEW_SCREEN = new DeckViewScreen();
+            DECK_SELECT_SCREEN = new DeckSelectScreen();
             POKER_SCREEN = new PokerHandScreen();
-            BLIND_SCREEN = new BlindScreen();
+            BLIND_SCREEN = new BlindSelectScreen();
+            WIN_ROUND_SCREEN = new WinRoundScreen();
+            WIN_GAME_SCREEN = new WinGameScreen();
+            LOSE_SCREEN = new LoseScreen();
         } catch (JavatroException e) {
             System.err.println("Failed to initialize screens: " + e.getMessage());
             e.printStackTrace();
@@ -116,9 +126,8 @@ public class UI {
         }
     }
 
-    // endregion
-
     // region PRINTING FUNCTIONS
+
     public static void printBlackB(String input) {
         System.out.print(UI.BLACK_B + input + UI.END);
     }
@@ -226,7 +235,7 @@ public class UI {
      * @param text the text to measure
      * @return the visible length of the text
      */
-    private static int getDisplayLength(String text) {
+    public static int getDisplayLength(String text) {
         // Remove ANSI escape codes
         String strippedText = text.replaceAll("\033\\[[;\\d]*m", "");
 
@@ -254,6 +263,70 @@ public class UI {
 
         return (int) Math.round(length);
     }
+
+    /**
+     * Generates a list of strings representing the ASCII art lines for all cards in the hand.
+     *
+     * @param holdingHand the list of cards to render
+     * @return List of strings where each string represents a line of card art
+     */
+    public static List<String> getCardArtLines(List<Card> holdingHand) {
+        List<String> cardArtLines = new ArrayList<>();
+        int cardCount = holdingHand.size();
+        int cardLength = 5; // Number of lines per card
+
+        // Render each card into its ASCII art representation
+        String[][] renderedCards = new String[cardCount][cardLength];
+        for (int i = 0; i < cardCount; i++) {
+            renderedCards[i] = CardRenderer.renderCard(holdingHand.get(i));
+        }
+
+        // Combine the card art line by line
+        for (int line = 0; line < cardLength; line++) {
+            StringBuilder lineBuilder = new StringBuilder();
+            for (int i = 0; i < cardCount; i++) {
+                lineBuilder.append(renderedCards[i][line]);
+                if (i < cardCount - 1) { // Add space only if there's another card after this one
+                    lineBuilder.append(BLACK_B + "  " + END);
+                }
+            }
+            cardArtLines.add(lineBuilder.toString());
+        }
+
+        return cardArtLines;
+    }
+
+    public static void printANSI(String fileName) {
+        try (InputStream inputStream =
+                WinRoundScreen.class.getResourceAsStream("/javatro/display/ansi/" + fileName)) {
+            if (inputStream == null) {
+                throw JavatroException.errorLoadingLogo(fileName);
+            }
+            try (Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8)) {
+                System.out.println(
+                        scanner.useDelimiter("\\A").next()); // Print file content directly
+            }
+        } catch (IOException | JavatroException e) {
+            System.err.println(JavatroException.errorLoadingLogo(fileName).getMessage());
+            System.out.println("JIMBO"); // Fallback print if file is not found
+        }
+    }
+
+    //    static {
+    //        try (InputStream inputStream =
+    //                     StartScreen.class.getResourceAsStream("/javatro/display/ansi/jimbo.txt"))
+    // {
+    //            if (inputStream == null) {
+    //                throw JavatroException.errorLoadingLogo("jimbo.txt");
+    //            }
+    //            try (Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8)) {
+    //                JIMBO = scanner.useDelimiter("\\A").next(); // Read the entire file
+    //            }
+    //        } catch (IOException | JavatroException e) {
+    //            JIMBO = "JIMBO"; // Fallback in case of error
+    //            System.err.println(JavatroException.errorLoadingLogo("jimbo.txt").getMessage());
+    //        }
+    //    }
 
     // endregion
 
@@ -287,9 +360,7 @@ public class UI {
                 ORANGE, UNDERLINE, screen.getClass().getSimpleName(), END);
         currentScreen = screen;
         currentScreen.displayScreen();
-        if (!JavatroManager.runningTests) {
-            PARSER.getOptionInput(); // This will handle retries internally
-        }
+        PARSER.getOptionInput(); // This will handle retries internally
     }
 
     /**
@@ -322,18 +393,18 @@ public class UI {
     /**
      * Gets the screen where users select cards to discard.
      *
-     * @return the {@link DiscardScreen} instance
+     * @return the {@link DiscardCardScreen} instance
      */
-    public static DiscardScreen getDiscardScreen() {
+    public static DiscardCardScreen getDiscardScreen() {
         return DISCARD_SCREEN;
     }
 
     /**
      * Gets the screen where users select cards to play.
      *
-     * @return the {@link PlayScreen} instance
+     * @return the {@link PlayCardScreen} instance
      */
-    public static PlayScreen getPlayScreen() {
+    public static PlayCardScreen getPlayScreen() {
         return PLAY_SCREEN;
     }
 
@@ -376,10 +447,10 @@ public class UI {
     /**
      * Gets the Deck screen.
      *
-     * @return the {@link DeckScreen} instance
+     * @return the {@link DeckViewScreen} instance
      */
-    public static DeckScreen getDeckScreen() {
-        return DECK_SCREEN;
+    public static DeckViewScreen getDeckViewScreen() {
+        return DECK_VIEW_SCREEN;
     }
 
     /**
@@ -387,20 +458,45 @@ public class UI {
      *
      * @return the {@link HelpScreen} instance
      */
-    public static SelectDeckScreen getDeckSelectScreen() {
+    public static DeckSelectScreen getDeckSelectScreen() {
         return DECK_SELECT_SCREEN;
+    }
+
+    /**
+     * Gets the help screen.
+     *
+     * @return the {@link HelpScreen} instance
+     */
+    public static WinRoundScreen getWinRoundScreen() {
+        return WIN_ROUND_SCREEN;
+    }
+
+    /**
+     * Gets the help screen.
+     *
+     * @return the {@link HelpScreen} instance
+     */
+    public static WinGameScreen getWinGameScreen() {
+        return WIN_GAME_SCREEN;
+    }
+
+    /**
+     * Gets the help screen.
+     *
+     * @return the {@link HelpScreen} instance
+     */
+    public static LoseScreen getLoseScreen() {
+        return LOSE_SCREEN;
     }
 
     // @@author swethaiscool
     /**
-     * Returns the singleton instance of the {@code BlindScreen}.
+     * Returns the singleton instance of the {@code BlindSelectScreen}.
      *
-     * @return the {@code BlindScreen} instance.
+     * @return the {@code BlindSelectScreen} instance.
      */
-    public static BlindScreen getBlindScreen() {
+    public static BlindSelectScreen getBlindScreen() {
         return BLIND_SCREEN;
     }
     // @@author swethaiscool
-
-    // endregion
 }

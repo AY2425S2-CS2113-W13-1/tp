@@ -44,11 +44,12 @@ public class Round {
     /** Manages property change listeners for game state updates. */
     private final PropertyChangeSupport support = new PropertyChangeSupport(this); // Observable
 
+    public PokerHand playedHand;
+    public List<Card> selectedCards;
+
     /**
      * Constructs a new round with the specified ante and blind settings.
      *
-     * @param anteBase The selected ante base level.
-     * @param blindType The type of blind which multiplies the ante base.
      * @param remainingPlays The number of plays available.
      * @param deck The deck of cards used in the round.
      * @param roundName The name for the round.
@@ -67,7 +68,6 @@ public class Round {
 
         this.remainingDiscards = MAX_DISCARDS_PER_ROUND;
         this.remainingPlays = remainingPlays;
-        Round.deck = deck;
         Round.deck = deck;
         this.playerHand = new HoldingHand();
         this.playerJokers = heldJokers;
@@ -126,14 +126,6 @@ public class Round {
         support.firePropertyChange("roundDescription", null, roundDescription);
         support.firePropertyChange("holdingHand", null, getPlayerHand());
         support.firePropertyChange("currentScore", null, currentScore);
-
-        if (isWon()) {
-            support.firePropertyChange("roundComplete", null, 1);
-        } else if (isRoundOver()) {
-            support.firePropertyChange("roundComplete", null, -1);
-        } else {
-            support.firePropertyChange("roundComplete", null, 0);
-        }
     }
 
     /**
@@ -159,10 +151,10 @@ public class Round {
         long oldScore = currentScore;
         int oldRemainingPlays = remainingPlays;
 
-        List<Card> playedCards = playerHand.play(cardIndices);
-        PokerHand result = HandResult.evaluateHand(playedCards);
+        selectedCards = playerHand.play(cardIndices);
+        playedHand = HandResult.evaluateHand(selectedCards);
         Score handScore = new Score();
-        currentScore += handScore.getScore(result, playedCards, playerJokers);
+        currentScore += handScore.getScore(playedHand, selectedCards, playerJokers);
 
         // Draw new cards to replace played ones
         playerHand.draw(cardIndices.size(), deck);
@@ -207,7 +199,7 @@ public class Round {
         int handSizeBefore = playerHand.getHand().size();
         int oldRemainingDiscards = remainingDiscards;
 
-        playerHand.discard(cardIndices);
+        selectedCards = playerHand.discard(cardIndices);
         remainingDiscards--;
 
         playerHand.draw(indicesToDiscard.size(), deck);
@@ -244,13 +236,13 @@ public class Round {
     }
 
     /**
-     * Checks if the round is over based on game rules.
+     * Checks if the game is lost based on game rules.
      *
-     * @return true if the round is over, false otherwise
+     * @return true if the game is lost, false otherwise
      */
-    public boolean isRoundOver() {
-        // Round ends if no plays are remaining
-        return remainingPlays <= 0 | isWon();
+    public boolean isLost() {
+        // Game ends if no plays are remaining
+        return remainingPlays <= 0 && !isWon();
     }
 
     /**

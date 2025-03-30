@@ -15,55 +15,74 @@ public class PlanetCard {
             LEVELS.put(handType, 1);
         }
 
-        // Predefine all planet cards (matches your data)
+        // Predefine all planet cards with unique paths
         CARDS.put(
                 PokerHand.HandType.HIGH_CARD,
-                new PlanetCard("Pluto", 10, 1, PokerHand.HandType.HIGH_CARD));
+                new PlanetCard("Pluto", 10, 1, PokerHand.HandType.HIGH_CARD, "planet_pluto.txt"));
         CARDS.put(
-                PokerHand.HandType.PAIR, new PlanetCard("Mercury", 15, 1, PokerHand.HandType.PAIR));
+                PokerHand.HandType.PAIR,
+                new PlanetCard("Mercury", 15, 1, PokerHand.HandType.PAIR, "planet_mercury.txt"));
         CARDS.put(
                 PokerHand.HandType.TWO_PAIR,
-                new PlanetCard("Uranus", 20, 1, PokerHand.HandType.TWO_PAIR));
+                new PlanetCard("Uranus", 20, 1, PokerHand.HandType.TWO_PAIR, "planet_uranus.txt"));
         CARDS.put(
                 PokerHand.HandType.THREE_OF_A_KIND,
-                new PlanetCard("Venus", 20, 2, PokerHand.HandType.THREE_OF_A_KIND));
+                new PlanetCard(
+                        "Venus", 20, 2, PokerHand.HandType.THREE_OF_A_KIND, "planet_venus.txt"));
         CARDS.put(
                 PokerHand.HandType.STRAIGHT,
-                new PlanetCard("Saturn", 30, 3, PokerHand.HandType.STRAIGHT));
+                new PlanetCard("Saturn", 30, 3, PokerHand.HandType.STRAIGHT, "planet_saturn.txt"));
         CARDS.put(
                 PokerHand.HandType.FLUSH,
-                new PlanetCard("Jupiter", 15, 2, PokerHand.HandType.FLUSH));
+                new PlanetCard("Jupiter", 15, 2, PokerHand.HandType.FLUSH, "planet_jupiter.txt"));
         CARDS.put(
                 PokerHand.HandType.FULL_HOUSE,
-                new PlanetCard("Earth", 25, 2, PokerHand.HandType.FULL_HOUSE));
+                new PlanetCard("Earth", 25, 2, PokerHand.HandType.FULL_HOUSE, "planet_earth.txt"));
         CARDS.put(
                 PokerHand.HandType.FOUR_OF_A_KIND,
-                new PlanetCard("Mars", 30, 3, PokerHand.HandType.FOUR_OF_A_KIND));
+                new PlanetCard(
+                        "Mars", 30, 3, PokerHand.HandType.FOUR_OF_A_KIND, "planet_mars.txt"));
         CARDS.put(
                 PokerHand.HandType.STRAIGHT_FLUSH,
-                new PlanetCard("Neptune", 40, 4, PokerHand.HandType.STRAIGHT_FLUSH));
+                new PlanetCard(
+                        "Neptune", 40, 4, PokerHand.HandType.STRAIGHT_FLUSH, "planet_neptune.txt"));
         CARDS.put(
                 PokerHand.HandType.FIVE_OF_A_KIND,
-                new PlanetCard("Planet X", 35, 3, PokerHand.HandType.FIVE_OF_A_KIND));
+                new PlanetCard(
+                        "Planet X",
+                        35,
+                        3,
+                        PokerHand.HandType.FIVE_OF_A_KIND,
+                        "planet_planet_x.txt"));
         CARDS.put(
                 PokerHand.HandType.FLUSH_HOUSE,
-                new PlanetCard("Ceres", 40, 4, PokerHand.HandType.FLUSH_HOUSE));
+                new PlanetCard("Ceres", 40, 4, PokerHand.HandType.FLUSH_HOUSE, "planet_ceres.txt"));
         CARDS.put(
                 PokerHand.HandType.FLUSH_FIVE,
-                new PlanetCard("Eris", 50, 3, PokerHand.HandType.FLUSH_FIVE));
+                new PlanetCard("Eris", 50, 3, PokerHand.HandType.FLUSH_FIVE, "planet_eris.txt"));
     }
 
     private final String name;
     private final int chipIncrement;
     private final int multiIncrement;
     private final PokerHand.HandType handType;
+    private final String path;
 
     private PlanetCard(
-            String name, int chipIncrement, int multiIncrement, PokerHand.HandType handType) {
+            String name,
+            int chipIncrement,
+            int multiIncrement,
+            PokerHand.HandType handType,
+            String path) {
         this.name = name;
         this.chipIncrement = chipIncrement;
         this.multiIncrement = multiIncrement;
         this.handType = handType;
+        this.path = path;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     // Get predefined PlanetCard for a hand type

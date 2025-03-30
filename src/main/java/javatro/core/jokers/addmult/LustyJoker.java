@@ -1,5 +1,10 @@
 package javatro.core.jokers.addmult;
 
+import static javatro.display.UI.BLACK_B;
+import static javatro.display.UI.BOLD;
+import static javatro.display.UI.END;
+import static javatro.display.UI.RED;
+
 import javatro.core.Card;
 import javatro.core.Score;
 import javatro.core.jokers.Joker;
@@ -10,7 +15,11 @@ public class LustyJoker extends Joker {
     public LustyJoker() {
         super();
         name = "Lusty";
-        this.description = "Played cards with Heart suit give +3 Mult when scored ";
+        description =
+                String.format(
+                        "Played cards with %s%sHeart%s%s suit give %s%s+3 Mult%s%s when scored",
+                        RED, BOLD, END, BLACK_B, RED, BOLD, END, BLACK_B);
+        path = "joker_lusty.txt";
         this.scoreType = ScoreType.ONCARDPLAY;
     }
 
@@ -23,6 +32,6 @@ public class LustyJoker extends Joker {
 
     @Override
     public String toString() {
-        return "+3 Mult Hearts";
+        return "+3 Mult for Hearts";
     }
 }

@@ -1,11 +1,12 @@
 package javatro.manager.options;
 
-import javatro.core.JavatroCore;
-import javatro.core.JavatroException;
+import static javatro.display.UI.*;
+
+import javatro.core.*;
 import javatro.display.Parser;
 import javatro.display.UI;
-import javatro.display.screens.DiscardScreen;
-import javatro.display.screens.PlayScreen;
+import javatro.display.screens.DiscardCardScreen;
+import javatro.display.screens.PlayCardScreen;
 import javatro.manager.JavatroManager;
 
 import java.util.List;
@@ -62,15 +63,46 @@ public class CardSelectOption implements Option {
                 Parser.getCardInput(
                         JavatroCore.currentRound.getPlayerHand().size(), selectionLimit);
 
-        if (UI.getCurrentScreen() instanceof PlayScreen) {
-            // Select and play the chosen cards
+        // Select and play the chosen cards
+        if (UI.getCurrentScreen() instanceof PlayCardScreen) {
             JavatroCore.currentRound.playCards(userInput);
-        } else if (UI.getCurrentScreen() instanceof DiscardScreen) {
+
+            // Print Hand Name and Cards played
+            PokerHand playedHand = JavatroCore.currentRound.playedHand;
+            String handName =
+                    String.format(
+                            "Achieved: %s%s<%s>%s%s Hand",
+                            BOLD, YELLOW, playedHand.getHandName(), END, BLACK_B);
+            List<String> cardArtLines = getCardArtLines(JavatroCore.currentRound.selectedCards);
+            printBorderedContent(handName, cardArtLines);
+
+            // Increment hand play count
+            JavatroCore.currentRound.playedHand.incrementPlayed();
+
             // Discard the selected cards
+        } else if (UI.getCurrentScreen() instanceof DiscardCardScreen) {
             JavatroCore.currentRound.discardCards(userInput);
+
+            // Print Cards discarded
+            String handName = BOLD + "Cards Discarded" + END + BLACK_B;
+            List<String> cardArtLines = getCardArtLines(JavatroCore.currentRound.selectedCards);
+            printBorderedContent(handName, cardArtLines);
         }
 
-        // Return to the game screen after selection
-        JavatroManager.setScreen(UI.getGameScreen());
+        if (JavatroCore.currentRound.isWon()
+                && JavatroCore.getAnte().getAnteCount() == 8
+                && JavatroCore.getAnte().getBlind() == Ante.Blind.BOSS_BLIND) {
+            // Game Winning Screen
+            JavatroManager.setScreen(UI.getWinGameScreen());
+        } else if (JavatroCore.currentRound.isLost()) {
+            // Game Losing Screen
+            JavatroManager.setScreen(UI.getLoseScreen());
+        } else if (JavatroCore.currentRound.isWon()) {
+            // Round Winning Screen
+            JavatroManager.setScreen(UI.getWinRoundScreen());
+        } else {
+            // Return to the game screen after selection
+            JavatroManager.setScreen(UI.getGameScreen());
+        }
     }
 }

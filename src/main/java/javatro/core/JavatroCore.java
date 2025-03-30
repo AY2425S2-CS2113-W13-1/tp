@@ -7,6 +7,9 @@ package javatro.core;
 import javatro.core.Deck.DeckType;
 import javatro.core.jokers.HeldJokers;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 /** The core game logic class that manages the game state and rounds. */
 public class JavatroCore {
 
@@ -27,6 +30,10 @@ public class JavatroCore {
 
     /** The deck used throughout the game. (A copy of this deck is made for every new Round) */
     public static HeldJokers heldJokers;
+
+    /** Stores the play counts for each poker hand type */
+    private static final Map<PokerHand.HandType, Integer> pokerHandPlayCounts =
+            new EnumMap<>(PokerHand.HandType.class);
 
     // @author swethaiscool
     /**
@@ -106,5 +113,22 @@ public class JavatroCore {
      */
     public void beginGame() throws JavatroException {
         startNewRound(classicRound());
+    }
+
+    /** Initializes poker hand play counts at game start */
+    public static void initializePokerHandStats() {
+        for (PokerHand.HandType handType : PokerHand.HandType.values()) {
+            pokerHandPlayCounts.put(handType, 0);
+        }
+    }
+
+    /** Gets the play count for a specific hand type */
+    public static int getPlayCount(PokerHand.HandType handType) {
+        return pokerHandPlayCounts.getOrDefault(handType, 0);
+    }
+
+    /** Increments the play count for a specific hand type */
+    public static void incrementPlayCount(PokerHand.HandType handType) {
+        pokerHandPlayCounts.put(handType, getPlayCount(handType) + 1);
     }
 }

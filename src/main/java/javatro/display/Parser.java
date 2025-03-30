@@ -27,12 +27,11 @@ import java.util.stream.Collectors;
 public class Parser {
 
     private static final String MENU_PROMPT =
-            BLUE + BOLD + WRITE + "Enter Option Index (1-%d)\n" + ARROW + END;
+            BLUE + BOLD + "Enter Option Index (1-%d)\n" + ARROW + END;
 
     private static final String CARD_PROMPT =
             BLUE
                     + UI.BOLD
-                    + UI.WRITE
                     + "Enter Card Indices between 1-%d. Up to %d cards only. (e.g. 1,2,3,4,5)\n"
                     + UI.ARROW
                     + UI.END;

@@ -1,6 +1,5 @@
 package javatro.display.screens;
 
-import static javatro.display.UI.BLACK_B;
 import static javatro.display.UI.BOLD;
 import static javatro.display.UI.BORDER_WIDTH;
 import static javatro.display.UI.BOTTOM_LEFT;
@@ -14,6 +13,7 @@ import static javatro.display.UI.T_LEFT;
 import static javatro.display.UI.T_RIGHT;
 import static javatro.display.UI.YELLOW;
 import static javatro.display.UI.centerText;
+import static javatro.display.UI.getCardArtLines;
 import static javatro.display.UI.printBlackB;
 import static javatro.display.UI.printBorderedContent;
 
@@ -21,12 +21,7 @@ import javatro.core.Card;
 import javatro.core.HoldingHand;
 import javatro.core.JavatroCore;
 import javatro.core.JavatroException;
-import javatro.display.CardRenderer;
-import javatro.manager.options.CardSelectOption;
-import javatro.manager.options.PokerHandOption;
-import javatro.manager.options.ResumeGameOption;
-import javatro.manager.options.SortByRankOption;
-import javatro.manager.options.SortBySuitOption;
+import javatro.manager.options.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +29,8 @@ import java.util.List;
 /**
  * The {@code CardSelectScreen} class represents an abstract screen where users select cards from
  * their hand. It provides methods for updating and displaying the player's current hand. This class
- * is intended to be extended by specific screens like {@code DiscardScreen} and {@code PlayScreen}.
+ * is intended to be extended by specific screens like {@code DiscardCardScreen} and {@code
+ * PlayCardScreen}.
  *
  * <p>The class includes functionality to:
  *
@@ -69,6 +65,7 @@ public abstract class CardSelectScreen extends Screen {
         super.commandMap.add(new SortBySuitOption(this));
         super.commandMap.add(new SortByRankOption(this));
         super.commandMap.add(new PokerHandOption());
+        super.commandMap.add(new DeckViewOption());
         super.commandMap.add(new ResumeGameOption());
     }
 
@@ -122,38 +119,6 @@ public abstract class CardSelectScreen extends Screen {
         }
         title.append(END);
         return title.toString();
-    }
-
-    /**
-     * Generates a list of strings representing the ASCII art lines for all cards in the hand.
-     *
-     * @param holdingHand the list of cards to render
-     * @return List of strings where each string represents a line of card art
-     */
-    protected List<String> getCardArtLines(List<Card> holdingHand) {
-        List<String> cardArtLines = new ArrayList<>();
-        int cardCount = holdingHand.size();
-        int cardLength = 5; // Number of lines per card
-
-        // Render each card into its ASCII art representation
-        String[][] renderedCards = new String[cardCount][cardLength];
-        for (int i = 0; i < cardCount; i++) {
-            renderedCards[i] = CardRenderer.renderCard(holdingHand.get(i));
-        }
-
-        // Combine the card art line by line
-        for (int line = 0; line < cardLength; line++) {
-            StringBuilder lineBuilder = new StringBuilder();
-            for (int i = 0; i < cardCount; i++) {
-                lineBuilder.append(renderedCards[i][line]);
-                if (i < cardCount - 1) { // Add space only if there's another card after this one
-                    lineBuilder.append(BLACK_B + "  " + END);
-                }
-            }
-            cardArtLines.add(lineBuilder.toString());
-        }
-
-        return cardArtLines;
     }
 
     /**

@@ -8,8 +8,9 @@ import javatro.core.Score;
  * Joker Object.
  */
 public abstract class Joker {
-    protected static String description;
     protected static String name;
+    protected static String description;
+    protected static String path;
     public ScoreType scoreType;
 
     /** Enum representing the type of Joker Card. */
@@ -29,10 +30,14 @@ public abstract class Joker {
     public abstract void interact(Score scoreClass, Card playedCard);
 
     public String getName() {
-        return name + " Joker";
+        return name;
     }
 
     public String getDescription() {
         return description;
+    }
+
+    public String getPath() {
+        return path;
     }
 }

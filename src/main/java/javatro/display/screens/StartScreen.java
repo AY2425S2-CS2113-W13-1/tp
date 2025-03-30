@@ -1,14 +1,11 @@
 package javatro.display.screens;
 
+import static javatro.display.UI.printANSI;
+
 import javatro.core.JavatroException;
 import javatro.manager.options.ExitGameOption;
 import javatro.manager.options.HelpMenuOption;
 import javatro.manager.options.StartGameOption;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
 
 /**
  * The {@code StartScreen} class represents the initial menu screen of the application. It provides
@@ -18,52 +15,6 @@ import java.util.Scanner;
  * is loaded from an external file during class initialization.
  */
 public class StartScreen extends Screen {
-
-    /**
-     * Variable to hold the javatro logo content. This is used to display a visually appealing
-     * welcome message. The logo is loaded from an external file during class initialization.
-     */
-    protected static String JAVATRO_LOGO;
-
-    // Static block to initialize the javatro logo from a file
-    //    static {
-    //        try (InputStream inputStream =
-    //                StartScreen.class.getResourceAsStream("/javatro/display/javatro_logo.txt")) {
-    //            if (inputStream == null) {
-    //                throw JavatroException.errorLoadingLogo("javatro_logo.txt");
-    //            }
-    //            try (Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8)) {
-    //                JAVATRO_LOGO = scanner.useDelimiter("\\A").next(); // Read the entire file
-    //            }
-    //        } catch (IOException | JavatroException e) {
-    //            JAVATRO_LOGO = "javatro Logo"; // Fallback in case of error
-    //
-    // System.err.println(JavatroException.errorLoadingLogo("javatro_logo.txt").getMessage());
-    //        }
-    //    }
-
-    public static void initializeLogo(String filePath) throws JavatroException {
-        try (InputStream inputStream = StartScreen.class.getResourceAsStream(filePath)) {
-            if (inputStream == null) {
-                throw JavatroException.errorLoadingLogo(filePath);
-            }
-            try (Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8)) {
-                JAVATRO_LOGO = scanner.useDelimiter("\\A").next(); // Read the entire file
-            }
-        } catch (IOException | JavatroException e) {
-            JAVATRO_LOGO = "javatro Logo"; // Fallback in case of error
-            System.err.println(JavatroException.errorLoadingLogo("javatro_logo.txt").getMessage());
-        }
-    }
-
-    // Allow the logo to be reset for testing purposes
-    public static void resetLogo() {
-        JAVATRO_LOGO = null;
-    }
-
-    public static String getLogo() {
-        return JAVATRO_LOGO;
-    }
 
     /**
      * Constructs a {@code StartScreen} and initializes available commands.
@@ -81,11 +32,6 @@ public class StartScreen extends Screen {
     /** Displays the start screen, including the game logo and available options. */
     @Override
     public void displayScreen() {
-        try {
-            initializeLogo("/javatro/display/javatro_logo.txt");
-        } catch (JavatroException e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println(JAVATRO_LOGO); // display the javatro logo
+        printANSI("javatro_logo.txt");
     }
 }

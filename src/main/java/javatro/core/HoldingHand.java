@@ -105,7 +105,8 @@ public class HoldingHand {
      *
      * @param cardsToDiscard List containing the cards at specified positions to be discarded
      */
-    public void discard(List<Integer> cardsToDiscard) throws JavatroException {
+    public List<Card> discard(List<Integer> cardsToDiscard) throws JavatroException {
+        List<Card> discardList = new ArrayList<>();
 
         // Validate that cardsToDiscard and the played card positions are valid inputs
         if (cardsToDiscard.size() > 5) {
@@ -123,13 +124,20 @@ public class HoldingHand {
             }
         }
 
-        // Remove the cardsToPlay from the Hand in descending order of indices
+        // Store the cards to be discarded
         Set<Integer> indicesToDiscard = new HashSet<>(cardsToDiscard);
+        for (int index : indicesToDiscard) {
+            discardList.add(Hand.get(index)); // Add card to discard list before removing
+        }
+
+        // Remove the cardsToPlay from the Hand in descending order of indices
         List<Integer> sortedToRemove = new ArrayList<>(indicesToDiscard);
         sortedToRemove.sort(Comparator.reverseOrder());
         for (int index : sortedToRemove) {
             Hand.remove(index);
         }
+
+        return discardList;
     }
 
     /**

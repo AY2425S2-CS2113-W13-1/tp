@@ -31,9 +31,12 @@ public class StartGameOption implements Option {
     @Override
     public void execute() throws JavatroException {
         // Return to game if there is an existing game.
+        if (JavatroCore.currentRound == null || JavatroCore.currentRound.isLost()) {
+            JavatroCore.currentRound = null;
+            JavatroManager.setScreen(UI.getDeckSelectScreen());
+        }
         if (JavatroCore.currentRound != null) {
             JavatroManager.setScreen(UI.getGameScreen());
         }
-        JavatroManager.setScreen(UI.getDeckSelectScreen());
     }
 }

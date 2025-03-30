@@ -1,7 +1,8 @@
 package javatro.display.screens;
 
+import static javatro.display.UI.*;
+
 import javatro.core.JavatroException;
-import javatro.display.UI;
 import javatro.manager.options.Option;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public abstract class Screen {
         if (optionsTitle == null || optionsTitle.trim().isEmpty()) {
             throw JavatroException.invalidOptionsTitle();
         }
-        this.optionsTitle = String.format("%s::: %s :::%s", UI.BOLD, optionsTitle.trim(), UI.END);
+        this.optionsTitle = String.format("%s::: %s :::%s", BOLD, optionsTitle.trim(), END);
     }
 
     /**
@@ -47,22 +48,13 @@ public abstract class Screen {
         List<String> optionLines = new ArrayList<>();
 
         for (int i = 0; i < commandMap.size(); i++) {
-            String desc = UI.BLACK_B + commandMap.get(i).getDescription() + UI.END;
-            String option =
-                    UI.BLACK_B
-                            + UI.BOLD
-                            + "["
-                            + (i + 1)
-                            + "] "
-                            + UI.END
-                            + UI.ITALICS
-                            + desc
-                            + UI.END;
+            String desc = BLACK_B + commandMap.get(i).getDescription() + END;
+            String option = BLACK_B + BOLD + "[" + (i + 1) + "] " + END + ITALICS + desc + END;
 
             optionLines.add(option);
         }
 
-        UI.printBorderedContent(optionsTitle, optionLines);
+        printBorderedContent(optionsTitle, optionLines);
     }
 
     /**
