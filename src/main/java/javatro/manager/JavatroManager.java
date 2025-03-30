@@ -60,7 +60,11 @@ public class JavatroManager implements PropertyChangeListener {
      * @throws JavatroException If an error occurs during game initialization.
      */
     public static void beginGame(Deck.DeckType deckType) throws JavatroException {
-        jc.setupNewGame(deckType,Integer.parseInt(Storage.getInstance().getRunData().get(Storage.chosenRun).get(0)),4,Integer.parseInt(Storage.getInstance().getRunData().get(Storage.chosenRun).get(1)));
+        jc.setupNewGame(
+                deckType,
+                Integer.parseInt(Storage.getInstance().getRunData().get(Storage.chosenRun).get(0)),
+                4,
+                Integer.parseInt(Storage.getInstance().getRunData().get(Storage.chosenRun).get(1)));
     }
 
     /**

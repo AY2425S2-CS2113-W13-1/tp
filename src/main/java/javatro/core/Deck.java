@@ -157,7 +157,7 @@ public class Deck {
          * @return The symbol of the rank.
          */
         public String getName() {
-            //String name2 = name;
+            // String name2 = name;
             return name;
         }
     }
