@@ -28,6 +28,7 @@ public class JavatroManager implements PropertyChangeListener {
     public static JavatroCore jc;
     /** Stores the last recorded user input. */
     private static int userInput;
+
     private Storage storage = Storage.getInstance();
 
     public static Ante ante;
