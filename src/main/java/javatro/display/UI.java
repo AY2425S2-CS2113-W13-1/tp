@@ -11,6 +11,7 @@ import javatro.display.screens.PokerHandScreen;
 import javatro.display.screens.Screen;
 import javatro.display.screens.SelectDeckScreen;
 import javatro.display.screens.StartScreen;
+import javatro.display.screens.RunsScreen;
 
 import java.util.List;
 
