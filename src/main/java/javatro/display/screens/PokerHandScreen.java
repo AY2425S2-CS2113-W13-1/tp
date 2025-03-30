@@ -1,6 +1,14 @@
 package javatro.display.screens;
 
-import static javatro.display.UI.*;
+import static javatro.display.UI.BLACK_B;
+import static javatro.display.UI.BLUE_B;
+import static javatro.display.UI.BOLD;
+import static javatro.display.UI.END;
+import static javatro.display.UI.GREEN;
+import static javatro.display.UI.ORANGE;
+import static javatro.display.UI.RED_B;
+import static javatro.display.UI.WHITE;
+import static javatro.display.UI.printBorderedContent;
 
 import javatro.core.JavatroException;
 import javatro.core.PlanetCard;

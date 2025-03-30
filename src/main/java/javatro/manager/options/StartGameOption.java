@@ -4,6 +4,7 @@
  */
 package javatro.manager.options;
 
+import javatro.core.JavatroCore;
 import javatro.core.JavatroException;
 import javatro.display.UI;
 import javatro.manager.JavatroManager;
@@ -22,16 +23,17 @@ public class StartGameOption implements Option {
     }
 
     /**
-     * Executes the command to begin the game, restore available commands, and update the screen to
-     * display the game interface.
+     * Executes the command to begin the game, restore available commands, and update the main
+     * screen to display the game interface.
      *
      * @throws JavatroException If an error occurs while starting the game.
      */
     @Override
     public void execute() throws JavatroException {
-        JavatroManager.beginGame();
-        javatro.display.UI.getGameScreen().restoreGameCommands();
-        // Update the main screen to show the game screen
-        JavatroManager.setScreen(UI.getGameScreen());
+        // Return to game if there is an existing game.
+        if (JavatroCore.currentRound != null) {
+            JavatroManager.setScreen(UI.getGameScreen());
+        }
+        JavatroManager.setScreen(UI.getDeckSelectScreen());
     }
 }

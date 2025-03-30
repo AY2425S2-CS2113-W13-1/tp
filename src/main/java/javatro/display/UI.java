@@ -1,7 +1,16 @@
 package javatro.display;
 
 import javatro.core.JavatroException;
-import javatro.display.screens.*;
+import javatro.display.screens.BlindScreen;
+import javatro.display.screens.DeckScreen;
+import javatro.display.screens.DiscardScreen;
+import javatro.display.screens.GameScreen;
+import javatro.display.screens.HelpScreen;
+import javatro.display.screens.PlayScreen;
+import javatro.display.screens.PokerHandScreen;
+import javatro.display.screens.Screen;
+import javatro.display.screens.SelectDeckScreen;
+import javatro.display.screens.StartScreen;
 import javatro.manager.JavatroManager;
 
 import java.util.List;
@@ -14,47 +23,12 @@ import java.util.List;
  */
 public class UI {
 
-    /** The current screen being displayed to the user. */
-    private static Screen currentScreen;
-
-    private static Screen previousScreen;
-
-    /** Predefined game-related screens. */
-    private static final GameScreen GAME_SCREEN;
-
-    private static final DiscardScreen DISCARD_SCREEN;
-    private static final PlayScreen PLAY_SCREEN;
-    private static final HelpScreen HELP_SCREEN;
-    private static final StartScreen START_SCREEN;
-    private static final PokerHandScreen POKER_SCREEN;
-    private static final DeckScreen DECK_SCREEN;
-
-    /** Parser instance for handling user input. */
-    private static final Parser PARSER = new Parser();
-
     /** Fixed width for the bordered message display. */
     public static final int BORDER_WIDTH = 100;
-
-    static {
-        try {
-            GAME_SCREEN = new GameScreen();
-            DISCARD_SCREEN = new DiscardScreen();
-            PLAY_SCREEN = new PlayScreen();
-            HELP_SCREEN = new HelpScreen();
-            START_SCREEN = new StartScreen();
-            POKER_SCREEN = new PokerHandScreen();
-            DECK_SCREEN = new DeckScreen();
-        } catch (JavatroException e) {
-            System.err.println("Failed to initialize screens: " + e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException("Failed to initialize screens", e);
-        }
-    }
-
-    // region FORMATTING STRINGS
     /** display-related constants for display formatting. */
     public static final String CARD = "\uD83C\uDCCF";
 
+    // region FORMATTING STRINGS
     public static final String HEARTS = "♥️";
     public static final String SPADES = "♠️";
     public static final String DIAMONDS = "♦️";
@@ -62,13 +36,11 @@ public class UI {
     public static final String WARNING = "⚠️ ";
     public static final String WRITE = "✍️ ";
     public static final String ARROW = "╰┈➤ ";
-
     public static final String END = "\033[0m";
-
+    // region FORMATTING STRINGS
     public static final String BOLD = "\033[1m";
     public static final String ITALICS = "\033[3m";
     public static final String UNDERLINE = "\033[4m";
-
     public static final String WHITE = "\033[97m";
     public static final String RED = "\033[91m";
     public static final String GREEN = "\033[92m";
@@ -85,7 +57,6 @@ public class UI {
     public static final String RED_B = "\033[41m";
     public static final String PURPLE_B = "\033[48;2;115;14;147m";
     public static final String ORANGE_B = "\033[48;2;255;165;0m";
-
     /** Custom border characters */
     public static final char TOP_LEFT = '╔';
 
@@ -99,7 +70,6 @@ public class UI {
     public static final char T_DOWN = '╦';
     public static final char T_LEFT = '╣';
     public static final char T_RIGHT = '╠';
-
     // Unicode spacing characters for experimentation
     public static final String NORMAL_SPACE = " "; // U+0020
     public static final String EN_SPACE = " "; // U+2002 (1.5× normal space)
@@ -109,6 +79,42 @@ public class UI {
     public static final String ZERO_WIDTH_SPACE = "​"; // U+200B (invisible)
     public static final String ZERO_WIDTH_JOINER = "‍"; // U+200D
     public static final String ZERO_WIDTH_NON_JOINER = "‌"; // U+200C
+    /** Parser instance for handling user input. */
+    private static final Parser PARSER = new Parser();
+    /** Predefined game-related screens. */
+    private static final GameScreen GAME_SCREEN;
+
+    private static final DiscardScreen DISCARD_SCREEN;
+    private static final PlayScreen PLAY_SCREEN;
+    private static final HelpScreen HELP_SCREEN;
+    private static final StartScreen START_SCREEN;
+    private static final SelectDeckScreen DECK_SELECT_SCREEN;
+    private static final DeckScreen DECK_SCREEN;
+    private static final PokerHandScreen POKER_SCREEN;
+    private static final BlindScreen BLIND_SCREEN;
+
+    /** The current screen being displayed to the user. */
+    private static Screen currentScreen;
+    /** The screen displayed before current screen. */
+    private static Screen previousScreen;
+
+    static {
+        try {
+            GAME_SCREEN = new GameScreen();
+            DISCARD_SCREEN = new DiscardScreen();
+            PLAY_SCREEN = new PlayScreen();
+            HELP_SCREEN = new HelpScreen();
+            START_SCREEN = new StartScreen();
+            DECK_SCREEN = new DeckScreen();
+            DECK_SELECT_SCREEN = new SelectDeckScreen();
+            POKER_SCREEN = new PokerHandScreen();
+            BLIND_SCREEN = new BlindScreen();
+        } catch (JavatroException e) {
+            System.err.println("Failed to initialize screens: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to initialize screens", e);
+        }
+    }
 
     // endregion
 
@@ -252,6 +258,15 @@ public class UI {
     // endregion
 
     /**
+     * Gets the current screen being displayed.
+     *
+     * @return the current {@link Screen}
+     */
+    public static Screen getCurrentScreen() {
+        return currentScreen;
+    }
+
+    /**
      * Sets the current screen and displays it.
      *
      * @param screen the screen to be displayed
@@ -278,33 +293,12 @@ public class UI {
     }
 
     /**
-     * Gets the current screen being displayed.
-     *
-     * @return the current {@link Screen}
-     */
-    public static Screen getCurrentScreen() {
-        return currentScreen;
-    }
-
-    /**
      * Gets the previous screen that was displayed before the current one.
      *
      * @return the previous {@link Screen}, or null if there wasn't one
      */
     public static Screen getPreviousScreen() {
         return previousScreen;
-    }
-
-    /**
-     * Navigates back to the previous screen if one exists.
-     *
-     * @throws JavatroException if there is no previous screen to return to
-     */
-    public void returnScreen() throws JavatroException {
-        if (previousScreen == null) {
-            throw new JavatroException("No previous screen to return to");
-        }
-        setCurrentScreen(previousScreen);
     }
 
     /** Clears the console screen. This method uses ANSI escape codes to clear the console. */
@@ -324,6 +318,7 @@ public class UI {
     }
 
     // region Screen Getters
+
     /**
      * Gets the screen where users select cards to discard.
      *
@@ -386,5 +381,26 @@ public class UI {
     public static DeckScreen getDeckScreen() {
         return DECK_SCREEN;
     }
+
+    /**
+     * Gets the help screen.
+     *
+     * @return the {@link HelpScreen} instance
+     */
+    public static SelectDeckScreen getDeckSelectScreen() {
+        return DECK_SELECT_SCREEN;
+    }
+
+    // @@author swethaiscool
+    /**
+     * Returns the singleton instance of the {@code BlindScreen}.
+     *
+     * @return the {@code BlindScreen} instance.
+     */
+    public static BlindScreen getBlindScreen() {
+        return BLIND_SCREEN;
+    }
+    // @@author swethaiscool
+
     // endregion
 }

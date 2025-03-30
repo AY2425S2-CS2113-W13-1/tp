@@ -1,7 +1,9 @@
 package javatro.display.screens;
 
 import javatro.core.Card;
+import javatro.core.JavatroCore;
 import javatro.core.JavatroException;
+import javatro.display.UI;
 import javatro.manager.options.*;
 
 import java.beans.PropertyChangeEvent;
@@ -29,7 +31,7 @@ public class GameScreen extends Screen implements PropertyChangeListener {
     /** The score required to pass the round. */
     private static int blindScore = 0;
     /** The player's score for the current round. */
-    private static int roundScore = 0;
+    private static long roundScore = 0;
     /** The number of hands left to play. */
     private static int handsLeft = 0;
     /** The number of discards remaining. */
@@ -235,9 +237,28 @@ public class GameScreen extends Screen implements PropertyChangeListener {
                         + "|");
     }
 
+    private void printRoundOver() {
+        String title = "::: " + UI.BOLD + "Round Ended" + " :::" + UI.END;
+        String message;
+        if (roundOver == 1) {
+            message = "YOU WON!!!!";
+        } else {
+            message = "YOU LOST!!!!";
+        }
+
+        String[] lines = {
+            "", "", message, "", "",
+        };
+
+        UI.printBorderedContent(title, List.of(lines));
+    }
+
     /** Displays the game screen on the display */
     @Override
     public void displayScreen() {
+        if (roundOver != 0) {
+            printRoundOver();
+        }
 
         String header = getHeaderString(screenWidth);
 
@@ -271,7 +292,7 @@ public class GameScreen extends Screen implements PropertyChangeListener {
         printCardRow("Cash: $ - ", "");
 
         // display ante info
-        printCardRow("Ante: X / X", secondRowHeader);
+        printCardRow("Ante: " + JavatroCore.getAnte().getAnteCount() + " / 8", secondRowHeader);
 
         // Generate the values for the second row (if applicable)
         if (secondRowCount > 0) {
@@ -281,7 +302,7 @@ public class GameScreen extends Screen implements PropertyChangeListener {
         }
 
         // display current round info
-        printCardRow("Current Round: X", secondRowHeader);
+        printCardRow("Current Round: " + JavatroCore.getRoundCount(), secondRowHeader);
 
         // Print end header
         System.out.println(header);
@@ -304,7 +325,7 @@ public class GameScreen extends Screen implements PropertyChangeListener {
         propertyHandlers.put("roundName", value -> roundName = value.toString());
         propertyHandlers.put("remainingPlays", value -> handsLeft = (Integer) value);
         propertyHandlers.put("remainingDiscards", value -> discardsLeft = (Integer) value);
-        propertyHandlers.put("currentScore", value -> roundScore = (Integer) value);
+        propertyHandlers.put("currentScore", value -> roundScore = (Long) value);
         propertyHandlers.put("roundDescription", value -> roundDescription = value.toString());
         propertyHandlers.put("blindScore", value -> blindScore = (Integer) value);
         propertyHandlers.put(
@@ -324,7 +345,11 @@ public class GameScreen extends Screen implements PropertyChangeListener {
                 "roundComplete",
                 value -> {
                     roundOver = (Integer) value;
-                    if (roundOver != 0) {
+                    if (roundOver == 1) {
+                        commandMap.clear();
+                        commandMap.add(new NextRoundOption());
+                        commandMap.add(new ExitGameOption());
+                    } else if (roundOver == -1) {
                         commandMap.clear();
                         commandMap.add(new MainMenuOption());
                         commandMap.add(new ExitGameOption());

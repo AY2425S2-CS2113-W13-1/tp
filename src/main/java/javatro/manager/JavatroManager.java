@@ -5,6 +5,8 @@
  */
 package javatro.manager;
 
+import javatro.core.Ante;
+import javatro.core.Deck;
 import javatro.core.JavatroCore;
 import javatro.core.JavatroException;
 import javatro.display.UI;
@@ -22,13 +24,17 @@ public class JavatroManager implements PropertyChangeListener {
     /** The main view responsible for rendering the user interface. */
     private static UI ui;
     /** The main model responsible for handling game logic. */
-    private static JavatroCore jc;
+    public static JavatroCore jc;
     /** Stores the last recorded user input. */
     private static int userInput;
+
+    public static Ante ante;
+    public static int roundCount = 1;
 
     public static boolean isExitTriggered = false; // Check if exit was triggered
     public static boolean runningTests =
             false; // If tests are running, some settings will be adjusted
+
 
     /**
      * Constructs a {@code JavatroManager} and registers it as an observer to the view.
@@ -41,7 +47,6 @@ public class JavatroManager implements PropertyChangeListener {
         JavatroManager.jc = jc;
         UI.getParser().addPropertyChangeListener(this); // Register as an observer
     }
-
     /**
      * Changes the currently displayed screen.
      *
@@ -56,8 +61,8 @@ public class JavatroManager implements PropertyChangeListener {
      *
      * @throws JavatroException If an error occurs during game initialization.
      */
-    public static void beginGame() throws JavatroException {
-        jc.beginGame();
+    public static void beginGame(Deck.DeckType deckType) throws JavatroException {
+        jc.setupNewGame(deckType);
         JavatroCore.currentRound.addPropertyChangeListener(javatro.display.UI.getGameScreen());
         // Fire property changes here
         JavatroCore.currentRound.updateRoundVariables();
@@ -82,7 +87,6 @@ public class JavatroManager implements PropertyChangeListener {
                 } catch (JavatroException ex) {
                     throw new RuntimeException(ex);
                 }
-                // throw new RuntimeException(e);
             }
         }
     }

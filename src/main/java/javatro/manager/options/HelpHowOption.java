@@ -29,7 +29,10 @@ public class HelpHowOption implements Option {
         String title = "♥️ ♠️ 🃏 " + UI.BOLD + "How To Play Javatro" + " 🃏 ♦️ ♣️" + UI.END;
 
         String[] lines = {
+            "Welcome to the Javatro!",
+            "Here's how to play and navigate the game:",
             "1. Start a new game with 'start'.",
+            "2. Select the blind you desire.",
             "2. Draw cards using 'draw'.",
             "3. Play poker hands to attack enemies.",
             "4. Earn new cards and modify your deck.",
@@ -38,7 +41,17 @@ public class HelpHowOption implements Option {
             "Use commands like:",
             "   - 'attack'  : Play a hand to deal damage.",
             "   - 'defend'  : Use a card to reduce incoming damage.",
-            "   - 'exit'    : Quit the game."
+            "   - 'exit'    : Quit the game.",
+            "Ante and Blind System:",
+            "   - The game uses an ante system to start each round.",
+            "   - The ante increases as rounds progress, starting from the initial small blind,"
+                    + " large blind, and boss blind.",
+            "   - This also means the score to beat for each round increases progressively"
+                    + " \uD83D\uDCC8\uD83C\uDFAF",
+            "   - The blinds rotate with each new round, increasing as the game progresses.",
+            "   - However do take note that the Small and Large Blinds are optional while the Boss"
+                    + " blind is compulsory in the game play.",
+            "   - Have fun playing! \uD83D\uDE0E\uD83C\uDF89",
         };
 
         UI.printBorderedContent(title, List.of(lines));

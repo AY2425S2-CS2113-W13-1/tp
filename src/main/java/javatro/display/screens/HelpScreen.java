@@ -2,8 +2,12 @@
 package javatro.display.screens;
 
 import javatro.core.JavatroException;
-import javatro.manager.options.*;
+import javatro.manager.options.HelpHowOption;
+import javatro.manager.options.HelpIntroOption;
+import javatro.manager.options.HelpRulesOption;
+import javatro.manager.options.HelpTipsOption;
 import javatro.manager.options.MainMenuOption;
+import javatro.manager.options.PokerHandOption;
 
 /**
  * The {@code HelpScreen} class represents a screen displaying the help menu in the javatro

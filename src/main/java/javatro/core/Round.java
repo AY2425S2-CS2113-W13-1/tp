@@ -1,5 +1,11 @@
 package javatro.core;
 
+import static javatro.core.Deck.DeckType;
+import static javatro.core.Deck.DeckType.RED;
+import static javatro.core.JavatroCore.heldJokers;
+
+import javatro.core.jokers.HeldJokers;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashSet;
@@ -14,8 +20,12 @@ public class Round {
     /** The number of cards required to form a valid poker hand. */
     private static final int POKER_HAND_SIZE = 5;
 
+    /** The player's current hand of cards. */
+    public HoldingHand playerHand;
+    /** The player's current held jokers. */
+    public HeldJokers playerJokers;
     /** The player's current score in the round. */
-    private int currentScore;
+    private long currentScore;
     /** The minimum score required to win the round. */
     private final int blindScore;
     /** The number of remaining discards allowed. */
@@ -24,9 +34,7 @@ public class Round {
     private int remainingPlays;
 
     /** The deck of cards used in the round. */
-    public Deck deck;
-    /** The player's current hand of cards. */
-    public HoldingHand playerHand;
+    public static Deck deck;
 
     /** The name of the current round. */
     private String roundName = "";
@@ -37,45 +45,57 @@ public class Round {
     private final PropertyChangeSupport support = new PropertyChangeSupport(this); // Observable
 
     /**
-     * Constructs a new round with the specified blind score. The blind score can be fetched from a
-     * file or manually inputed.
+     * Constructs a new round with the specified ante and blind settings.
      *
-     * <p>//@param gameState The current state of the game.
-     *
-     * @throws JavatroException
+     * @param anteBase The selected ante base level.
+     * @param blindType The type of blind which multiplies the ante base.
+     * @param remainingPlays The number of plays available.
+     * @param deck The deck of cards used in the round.
+     * @param roundName The name for the round.
+     * @param roundDescription The description for the round.
+     * @throws JavatroException If provided parameters are invalid.
      */
     public Round(
             int blindScore,
             int remainingPlays,
             Deck deck,
+            HeldJokers heldJokers,
             String roundName,
             String roundDescription)
             throws JavatroException {
         this.currentScore = 0;
-        this.blindScore = blindScore;
+
         this.remainingDiscards = MAX_DISCARDS_PER_ROUND;
         this.remainingPlays = remainingPlays;
-        this.deck = deck;
+        Round.deck = deck;
+        Round.deck = deck;
         this.playerHand = new HoldingHand();
-
+        this.playerJokers = heldJokers;
         // Default descriptions and names
         this.roundName = roundName;
         this.roundDescription = roundDescription;
+        this.blindScore = blindScore;
 
         if (blindScore < 0) {
             throw JavatroException.invalidBlindScore();
         }
-
         if (remainingPlays <= 0) {
             throw JavatroException.invalidPlaysPerRound();
         }
-
         if (deck == null) {
             throw JavatroException.invalidDeck();
         }
 
+        // Handle special Deck variants here.
+        DeckType deckName = deck.getDeckName();
+        if (deckName == RED) {
+            this.remainingDiscards += 1;
+        } else if (deckName == DeckType.BLUE) {
+            this.remainingPlays += 1;
+        }
+
         // Initial draw
-        playerHand.draw(INITIAL_HAND_SIZE, this.deck);
+        playerHand.draw(INITIAL_HAND_SIZE, Round.deck);
 
         // Post-construction invariants
         assert this.currentScore == 0 : "Initial score must be zero";
@@ -107,9 +127,9 @@ public class Round {
         support.firePropertyChange("holdingHand", null, getPlayerHand());
         support.firePropertyChange("currentScore", null, currentScore);
 
-        if (isRoundOver() && isWon()) {
+        if (isWon()) {
             support.firePropertyChange("roundComplete", null, 1);
-        } else if (isRoundOver() && !isWon()) {
+        } else if (isRoundOver()) {
             support.firePropertyChange("roundComplete", null, -1);
         } else {
             support.firePropertyChange("roundComplete", null, 0);
@@ -117,10 +137,9 @@ public class Round {
     }
 
     /**
-     * Plays a set of 5 cards as a poker hand.
+     * Plays a set of cards as a poker hand.
      *
-     * @param cardIndices Indices of cards to play from the holding hand (must be exactly 5 cards)
-     * @throws JavatroException If the number of cards played is not equal to 5
+     * @param cardIndices Indices of cards to play from the holding hand
      */
     public void playCards(List<Integer> cardIndices) throws JavatroException {
         if (cardIndices.size() > POKER_HAND_SIZE || cardIndices.isEmpty()) {
@@ -137,19 +156,13 @@ public class Round {
                 : "Cannot play more than " + POKER_HAND_SIZE + " cards";
         assert remainingPlays > 0 : "No plays remaining to execute this action";
 
-        int oldScore = currentScore;
+        long oldScore = currentScore;
         int oldRemainingPlays = remainingPlays;
 
-        List<Card> playedCards = playerHand.play(cardIndices, this.deck);
+        List<Card> playedCards = playerHand.play(cardIndices);
         PokerHand result = HandResult.evaluateHand(playedCards);
-        Integer totalChips = result.getChips();
-
-        for (Card card : playedCards) {
-            totalChips += card.getChips();
-        }
-
-        // Update round state
-        currentScore += totalChips * result.getMultiplier();
+        Score handScore = new Score();
+        currentScore += handScore.getScore(result, playedCards, playerJokers);
 
         // Draw new cards to replace played ones
         playerHand.draw(cardIndices.size(), deck);
@@ -174,15 +187,15 @@ public class Round {
      */
     public void discardCards(List<Integer> cardIndices) throws JavatroException {
         if (remainingDiscards <= 0) {
-            throw new JavatroException("No remaining discards available");
+            throw JavatroException.noRemainingDiscards();
         }
 
-        if (cardIndices.size() > remainingDiscards) {
-            throw new JavatroException("Too many discards");
+        if (cardIndices.size() > POKER_HAND_SIZE) {
+            throw JavatroException.tooManyDiscards();
         }
 
         if (cardIndices.size() < 1) {
-            throw new JavatroException("Cannot discard zero cards");
+            throw JavatroException.cannotDiscardZeroCards();
         }
 
         assert cardIndices != null : "Card indices cannot be null";
@@ -191,11 +204,10 @@ public class Round {
 
         // Handle duplicates by using a Set
         Set<Integer> indicesToDiscard = new HashSet<>(cardIndices);
-
         int handSizeBefore = playerHand.getHand().size();
         int oldRemainingDiscards = remainingDiscards;
 
-        playerHand.discard(cardIndices, deck);
+        playerHand.discard(cardIndices);
         remainingDiscards--;
 
         playerHand.draw(indicesToDiscard.size(), deck);
@@ -210,7 +222,7 @@ public class Round {
     }
 
     // Getters
-    public int getCurrentScore() {
+    public long getCurrentScore() {
         return currentScore;
     }
 
@@ -238,7 +250,7 @@ public class Round {
      */
     public boolean isRoundOver() {
         // Round ends if no plays are remaining
-        return remainingPlays <= 0;
+        return remainingPlays <= 0 | isWon();
     }
 
     /**
@@ -247,8 +259,7 @@ public class Round {
      * @return true if player won the round, false otherwise
      */
     public boolean isWon() {
-        assert isRoundOver() || remainingPlays > 0 : "Round state is inconsistent";
-        return currentScore >= blindScore & isRoundOver();
+        return currentScore >= blindScore;
     }
 
     public String getRoundName() {

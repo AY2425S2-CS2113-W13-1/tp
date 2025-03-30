@@ -1,15 +1,21 @@
 package javatro.core;
 
 import static javatro.core.Card.Rank.ACE;
+import static javatro.core.Card.Rank.FIVE;
 import static javatro.core.Card.Rank.FOUR;
 import static javatro.core.Card.Rank.THREE;
 import static javatro.core.Card.Rank.TWO;
+import static javatro.core.Card.Suit.CLUBS;
+import static javatro.core.Card.Suit.DIAMONDS;
+import static javatro.core.Card.Suit.HEARTS;
 import static javatro.core.Card.Suit.SPADES;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.fail;
+
+import javatro.display.UI;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,28 +31,37 @@ import java.util.List;
 public class HoldingHandTest {
 
     private static Deck deck;
+    private static HoldingHand holdingHand;
+    private static Card cardOne;
+    private static Card cardTwo;
+    private static Card cardThree;
+    private static Card cardFour;
 
     /** Initialize a new deck for each test. */
     @BeforeEach
     void init() {
-        deck = new Deck();
+        deck = new Deck(Deck.DeckType.DEFAULT);
+        holdingHand = new HoldingHand();
+        cardOne = new Card(TWO, SPADES);
+        cardTwo = new Card(THREE, HEARTS);
+        cardThree = new Card(FOUR, CLUBS);
+        cardFour = new Card(FIVE, DIAMONDS);
     }
 
     /** Test that HoldingHand can add cards, draw and discard cards. */
     @Test
     void testHoldingHand() throws JavatroException {
-        HoldingHand holdingHand = new HoldingHand();
         for (int i = 0; i < 8; i++) {
             holdingHand.add(deck.draw());
         }
         int cardsRemaining = deck.getRemainingCards();
         assertEquals(44, cardsRemaining);
-        holdingHand.discard(List.of(1, 3, 5), deck);
+        holdingHand.discard(List.of(1, 3, 5));
         for (int i = 0; i < 3; i++) {
             holdingHand.add(deck.draw());
         }
         assertEquals(41, deck.getRemainingCards());
-        List<Card> playedHand = holdingHand.play(List.of(1, 4, 5), deck);
+        List<Card> playedHand = holdingHand.play(List.of(1, 4, 5));
         assertEquals(3, playedHand.size());
         for (int i = 0; i < 3; i++) {
             holdingHand.add(deck.draw());
@@ -57,7 +72,6 @@ public class HoldingHandTest {
     /** Test that HoldingHand can return the hand held. */
     @Test
     void testGetHoldingHand() throws JavatroException {
-        HoldingHand holdingHand = new HoldingHand();
         Card cardOne = new Card(ACE, SPADES);
         Card cardTwo = new Card(TWO, SPADES);
         Card cardThree = new Card(THREE, SPADES);
@@ -68,11 +82,59 @@ public class HoldingHandTest {
                         add(cardOne);
                         add(cardTwo);
                         add(cardThree);
+                        add(cardFour);
                     }
                 };
         for (Card card : cards) {
             holdingHand.add(card);
         }
+        List<Card> hand = holdingHand.getHand();
+        assertArrayEquals(new List[] {cards}, new List[] {hand});
+    }
+
+    /** Test that HoldingHand can return cards in order. */
+    @Test
+    void testSortByRank() throws JavatroException {
+        List<Card> cards =
+                new ArrayList<Card>() {
+                    {
+                        add(cardFour);
+                        add(cardThree);
+                        add(cardTwo);
+                        add(cardOne);
+                    }
+                };
+        holdingHand.add(cardFour);
+        holdingHand.add(cardThree);
+        holdingHand.add(cardTwo);
+        holdingHand.add(cardOne);
+
+        holdingHand.sortByRank();
+        List<Card> hand = holdingHand.getHand();
+        assertArrayEquals(new List[] {cards}, new List[] {hand});
+    }
+
+    /**
+     * Test that HoldingHand can return suits in a particular order. SPADES > HEARTS > CLUBS >
+     * DIAMONDS
+     */
+    @Test
+    void testSortBySuit() throws JavatroException {
+        List<Card> cards =
+                new ArrayList<Card>() {
+                    {
+                        add(cardOne);
+                        add(cardTwo);
+                        add(cardThree);
+                        add(cardFour);
+                    }
+                };
+        holdingHand.add(cardFour);
+        holdingHand.add(cardThree);
+        holdingHand.add(cardTwo);
+        holdingHand.add(cardOne);
+
+        holdingHand.sortBySuit();
         List<Card> hand = holdingHand.getHand();
         assertArrayEquals(new List[] {cards}, new List[] {hand});
     }
@@ -90,19 +152,21 @@ public class HoldingHandTest {
         }
 
         try {
-            holdingHand.play(playedHand, deck);
+            holdingHand.play(playedHand);
             fail("Should have thrown an exception for illegal card index");
         } catch (JavatroException e) {
-            assertEquals("Invalid index in cards to be played: -1", e.getMessage());
+            assertEquals(
+                    UI.RED + "Invalid index in cards to be played: -1" + UI.END, e.getMessage());
         }
 
         playedHand.remove(0);
         playedHand.add(500);
         try {
-            holdingHand.play(playedHand, deck);
+            holdingHand.play(playedHand);
             fail("Should have thrown an exception for illegal card index");
         } catch (JavatroException e) {
-            assertEquals("Invalid index in cards to be played: 500", e.getMessage());
+            assertEquals(
+                    UI.RED + "Invalid index in cards to be played: 500" + UI.END, e.getMessage());
         }
 
         playedHand.remove(0);
@@ -110,10 +174,15 @@ public class HoldingHandTest {
             playedHand.add(i);
         }
         try {
-            holdingHand.play(playedHand, deck);
+            holdingHand.play(playedHand);
             fail("Should have thrown an exception for illegal card index");
         } catch (JavatroException e) {
-            assertEquals("Number of cards played (8) exceeds maximum allowed. (5)", e.getMessage());
+            assertEquals(
+                    UI.RED
+                            + "Number of cards played (8) "
+                            + "exceeds maximum allowed. (5)"
+                            + UI.END,
+                    e.getMessage());
         }
     }
 
@@ -130,19 +199,22 @@ public class HoldingHandTest {
         }
 
         try {
-            holdingHand.discard(playedHand, deck);
+            holdingHand.discard(playedHand);
             fail("Should have thrown an exception for illegal card index");
         } catch (JavatroException e) {
-            assertEquals("Invalid index in cards to be discarded: -1", e.getMessage());
+            assertEquals(
+                    UI.RED + "Invalid index in cards to be discarded: -1" + UI.END, e.getMessage());
         }
 
         playedHand.remove(0);
         playedHand.add(500);
         try {
-            holdingHand.discard(playedHand, deck);
+            holdingHand.discard(playedHand);
             fail("Should have thrown an exception for illegal card index");
         } catch (JavatroException e) {
-            assertEquals("Invalid index in cards to be discarded: 500", e.getMessage());
+            assertEquals(
+                    UI.RED + "Invalid index in cards to be discarded: 500" + UI.END,
+                    e.getMessage());
         }
 
         playedHand.remove(0);
@@ -150,11 +222,12 @@ public class HoldingHandTest {
             playedHand.add(i);
         }
         try {
-            holdingHand.discard(playedHand, deck);
+            holdingHand.discard(playedHand);
             fail("Should have thrown an exception for illegal card index");
         } catch (JavatroException e) {
             assertEquals(
-                    "Number of cards discarded (8) exceeds maximum allowed. (5)", e.getMessage());
+                    UI.RED + "Number of cards discarded (8) exceeds maximum allowed. (5)" + UI.END,
+                    e.getMessage());
         }
     }
 

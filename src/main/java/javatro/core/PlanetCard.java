@@ -71,11 +71,6 @@ public class PlanetCard {
         return CARDS.get(handType);
     }
 
-    // Apply level-up for this card's hand type
-    public void apply() {
-        LEVELS.put(handType, LEVELS.getOrDefault(handType, 1) + 1);
-    }
-
     // Static method to get current level for a hand type
     public static int getLevel(PokerHand.HandType handType) {
         return LEVELS.getOrDefault(handType, 1);
@@ -91,6 +86,11 @@ public class PlanetCard {
     public static int getMultiIncrement(PokerHand.HandType handType) {
         PlanetCard card = CARDS.get(handType);
         return card != null ? card.multiIncrement : 0;
+    }
+
+    // Apply level-up for this card's hand type
+    public void apply() {
+        LEVELS.put(handType, LEVELS.getOrDefault(handType, 1) + 1);
     }
 
     // Getters

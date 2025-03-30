@@ -29,7 +29,7 @@ public class ResumeGameOption implements Option {
      */
     @Override
     public void execute() throws JavatroException {
-        // Update the main screen to show game screen
+
         JavatroManager.setScreen(UI.getGameScreen());
     }
 }

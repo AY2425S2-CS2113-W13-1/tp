@@ -1,13 +1,32 @@
 package javatro.display.screens;
 
-import static javatro.display.UI.*;
+import static javatro.display.UI.BLACK_B;
+import static javatro.display.UI.BOLD;
+import static javatro.display.UI.BORDER_WIDTH;
+import static javatro.display.UI.BOTTOM_LEFT;
+import static javatro.display.UI.BOTTOM_RIGHT;
+import static javatro.display.UI.END;
+import static javatro.display.UI.HORIZONTAL;
+import static javatro.display.UI.RED;
+import static javatro.display.UI.TOP_LEFT;
+import static javatro.display.UI.TOP_RIGHT;
+import static javatro.display.UI.T_LEFT;
+import static javatro.display.UI.T_RIGHT;
+import static javatro.display.UI.YELLOW;
+import static javatro.display.UI.centerText;
+import static javatro.display.UI.printBlackB;
+import static javatro.display.UI.printBorderedContent;
 
 import javatro.core.Card;
 import javatro.core.HoldingHand;
 import javatro.core.JavatroCore;
 import javatro.core.JavatroException;
 import javatro.display.CardRenderer;
-import javatro.manager.options.*;
+import javatro.manager.options.CardSelectOption;
+import javatro.manager.options.PokerHandOption;
+import javatro.manager.options.ResumeGameOption;
+import javatro.manager.options.SortByRankOption;
+import javatro.manager.options.SortBySuitOption;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +48,11 @@ import java.util.List;
  */
 public abstract class CardSelectScreen extends Screen {
 
+    /** The list of cards currently in the player's hand. */
+    private List<Card> holdingHand;
+
+    private SortOrder currentSortOrder;
+
     /**
      * Constructs a {@code CardSelectScreen} with a custom options title and initializes it with a
      * resume game command.
@@ -47,18 +71,6 @@ public abstract class CardSelectScreen extends Screen {
         super.commandMap.add(new PokerHandOption());
         super.commandMap.add(new ResumeGameOption());
     }
-
-    /** The list of cards currently in the player's hand. */
-    private List<Card> holdingHand;
-
-    // Add an enum for sorting options
-    public enum SortOrder {
-        ORIGINAL,
-        BY_SUIT,
-        BY_RANK,
-    }
-
-    private SortOrder currentSortOrder;
 
     /**
      * Updates the holding hand by retrieving the player's current hand from the game core.
@@ -81,6 +93,8 @@ public abstract class CardSelectScreen extends Screen {
                     break;
                 case BY_RANK:
                     tempHand.sortByRank();
+                    break;
+                default: // Should not happen at all.
                     break;
             }
 
@@ -198,4 +212,11 @@ public abstract class CardSelectScreen extends Screen {
      */
     @Override
     public abstract void displayScreen();
+
+    // Add an enum for sorting options
+    public enum SortOrder {
+        ORIGINAL,
+        BY_SUIT,
+        BY_RANK,
+    }
 }
