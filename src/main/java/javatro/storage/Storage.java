@@ -59,13 +59,17 @@ public class Storage implements PropertyChangeListener {
         decryptedDataRaw = "";
 
         for (List<String> run : runData) {
-            StringBuilder runDataRawBuilder = new StringBuilder(); // Use StringBuilder for efficient string concatenation
+            StringBuilder runDataRawBuilder =
+                    new StringBuilder(); // Use StringBuilder for efficient string concatenation
             for (String runAttribute : run) {
-                runDataRawBuilder.append(runAttribute).append(","); // Append the attribute and a comma
+                runDataRawBuilder
+                        .append(runAttribute)
+                        .append(","); // Append the attribute and a comma
             }
             // Remove the last comma if run is not empty
             if (!runDataRawBuilder.isEmpty()) {
-                runDataRawBuilder.setLength(runDataRawBuilder.length() - 1); // Remove the trailing comma
+                runDataRawBuilder.setLength(
+                        runDataRawBuilder.length() - 1); // Remove the trailing comma
             }
             runDataRawBuilder.append("\n"); // Add a newline after each run
 
@@ -93,8 +97,9 @@ public class Storage implements PropertyChangeListener {
             }
         }
 
-        //saveSampleData(); // Add test sample data
-        if(!decryptedDataRaw.isEmpty()) parseDecryptedRawData(); // Convert decryptedDataRaw into runData (Basically initalise
+        // saveSampleData(); // Add test sample data
+        if (!decryptedDataRaw.isEmpty())
+            parseDecryptedRawData(); // Convert decryptedDataRaw into runData (Basically initalise
         // runData here)
     }
 
@@ -233,7 +238,10 @@ public class Storage implements PropertyChangeListener {
 
         try {
             Path path = Paths.get(SAVEFILE_LOCATION);
-            Files.write(path, encryptedData, StandardOpenOption.CREATE,
+            Files.write(
+                    path,
+                    encryptedData,
+                    StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING);
             Files.write(
                     path,
@@ -243,7 +251,6 @@ public class Storage implements PropertyChangeListener {
             throw new JavatroException("SAVING ISSUE: " + e.getMessage());
         }
         System.out.println("Encrypted sample data saved successfully.");
-
     }
 
     // Method to save sample data into the task file (encrypted)
@@ -251,7 +258,6 @@ public class Storage implements PropertyChangeListener {
         // Round,Ante,Deck (3-10 are decks)
         decryptedDataRaw = "5,5,Checkered,2D,2S,3S,4S,5S,6S,7S,8S\n20,80,Deck 2\n";
         parseDecryptedRawData();
-
     }
 
     public List<List<String>> getRunData() {
@@ -372,17 +378,15 @@ public class Storage implements PropertyChangeListener {
     public static String cardToString(Card card) {
         // Get the rank and suit from the card
         String rankStr = card.rank().getSymbol(); // Get the symbol (e.g., "A", "K", "10")
-        String suitStr = switch (card.suit()) {
-            case HEARTS -> "H";
-            case CLUBS -> "C";
-            case SPADES -> "S";
-            case DIAMONDS -> "D";
-        };
+        String suitStr =
+                switch (card.suit()) {
+                    case HEARTS -> "H";
+                    case CLUBS -> "C";
+                    case SPADES -> "S";
+                    case DIAMONDS -> "D";
+                };
 
         // Combine rank and suit to form the card string
         return rankStr + suitStr;
     }
-
-
-
 }

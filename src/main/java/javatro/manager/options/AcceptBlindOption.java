@@ -1,13 +1,9 @@
 package javatro.manager.options;
 
-import javatro.core.Deck;
 import javatro.core.JavatroCore;
 import javatro.core.JavatroException;
 import javatro.display.UI;
 import javatro.manager.JavatroManager;
-import javatro.storage.Storage;
-
-import static javatro.storage.Storage.createDeckFromString;
 
 // @@author swethaiscool
 /**
