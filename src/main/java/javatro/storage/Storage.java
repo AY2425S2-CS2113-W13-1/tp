@@ -203,7 +203,7 @@ public class Storage implements PropertyChangeListener {
 
     // Method to save sample data into the task file (encrypted)
     public void saveSampleData() {
-        //Round,Ante,Deck (3-10 are decks)
+        // Round,Ante,Deck (3-10 are decks)
         decryptedDataRaw = "5,5,Checkered,2D,2S,3S,4S,5S,6S,7S,8S\n20,80,Deck 2\n";
         parseDecryptedRawData();
 
@@ -299,7 +299,7 @@ public class Storage implements PropertyChangeListener {
             deckType = Deck.DeckType.valueOf(deckTypeString.toUpperCase());
         } catch (IllegalArgumentException e) {
             // Handle the case where the string doesn't match a valid DeckType
-            deckType = Deck.DeckType.DEFAULT;  // Defaulting to "DEFAULT" Decktype
+            deckType = Deck.DeckType.DEFAULT; // Defaulting to "DEFAULT" Decktype
         }
 
         // Return a new Deck initialized with the valid DeckType
@@ -313,49 +313,50 @@ public class Storage implements PropertyChangeListener {
         }
 
         // Extract the rank and suit from the string
-        String rankStr = cardString.substring(0, cardString.length() - 1); // All but the last character
+        String rankStr =
+                cardString.substring(0, cardString.length() - 1); // All but the last character
         char suitChar = cardString.charAt(cardString.length() - 1); // Last character
 
         System.out.println(rankStr);
         System.out.println(suitChar);
 
         // Parse the rank
-        Card.Rank rank = switch (rankStr) {
-            case "2" -> Card.Rank.TWO;
-            case "3" -> Card.Rank.THREE;
-            case "4" -> Card.Rank.FOUR;
-            case "5" -> Card.Rank.FIVE;
-            case "6" -> Card.Rank.SIX;
-            case "7" -> Card.Rank.SEVEN;
-            case "8" -> Card.Rank.EIGHT;
-            case "9" -> Card.Rank.NINE;
-            case "10" -> Card.Rank.TEN;
-            case "J" -> Card.Rank.JACK;
-            case "Q" -> Card.Rank.QUEEN;
-            case "K" -> Card.Rank.KING;
-            case "A" -> Card.Rank.ACE;
-            default -> throw new IllegalArgumentException("Invalid rank: " + rankStr);
-        };
-//        try {
-//            // Attempt to convert the rank string to a Rank enum
-//            rank = Card.Rank.valueOf(rankStr.toUpperCase());
-//        } catch (IllegalArgumentException e) {
-//            // If rank is not valid, throw an exception or handle accordingly
-//            throw new IllegalArgumentException("Invalid rank: " + rankStr);
-//        }
+        Card.Rank rank =
+                switch (rankStr) {
+                    case "2" -> Card.Rank.TWO;
+                    case "3" -> Card.Rank.THREE;
+                    case "4" -> Card.Rank.FOUR;
+                    case "5" -> Card.Rank.FIVE;
+                    case "6" -> Card.Rank.SIX;
+                    case "7" -> Card.Rank.SEVEN;
+                    case "8" -> Card.Rank.EIGHT;
+                    case "9" -> Card.Rank.NINE;
+                    case "10" -> Card.Rank.TEN;
+                    case "J" -> Card.Rank.JACK;
+                    case "Q" -> Card.Rank.QUEEN;
+                    case "K" -> Card.Rank.KING;
+                    case "A" -> Card.Rank.ACE;
+                    default -> throw new IllegalArgumentException("Invalid rank: " + rankStr);
+                };
+        //        try {
+        //            // Attempt to convert the rank string to a Rank enum
+        //            rank = Card.Rank.valueOf(rankStr.toUpperCase());
+        //        } catch (IllegalArgumentException e) {
+        //            // If rank is not valid, throw an exception or handle accordingly
+        //            throw new IllegalArgumentException("Invalid rank: " + rankStr);
+        //        }
 
         // Parse the suit
-        Card.Suit suit = switch (Character.toUpperCase(suitChar)) {
-            case 'H' -> Card.Suit.HEARTS;
-            case 'C' -> Card.Suit.CLUBS;
-            case 'S' -> Card.Suit.SPADES;
-            case 'D' -> Card.Suit.DIAMONDS;
-            default -> throw new IllegalArgumentException("Invalid suit: " + suitChar);
-        };
+        Card.Suit suit =
+                switch (Character.toUpperCase(suitChar)) {
+                    case 'H' -> Card.Suit.HEARTS;
+                    case 'C' -> Card.Suit.CLUBS;
+                    case 'S' -> Card.Suit.SPADES;
+                    case 'D' -> Card.Suit.DIAMONDS;
+                    default -> throw new IllegalArgumentException("Invalid suit: " + suitChar);
+                };
 
         // Return the constructed Card
         return new Card(rank, suit);
     }
-
-
 }
