@@ -4,16 +4,14 @@
  */
 package javatro.manager.options;
 
+import static javatro.storage.Storage.createDeckFromString;
+
 import javatro.core.Ante;
-import javatro.core.Deck;
 import javatro.core.JavatroCore;
 import javatro.core.JavatroException;
 import javatro.display.UI;
-import javatro.display.screens.RunsScreen;
 import javatro.manager.JavatroManager;
 import javatro.storage.Storage;
-
-import static javatro.storage.Storage.createDeckFromString;
 
 /** A command that starts the game and loads the game screen. */
 public class ChooseRunOption implements Option {
@@ -41,16 +39,19 @@ public class ChooseRunOption implements Option {
         Storage.chosenRun = runNumber;
         if (JavatroCore.currentRound == null || JavatroCore.currentRound.isLost()) {
             JavatroCore.currentRound = null;
-            //New Run
-            if(runNumber > Storage.getInstance().getRunData().size()) JavatroManager.setScreen(UI.getDeckSelectScreen());
+            // New Run
+            if (runNumber > Storage.getInstance().getRunData().size())
+                JavatroManager.setScreen(UI.getDeckSelectScreen());
             else {
-                JavatroManager.beginGame(createDeckFromString(Storage.getInstance().getRunData().get(Storage.chosenRun).get(2)));
+                JavatroManager.beginGame(
+                        createDeckFromString(
+                                Storage.getInstance().getRunData().get(Storage.chosenRun).get(2)));
                 JavatroCore.getAnte().setBlind(Ante.Blind.SMALL_BLIND);
                 JavatroManager.jc.beginGame();
-                JavatroCore.currentRound.addPropertyChangeListener(javatro.display.UI.getGameScreen());
+                JavatroCore.currentRound.addPropertyChangeListener(
+                        javatro.display.UI.getGameScreen());
                 JavatroCore.currentRound.updateRoundVariables();
                 JavatroManager.setScreen(UI.getGameScreen());
-
             }
         }
         if (JavatroCore.currentRound != null) {

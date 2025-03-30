@@ -202,7 +202,7 @@ public class Storage implements PropertyChangeListener {
 
     // Method to save sample data into the task file (encrypted)
     public void saveSampleData() {
-        //Round,Ante,Deck
+        // Round,Ante,Deck
         decryptedDataRaw = "5,5,Checkered\n20,80,Deck 2\n";
         parseDecryptedRawData();
 
@@ -298,11 +298,10 @@ public class Storage implements PropertyChangeListener {
             deckType = Deck.DeckType.valueOf(deckTypeString.toUpperCase());
         } catch (IllegalArgumentException e) {
             // Handle the case where the string doesn't match a valid DeckType
-            deckType = Deck.DeckType.DEFAULT;  // Defaulting to "DEFAULT" Decktype
+            deckType = Deck.DeckType.DEFAULT; // Defaulting to "DEFAULT" Decktype
         }
 
         // Return a new Deck initialized with the valid DeckType
         return deckType;
     }
-
 }
