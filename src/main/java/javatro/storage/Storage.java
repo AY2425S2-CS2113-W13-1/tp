@@ -1,5 +1,6 @@
 package javatro.storage;
 
+import javatro.core.Deck;
 import javatro.core.JavatroException;
 
 import java.beans.PropertyChangeEvent;
@@ -34,6 +35,8 @@ public class Storage implements PropertyChangeListener {
     private static String decryptedDataRaw = "";
 
     private static List<List<String>> runData = new ArrayList<>();
+
+    public static int chosenRun = -1;
 
     private void parseDecryptedRawData() {
         // Each row is 1 run
@@ -199,8 +202,10 @@ public class Storage implements PropertyChangeListener {
 
     // Method to save sample data into the task file (encrypted)
     public void saveSampleData() {
-        decryptedDataRaw = "5,10,Deck 1\n20,80,Deck 2\n";
+        //Round,Ante,Deck
+        decryptedDataRaw = "5,5,Checkered\n20,80,Deck 2\n";
         parseDecryptedRawData();
+
         //        String sampleData = "This is a sample task data."; // Sample data to be saved in
         // the file
         //        byte[] encryptedData;
@@ -285,4 +290,19 @@ public class Storage implements PropertyChangeListener {
         //        // Execute the appropriate handler if it exists and update its value
         //        propertyHandlers.getOrDefault(propertyName, v -> {}).accept(newValue);
     }
+
+    public static Deck.DeckType createDeckFromString(String deckTypeString) {
+        Deck.DeckType deckType;
+        try {
+            // Convert the string to the corresponding DeckType enum
+            deckType = Deck.DeckType.valueOf(deckTypeString.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            // Handle the case where the string doesn't match a valid DeckType
+            deckType = Deck.DeckType.DEFAULT;  // Defaulting to "DEFAULT" Decktype
+        }
+
+        // Return a new Deck initialized with the valid DeckType
+        return deckType;
+    }
+
 }

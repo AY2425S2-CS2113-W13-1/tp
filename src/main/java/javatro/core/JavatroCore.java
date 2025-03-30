@@ -62,12 +62,13 @@ public class JavatroCore {
     }
 
     /** Initializes a new game by resetting the ante, round count, jokers and decks. */
-    public void setupNewGame(DeckType deckType) {
+    public void setupNewGame(DeckType deckType,int roundCount,int totalPlays,int anteCount) {
         ante = new Ante();
-        roundCount = 1;
-        totalPlays = 4;
+        JavatroCore.roundCount = roundCount;
+        JavatroCore.totalPlays = totalPlays;
         heldJokers = new HeldJokers();
         deck = new Deck(deckType);
+        ante.setAnteCount(anteCount);
     }
     // @author swethaiscool
 
