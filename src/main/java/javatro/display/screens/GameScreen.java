@@ -137,7 +137,7 @@ public class GameScreen extends Screen implements PropertyChangeListener {
         // --- Deck Name / Jokers / Holding Hand ---
         List<String> extraContent = new ArrayList<>();
         extraContent.add("Current Deck:");
-        extraContent.add("Deck Name");
+        extraContent.add(JavatroCore.deck.getDeckName().getName());
         extraContent.add("");
         extraContent.add("");
         extraContent.add("Jokers' Effects:");

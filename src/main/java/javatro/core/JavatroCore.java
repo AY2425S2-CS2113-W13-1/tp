@@ -81,6 +81,7 @@ public class JavatroCore {
         currentRound = round;
         assert currentRound != null;
     }
+
     /**
      * Creates a new classic round with predefined settings.
      *
@@ -93,12 +94,7 @@ public class JavatroCore {
             d = new Deck(deck);
             d.shuffle();
             return new Round(
-                    ante.getRoundScore(),
-                    4,
-                    d,
-                    heldJokers,
-                    ante.getBlind().getName(),
-                    ante.getBlind().getName());
+                    ante, 4, d, heldJokers, ante.getBlind().getName(), ante.getBlind().getName());
         } catch (JavatroException javatroException) {
             System.out.println(javatroException.getMessage());
         }

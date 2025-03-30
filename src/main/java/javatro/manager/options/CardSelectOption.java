@@ -68,16 +68,16 @@ public class CardSelectOption implements Option {
             JavatroCore.currentRound.playCards(userInput);
 
             // Print Hand Name and Cards played
-            PokerHand playedHand = JavatroCore.currentRound.playedHand;
+            PokerHand playedHand = JavatroCore.currentRound.getPlayedHand();
             String handName =
                     String.format(
                             "Achieved: %s%s<%s>%s%s Hand",
                             BOLD, YELLOW, playedHand.getHandName(), END, BLACK_B);
-            List<String> cardArtLines = getCardArtLines(JavatroCore.currentRound.selectedCards);
+            List<String> cardArtLines = getCardArtLines(JavatroCore.currentRound.getPlayedCards());
             printBorderedContent(handName, cardArtLines);
 
             // Increment hand play count
-            JavatroCore.currentRound.playedHand.incrementPlayed();
+            JavatroCore.currentRound.getPlayedHand().incrementPlayed();
 
             // Discard the selected cards
         } else if (UI.getCurrentScreen() instanceof DiscardCardScreen) {
@@ -85,7 +85,7 @@ public class CardSelectOption implements Option {
 
             // Print Cards discarded
             String handName = BOLD + "Cards Discarded" + END + BLACK_B;
-            List<String> cardArtLines = getCardArtLines(JavatroCore.currentRound.selectedCards);
+            List<String> cardArtLines = getCardArtLines(JavatroCore.currentRound.getPlayedCards());
             printBorderedContent(handName, cardArtLines);
         }
 
