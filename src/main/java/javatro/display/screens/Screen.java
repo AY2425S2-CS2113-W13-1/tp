@@ -115,4 +115,12 @@ public abstract class Screen {
         assert selected != null : "Command list should not contain null elements";
         return selected;
     }
+
+    public List<Option> getCommandMap() {
+        return commandMap;
+    }
+
+    public String getOptionsTitle() {
+        return optionsTitle;
+    }
 }

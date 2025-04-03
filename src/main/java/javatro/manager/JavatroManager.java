@@ -31,6 +31,10 @@ public class JavatroManager implements PropertyChangeListener {
     public static Ante ante;
     public static int roundCount = 1;
 
+    public static boolean isExitTriggered = false; // Check if exit was triggered
+    public static boolean runningTests =
+            false; // If tests are running, some settings will be adjusted
+
     /**
      * Constructs a {@code JavatroManager} and registers it as an observer to the view.
      *
@@ -58,6 +62,9 @@ public class JavatroManager implements PropertyChangeListener {
      */
     public static void beginGame(Deck.DeckType deckType) throws JavatroException {
         jc.setupNewGame(deckType);
+        JavatroCore.currentRound.addPropertyChangeListener(javatro.display.UI.getGameScreen());
+        // Fire property changes here
+        JavatroCore.currentRound.updateRoundVariables();
     }
 
     /**
