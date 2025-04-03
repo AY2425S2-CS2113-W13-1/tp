@@ -1,5 +1,6 @@
 package javatro.core;
 
+import javatro.core.Round.BossType;
 import javatro.core.jokers.HeldJokers;
 import javatro.core.jokers.Joker;
 
@@ -12,6 +13,21 @@ public class Score {
     public double totalMultiplier = 0;
     public static List<Card> playedCardsList;
     public ArrayList<Joker> jokerList;
+    private Round.BossType bossType = Round.BossType.NONE;
+
+    /** Default constructor */
+    public Score() {
+        this(Round.BossType.NONE);
+    }
+
+    /**
+     * Constructor with boss type parameter
+     *
+     * @param bossType The type of boss for this round
+     */
+    public Score(Round.BossType bossType) {
+        this.bossType = bossType;
+    }
 
     /**
      * Returns the final score from total chips * total multiplier, after rounding.
@@ -34,7 +50,7 @@ public class Score {
 
         // First add pokerHand's chip and mult base to the scores.
         totalChips = pokerHand.getChips();
-        totalMultiplier = pokerHand.getMultiplier();
+        totalMultiplier = this.bossType == BossType.THE_NEEDLE ? 1 : pokerHand.getMultiplier();
 
         // Score the cards and apply any Jokers that have effects on play here.
         for (Card currentCard : playedCardList) {
@@ -61,12 +77,46 @@ public class Score {
      * the card falls under boss blind conditions.
      *
      * @param card The card to be checked for validity
-     * @param
      */
     private boolean isValidCard(Card card) {
-        // To be checked for in boss blind
         // Apply boss blind logic to return this as true or false based on the card's
-        // characteristics.
+        // characteristics
+        switch (bossType) {
+            case THE_CLUB:
+                // The Club: All Club Cards cannot score
+                if (card.suit() == Card.Suit.CLUBS) {
+                    return false;
+                }
+                break;
+            case THE_WINDOW:
+                // The Window: All Diamond Cards cannot score
+                if (card.suit() == Card.Suit.DIAMONDS) {
+                    return false;
+                }
+                break;
+            case THE_HEAD:
+                // The Head: All Heart Cards cannot score
+                if (card.suit() == Card.Suit.HEARTS) {
+                    return false;
+                }
+                break;
+            case THE_GOAD:
+                // The Goad: All Spade Cards cannot score
+                if (card.suit() == Card.Suit.SPADES) {
+                    return false;
+                }
+                break;
+            case THE_PLANT:
+                // The Plant: All face(K,Q,J) cards cannot score
+                Card.Rank rank = card.rank();
+                if (rank == Card.Rank.KING || rank == Card.Rank.QUEEN || rank == Card.Rank.JACK) {
+                    return false;
+                }
+                break;
+            default:
+                // No restrictions for other boss types
+                break;
+        }
         return true;
     }
 
@@ -74,7 +124,6 @@ public class Score {
      * Adds the card's value to the score, and check for any joker interactions with the card.
      *
      * @param card The card to be scored
-     * @param
      */
     private void scoreCard(Card card) {
         totalChips += card.getChips();

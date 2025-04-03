@@ -31,7 +31,7 @@ public class HandResult {
     public static PokerHand evaluateHand(List<Card> cards) throws JavatroException {
 
         if (cards == null || cards.isEmpty() || cards.size() > 5) {
-            throw JavatroException.invalidPlayedHand();
+            throw JavatroException.invalidPlayedHand(1, 5);
         }
 
         // First check for Flush Five (all cards identical)

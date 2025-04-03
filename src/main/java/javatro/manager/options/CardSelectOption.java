@@ -61,7 +61,7 @@ public class CardSelectOption implements Option {
     public void execute() throws JavatroException {
         List<Integer> userInput =
                 Parser.getCardInput(
-                        JavatroCore.currentRound.getPlayerHand().size(), selectionLimit);
+                        JavatroCore.currentRound.getPlayerHandCards().size(), selectionLimit);
 
         // Select and play the chosen cards
         if (UI.getCurrentScreen() instanceof PlayCardScreen) {

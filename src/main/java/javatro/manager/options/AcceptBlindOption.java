@@ -5,7 +5,7 @@ import javatro.core.JavatroException;
 import javatro.display.UI;
 import javatro.manager.JavatroManager;
 
-// @@author swethaiscool
+// @@author swethacool
 /**
  * Represents an option to accept the current blind in the game. This class implements the {@code
  * Option} interface.

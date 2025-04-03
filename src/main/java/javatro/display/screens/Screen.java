@@ -1,6 +1,11 @@
+// @@author Markneoneo
 package javatro.display.screens;
 
-import static javatro.display.UI.*;
+import static javatro.display.UI.BLACK_B;
+import static javatro.display.UI.BOLD;
+import static javatro.display.UI.END;
+import static javatro.display.UI.ITALICS;
+import static javatro.display.UI.printBorderedContent;
 
 import javatro.core.JavatroException;
 import javatro.manager.options.Option;
@@ -9,74 +14,105 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The {@code Screen} class serves as an abstract base class for all screens in the application. It
- * defines common behaviors such as displaying options for the user to select and handling commands.
- * Subclasses must implement the {@link #displayScreen()} method to define their specific content.
+ * Abstract base class representing a display screen in the Javatro application.
+ *
+ * <p>Provides common functionality for:
+ *
+ * <ul>
+ *   <li>Managing screen options/commands
+ *   <li>Displaying formatted menus
+ *   <li>Handling user command selection
+ * </ul>
+ *
+ * <p>Subclasses must implement {@link #displayScreen()} to define specific screen content.
  */
 public abstract class Screen {
 
-    /** A list of commands associated with this screen. */
+    /** Format string for the options title decoration */
+    private static final String TITLE_FORMAT = "%s::: %s :::%s";
+
+    /** List of available commands/options for this screen */
     protected final List<Option> commandMap = new ArrayList<>();
 
-    /** The title of the options menu displayed on the screen. */
+    /** Formatted title for the options menu section */
     private final String optionsTitle;
 
     /**
-     * Constructs a screen with the specified options title.
+     * Constructs a screen with specified options menu title.
      *
-     * @param optionsTitle the title of the options menu (cannot be null or empty)
-     * @throws JavatroException if the options title is null or empty
+     * @param optionsTitle Descriptive title for the options section (1-3 words recommended)
+     * @throws JavatroException if optionsTitle is null or empty
      */
     public Screen(String optionsTitle) throws JavatroException {
         if (optionsTitle == null || optionsTitle.trim().isEmpty()) {
             throw JavatroException.invalidOptionsTitle();
         }
-        this.optionsTitle = String.format("%s::: %s :::%s", BOLD, optionsTitle.trim(), END);
+        this.optionsTitle = String.format(TITLE_FORMAT, BOLD, optionsTitle.trim(), END);
     }
 
     /**
-     * Displays the screen content. This method must be implemented by subclasses to define the
-     * specific behavior and layout of the screen.
+     * Displays the main content of the screen.
+     *
+     * <p>Must be implemented by concrete subclasses to define:
+     *
+     * <ul>
+     *   <li>Screen-specific header/content
+     *   <li>Any additional visual elements
+     *   <li>Dynamic content updates
+     * </ul>
      */
     public abstract void displayScreen();
 
     /**
-     * Displays the available options in a formatted menu style. The menu includes a border, a
-     * centered title, and a list of options with descriptions.
+     * Displays formatted options menu with title and border decoration.
+     *
+     * <p>Output includes:
+     *
+     * <ul>
+     *   <li>Styled title header
+     *   <li>Numbered list of options
+     *   <li>Option descriptions with consistent formatting
+     *   <li>Visual border elements
+     * </ul>
      */
     public void displayOptions() {
-        List<String> optionLines = new ArrayList<>();
+        List<String> optionLines = new ArrayList<>(commandMap.size());
 
+        // Format each option with index, description, and styling
         for (int i = 0; i < commandMap.size(); i++) {
-            String desc = BLACK_B + commandMap.get(i).getDescription() + END;
-            String option = BLACK_B + BOLD + "[" + (i + 1) + "] " + END + ITALICS + desc + END;
+            Option option = commandMap.get(i);
+            String desc = BLACK_B + option.getDescription() + END;
+            String optionLine = BLACK_B + BOLD + "[" + (i + 1) + "] " + END + ITALICS + desc + END;
 
-            optionLines.add(option);
+            optionLines.add(optionLine);
         }
 
         printBorderedContent(optionsTitle, optionLines);
     }
 
     /**
-     * Returns the number of available options (commands) in this screen.
+     * Gets the current number of available options.
      *
-     * @return the number of options available
+     * @return Number of registered commands/options (always ≥ 0)
      */
     public int getOptionsSize() {
         return commandMap.size();
     }
 
     /**
-     * Retrieves the command associated with the given index.
+     * Retrieves a command by its index position.
      *
-     * @param index the index of the command (0-based)
-     * @return the command at the specified index
-     * @throws JavatroException if the index is out of bounds
+     * @param index Zero-based index of the command
+     * @return Selected Option object
+     * @throws JavatroException if index is out of valid range
      */
     public Option getCommand(int index) throws JavatroException {
         if (index < 0 || index >= commandMap.size()) {
             throw JavatroException.indexOutOfBounds(index);
         }
-        return commandMap.get(index);
+
+        Option selected = commandMap.get(index);
+        assert selected != null : "Command list should not contain null elements";
+        return selected;
     }
 }

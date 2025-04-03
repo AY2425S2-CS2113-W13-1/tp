@@ -7,6 +7,7 @@ import javatro.core.JavatroException;
 import javatro.display.UI;
 import javatro.manager.JavatroManager;
 
+// @@author swethacool
 public class NextRoundOption implements Option {
 
     @Override

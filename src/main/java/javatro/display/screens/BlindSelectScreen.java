@@ -10,7 +10,7 @@ import javatro.manager.options.RejectBlindOption;
 import java.util.ArrayList;
 import java.util.List;
 
-// @@author swethaiscool
+// @@author swethacool
 
 /**
  * Represents the screen for selecting the blind in the game. This screen provides options to accept

@@ -8,6 +8,10 @@ public class RoundConfig {
     private String roundName;
     /** The description of the current round. */
     private String roundDescription;
+    /** The maximum number of cards that can be played in this round. */
+    private int maxHandSize = Round.DEFAULT_MAX_HAND_SIZE;
+
+    private int minHandSize = Round.DEFAULT_MIN_HAND_SIZE;
 
     /**
      * Creates a new round configuration.
@@ -65,5 +69,41 @@ public class RoundConfig {
      */
     public void setRoundDescription(String roundDescription) {
         this.roundDescription = roundDescription;
+    }
+
+    /**
+     * Gets the maximum number of cards that can be played in this round.
+     *
+     * @return The maximum hand size
+     */
+    public int getMaxHandSize() {
+        return maxHandSize;
+    }
+
+    /**
+     * Sets the maximum number of cards that can be played in this round.
+     *
+     * @param maxHandSize The new maximum hand size
+     */
+    public void setMaxHandSize(int maxHandSize) {
+        this.maxHandSize = maxHandSize;
+    }
+
+    /**
+     * Gets the minimum number of cards that can be played in this round.
+     *
+     * @return The minimum hand size
+     */
+    public int getMinHandSize() {
+        return minHandSize;
+    }
+
+    /**
+     * Sets the minimum number of cards that can be played in this round.
+     *
+     * @param minHandSize The new minimum hand size
+     */
+    public void setMinHandSize(int minHandSize) {
+        this.minHandSize = minHandSize;
     }
 }

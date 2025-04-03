@@ -1,3 +1,4 @@
+// @@author Markneoneo
 package javatro.display.screens;
 
 import static javatro.display.UI.BLACK_B;
@@ -28,47 +29,106 @@ import static javatro.display.UI.padToWidth;
 
 import javatro.core.Card;
 import javatro.core.Deck;
+import javatro.core.JavatroCore;
 import javatro.core.JavatroException;
-import javatro.core.Round;
 import javatro.manager.options.ReturnOption;
 
 import java.util.ArrayList;
 
 /**
- * DeckViewScreen prints the current deck as a two-dimensional table with totals. - The rows
- * represent card suits (Spades, Hearts, Clubs, Diamonds) with an extra column at the end showing
- * the total number of cards in that suit. - The columns represent card ranks in descending order:
- * A, K, Q, J, 10, 9, …, 2, with an extra row at the bottom showing the total count for each rank.
- * The bottom right cell displays the grand total.
+ * Displays the current deck composition in a formatted table view showing card distribution by suit
+ * and rank.
+ *
+ * <p>The table layout includes:
+ *
+ * <ul>
+ *   <li>Rows for each suit (Spades, Hearts, Clubs, Diamonds)
+ *   <li>Columns for each rank (A, K, Q, J, 10 through 2)
+ *   <li>Suit totals in the rightmost column
+ *   <li>Rank totals in the bottom row
+ *   <li>Grand total in the bottom-right cell
+ * </ul>
  */
 public class DeckViewScreen extends Screen {
 
-    // Overall dimensions: total width = LEFT_WIDTH + RIGHT_WIDTH + 3 (for the vertical borders)
-    private static final int LEFT_WIDTH = 17; // For deck name or suit names (including suit totals)
-    private static final int RIGHT_WIDTH = 80; // For rank headers and the numbers matrix
-    // Total width = 17 + 80 + 3 = 100
+    /** Width of the left section containing suit names */
+    private static final int LEFT_WIDTH = 17;
+
+    /** Width of the right section containing rank counts */
+    private static final int RIGHT_WIDTH = 80;
+
+    /** Total table width accounting for borders */
+    private static final int TOTAL_WIDTH = LEFT_WIDTH + RIGHT_WIDTH + 3;
+
+    /** Number of card suits in standard deck */
+    private static final int SUIT_COUNT = 4;
+
+    /** Number of card ranks in standard deck */
+    private static final int RANK_COUNT = 13;
+
+    /** Order of ranks for display (Ace high) */
+    private static final String[] RANK_ORDER = {
+        "A", "K", "Q", "J", "10", "9", "8", "7", "6", "5", "4", "3", "2"
+    };
+
+    /** Order of suits for display */
+    private static final String[] SUIT_ORDER = {"Spades", "Hearts", "Clubs", "Diamonds"};
+
+    /** Colors for each suit display */
+    private static final String[] SUIT_COLORS = {PURPLE, RED, BLUE, ORANGE};
+
+    /** Background colors for each suit display */
+    private static final String[] SUIT_BACKGROUNDS = {PURPLE_B, RED_B, BLUE_B, ORANGE_B};
 
     /**
-     * Constructs a screen with the specified options title.
+     * Constructs a deck view screen with return option.
      *
-     * @throws JavatroException if the options title is null or empty
+     * @throws JavatroException if screen initialization fails
      */
     public DeckViewScreen() throws JavatroException {
         super("Your Current Deck");
         super.commandMap.add(new ReturnOption());
     }
 
+    /**
+     * Displays the deck composition in a formatted table showing:
+     *
+     * <ul>
+     *   <li>Card counts by suit and rank
+     *   <li>Suit totals
+     *   <li>Rank totals
+     *   <li>Grand total count
+     * </ul>
+     */
     @Override
     public void displayScreen() {
+        Deck deck = JavatroCore.currentRound.getDeck();
+        assert deck != null : "Current deck should not be null";
 
-        Deck deck = Round.deck;
-        String deckType = String.valueOf(deck.getDeckName());
-        ArrayList<Card> remainingCardList = deck.getWholeDeck();
+        ArrayList<Card> remainingCards = deck.getWholeDeck();
+        assert remainingCards != null : "Deck card list should not be null";
 
-        // Step 1: Build the data matrix.
-        // There are 4 suits and 13 ranks.
-        int[][] counts = new int[4][13];
-        for (Card card : remainingCardList) {
+        // Build count matrix and calculate totals
+        DeckCountData countData = buildCountMatrix(remainingCards);
+
+        // Generate and print the formatted table
+        System.out.println(buildDeckTable(deck.getDeckName().toString(), countData));
+    }
+
+    /**
+     * Builds the count matrix and calculates totals from the deck cards.
+     *
+     * @param cards List of cards in the deck
+     * @return DeckCountData containing counts and totals
+     */
+    private DeckCountData buildCountMatrix(ArrayList<Card> cards) {
+        int[][] counts = new int[SUIT_COUNT][RANK_COUNT];
+        int[] suitTotals = new int[SUIT_COUNT];
+        int[] rankTotals = new int[RANK_COUNT];
+        int grandTotal = 0;
+
+        // Populate counts matrix
+        for (Card card : cards) {
             int suitIndex = getSuitIndex(card.suit());
             int rankIndex = getRankIndex(card.rank());
             if (suitIndex != -1 && rankIndex != -1) {
@@ -76,34 +136,46 @@ public class DeckViewScreen extends Screen {
             }
         }
 
-        // Step 2: Compute totals.
-        int[] suitTotals = new int[4]; // Total cards per suit.
-        int[] rankTotals = new int[13]; // Total cards per rank.
-        int grandTotal = 0;
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 13; j++) {
+        // Calculate totals
+        for (int i = 0; i < SUIT_COUNT; i++) {
+            for (int j = 0; j < RANK_COUNT; j++) {
                 suitTotals[i] += counts[i][j];
                 rankTotals[j] += counts[i][j];
                 grandTotal += counts[i][j];
             }
         }
 
-        // Define the order of ranks and suits.
-        // X-axis (columns): A, K, Q, J, 10, 9, ... , 2.
-        String[] rankOrder = {"A", "K", "Q", "J", "10", "9", "8", "7", "6", "5", "4", "3", "2"};
-        // Y-axis (rows): Spades, Hearts, Clubs, Diamonds.
-        String[] suitOrder = {"Spades", "Hearts", "Clubs", "Diamonds"};
-        // Suit Colours
-        String[] suitColour = {PURPLE, RED, BLUE, ORANGE};
-        // Suit Colour Backgrounds
-        String[] suitColourB = {PURPLE_B, RED_B, BLUE_B, ORANGE_B};
+        return new DeckCountData(counts, suitTotals, rankTotals, grandTotal);
+    }
 
-        // Step 3: Build the 4-box table manually.
+    /**
+     * Builds the formatted deck display table.
+     *
+     * @param deckName Name of the current deck
+     * @param countData Deck count statistics
+     * @return Formatted table as StringBuilder
+     */
+    private StringBuilder buildDeckTable(String deckName, DeckCountData countData) {
         StringBuilder sb = new StringBuilder();
 
-        // --- Top Border (spanning both boxes) ---
-        // Format: TOP_LEFT + left box top border (LEFT_WIDTH chars) + T_DOWN + right box top border
-        // (RIGHT_WIDTH chars) + TOP_RIGHT
+        // Table header section
+        buildTableHeader(sb, deckName);
+
+        // Suit rows section
+        buildSuitRows(sb, countData);
+
+        // Totals row section
+        buildTotalsRow(sb, countData);
+
+        // Table footer
+        buildTableFooter(sb);
+
+        return sb;
+    }
+
+    /** Builds the table header with deck name and rank headers */
+    private void buildTableHeader(StringBuilder sb, String deckName) {
+        // Top border
         sb.append(BLACK_B)
                 .append(TOP_LEFT)
                 .append(String.valueOf(HORIZONTAL).repeat(LEFT_WIDTH))
@@ -113,19 +185,12 @@ public class DeckViewScreen extends Screen {
                 .append(END)
                 .append("\n");
 
-        // --------- Top Row Content: Left Box (Deck Name) and Right Box (Rank Header) ---------
-        // Left box: deck name centered in LEFT_WIDTH.
-        String deckName = centerText(deckType, LEFT_WIDTH + 2);
-        // Right box: rank headers.
-        // For 13 ranks, use 5 chars each, and for the total header use 15 chars.
-        StringBuilder rankHeader = new StringBuilder();
-        for (String rank : rankOrder) {
-            rankHeader.append(String.format("%5s", rank));
-        }
-        rankHeader.append(String.format("%15s", "Total" + "     "));
-        // Now, print the row with vertical borders.
+        // Deck name and rank headers
+        String deckHeader = centerText(deckName, LEFT_WIDTH + 2);
+        String rankHeader = buildRankHeader();
+
         sb.append(BOLD)
-                .append(deckName)
+                .append(deckHeader)
                 .append(BOLD)
                 .append(BLACK_B)
                 .append(rankHeader)
@@ -133,9 +198,7 @@ public class DeckViewScreen extends Screen {
                 .append(END)
                 .append("\n");
 
-        // --- Separator between top and bottom boxes ---
-        // Format: T_RIGHT + left box separator (LEFT_WIDTH chars) + CROSS + right box separator
-        // (RIGHT_WIDTH chars) + T_LEFT
+        // Header separator
         sb.append(BLACK_B)
                 .append(T_RIGHT)
                 .append(String.valueOf(HORIZONTAL).repeat(LEFT_WIDTH))
@@ -144,29 +207,27 @@ public class DeckViewScreen extends Screen {
                 .append(T_LEFT)
                 .append(END)
                 .append("\n");
+    }
 
-        // --- Bottom Content Rows ---
-        // We need to print 5 rows: 4 suit rows and 1 totals row (merged into the same box).
-        // For each suit row:
-        //        String[] suitSpace = {
-        //            HAIR_SPACE.repeat(9) + THIN_SPACE,
-        //            HAIR_SPACE.repeat(10),
-        //            HAIR_SPACE.repeat(10),
-        //            HAIR_SPACE.repeat(8)
-        //        };
-        for (int i = 0; i < suitOrder.length; i++) {
-            // Left box: Suit label
-            String suitLabel = String.format("%s%s%s", suitColour[i], suitOrder[i], END);
+    /** Builds the rank header line */
+    private String buildRankHeader() {
+        StringBuilder header = new StringBuilder();
+        for (String rank : RANK_ORDER) {
+            header.append(String.format("%5s", rank));
+        }
+        header.append(String.format("%15s", "Total     "));
+        return header.toString();
+    }
+
+    /** Builds the suit rows with counts */
+    private void buildSuitRows(StringBuilder sb, DeckCountData countData) {
+        for (int i = 0; i < SUIT_ORDER.length; i++) {
+            String suitLabel = String.format("%s%s%s", SUIT_COLORS[i], SUIT_ORDER[i], END);
             String leftContent = centerText(suitLabel, LEFT_WIDTH + 2);
-            // Right box: For this suit, print 13 numbers (each in 5 chars) then pad the totals
-            // column with spaces (15 chars).
-            StringBuilder rightContent = new StringBuilder();
-            for (int j = 0; j < rankOrder.length; j++) {
-                rightContent.append(String.format("%5d", counts[i][j]));
-            }
-            rightContent.append(String.format("%15s", suitTotals[i] + "      "));
-            String rightRow = suitColourB[i] + padToWidth(rightContent.toString(), RIGHT_WIDTH);
-            // Print the row with vertical borders.
+
+            String rightContent = buildSuitCounts(i, countData.counts[i], countData.suitTotals[i]);
+            String rightRow = SUIT_BACKGROUNDS[i] + padToWidth(rightContent, RIGHT_WIDTH);
+
             sb.append(BLACK_B)
                     .append(BOLD)
                     .append(leftContent)
@@ -179,25 +240,44 @@ public class DeckViewScreen extends Screen {
                     .append(END)
                     .append("\n");
         }
-        // Totals row (for ranks) in bottom right, and label "Total" in bottom left.
-        String leftTotals = centerText("Total", LEFT_WIDTH + 2);
-        StringBuilder rightTotals = new StringBuilder();
-        for (int j = 0; j < rankOrder.length; j++) {
-            rightTotals.append(String.format("%5d", rankTotals[j]));
+    }
+
+    /** Builds the counts string for a single suit */
+    private String buildSuitCounts(int suitIndex, int[] counts, int suitTotal) {
+        StringBuilder content = new StringBuilder();
+        for (int j = 0; j < RANK_COUNT; j++) {
+            content.append(String.format("%5d", counts[j]));
         }
-        rightTotals.append(String.format("%9d", grandTotal));
-        String rightTotalsRow = padToWidth(rightTotals.toString(), RIGHT_WIDTH);
+        content.append(String.format("%15s", suitTotal + "      "));
+        return content.toString();
+    }
+
+    /** Builds the totals row */
+    private void buildTotalsRow(StringBuilder sb, DeckCountData countData) {
+        String leftTotals = centerText("Total", LEFT_WIDTH + 2);
+        String rightTotals = buildTotalsString(countData);
+
         sb.append(BOLD)
                 .append(leftTotals)
                 .append(BLACK_B)
-                .append(rightTotalsRow)
+                .append(rightTotals)
                 .append(VERTICAL)
                 .append(END)
                 .append("\n");
+    }
 
-        // --- Bottom Border ---
-        // Format: BOTTOM_LEFT + left box bottom border (LEFT_WIDTH chars) + T_UP + right box bottom
-        // border (RIGHT_WIDTH chars) + BOTTOM_RIGHT
+    /** Builds the totals string for rank totals and grand total */
+    private String buildTotalsString(DeckCountData countData) {
+        StringBuilder totals = new StringBuilder();
+        for (int j = 0; j < RANK_COUNT; j++) {
+            totals.append(String.format("%5d", countData.rankTotals[j]));
+        }
+        totals.append(String.format("%9d", countData.grandTotal));
+        return padToWidth(totals.toString(), RIGHT_WIDTH);
+    }
+
+    /** Builds the table footer */
+    private void buildTableFooter(StringBuilder sb) {
         sb.append(BLACK_B)
                 .append(BOTTOM_LEFT)
                 .append(String.valueOf(HORIZONTAL).repeat(LEFT_WIDTH))
@@ -205,13 +285,13 @@ public class DeckViewScreen extends Screen {
                 .append(String.valueOf(HORIZONTAL).repeat(RIGHT_WIDTH))
                 .append(BOTTOM_RIGHT)
                 .append(END);
-
-        // Finally, print the complete table.
-        System.out.println(sb);
     }
 
     /**
-     * Maps a card suit to a row index. Order: Spades -> 0, Hearts -> 1, Clubs -> 2, Diamonds -> 3.
+     * Maps card suit to display row index.
+     *
+     * @param suit Card suit to map
+     * @return Row index (0-3) or -1 if invalid
      */
     private int getSuitIndex(Card.Suit suit) {
         return switch (suit) {
@@ -223,7 +303,12 @@ public class DeckViewScreen extends Screen {
         };
     }
 
-    /** Maps a card rank to a column index based on the desired order: A, K, Q, J, 10, 9, …, 2. */
+    /**
+     * Maps card rank to display column index based on RANK_ORDER.
+     *
+     * @param rank Card rank to map
+     * @return Column index (0-12) or -1 if invalid
+     */
     private int getRankIndex(Card.Rank rank) {
         String symbol = rank.getSymbol();
         return switch (symbol) {
@@ -242,5 +327,20 @@ public class DeckViewScreen extends Screen {
             case "2" -> 12;
             default -> -1;
         };
+    }
+
+    /** Helper class to organize deck count data. */
+    private static class DeckCountData {
+        final int[][] counts;
+        final int[] suitTotals;
+        final int[] rankTotals;
+        final int grandTotal;
+
+        DeckCountData(int[][] counts, int[] suitTotals, int[] rankTotals, int grandTotal) {
+            this.counts = counts;
+            this.suitTotals = suitTotals;
+            this.rankTotals = rankTotals;
+            this.grandTotal = grandTotal;
+        }
     }
 }

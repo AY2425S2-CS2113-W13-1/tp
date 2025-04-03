@@ -33,8 +33,12 @@ public class Deck {
     }
 
     /** Draws and returns a card from the top of the deck */
-    public Card draw() {
-        return deck.remove(0);
+    public Card draw() throws JavatroException {
+        try {
+            return deck.remove(0);
+        } catch (IndexOutOfBoundsException e) {
+            throw JavatroException.noCardsRemaining();
+        }
     }
 
     /** Returns an integer containing the cards left in the deck */

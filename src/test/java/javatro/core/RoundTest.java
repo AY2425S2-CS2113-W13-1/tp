@@ -50,7 +50,9 @@ public class RoundTest {
         assertEquals(expectedBlindScore, round.getBlindScore());
         assertEquals(remainingPlays, round.getRemainingPlays());
         assertEquals(0, round.getCurrentScore());
-        assertEquals(4, round.getRemainingDiscards());
+        if (ante.getBlind() != Ante.Blind.BOSS_BLIND) {
+            assertEquals(3, round.getRemainingDiscards());
+        }
         assertFalse(round.isRoundOver());
     }
 
@@ -245,15 +247,15 @@ public class RoundTest {
         Round round = new Round(ante, 3, deck, heldJokers, "", "");
 
         // Initial state
-        assertEquals(4, round.getRemainingDiscards());
-        int initialHandSize = round.getPlayerHand().size();
+        assertEquals(3, round.getRemainingDiscards());
+        int initialHandSize = round.getPlayerHandCards().size();
 
         // Discard 2 cards
         round.discardCards(List.of(0, 1));
 
         // Check state after discard
-        assertEquals(3, round.getRemainingDiscards());
-        assertEquals(initialHandSize, round.getPlayerHand().size());
+        assertEquals(2, round.getRemainingDiscards());
+        assertEquals(initialHandSize, round.getPlayerHandCards().size());
     }
 
     @Test
@@ -264,13 +266,12 @@ public class RoundTest {
         ante.setBlind(Ante.Blind.SMALL_BLIND);
         Round round = new Round(ante, 3, deck, heldJokers, "", "");
 
-        // Use all 4 discards
-        round.discardCards(List.of(0));
+        // Use all 3 discards
         round.discardCards(List.of(0));
         round.discardCards(List.of(0));
         round.discardCards(List.of(0));
 
-        // Fifth discard should fail
+        // Fourth discard should fail
         try {
             round.discardCards(List.of(0));
             fail("Should have thrown an exception for too many discards");
@@ -288,8 +289,8 @@ public class RoundTest {
         Round round = new Round(ante, 3, deck, heldJokers, "", "");
 
         // Initial state
-        assertEquals(4, round.getRemainingDiscards());
-        int initialHandSize = round.getPlayerHand().size();
+        assertEquals(3, round.getRemainingDiscards());
+        int initialHandSize = round.getPlayerHandCards().size();
 
         // Discard 0 cards
         try {
@@ -299,8 +300,8 @@ public class RoundTest {
             assertEquals(getExceptionMessage("Cannot discard zero cards"), e.getMessage());
         }
 
-        assertEquals(4, round.getRemainingDiscards());
-        assertEquals(initialHandSize, round.getPlayerHand().size());
+        assertEquals(3, round.getRemainingDiscards());
+        assertEquals(initialHandSize, round.getPlayerHandCards().size());
     }
 
     @Test
@@ -318,5 +319,136 @@ public class RoundTest {
         // Check values were updated
         assertEquals("New Round", round.getRoundName());
         assertEquals("New Description", round.getRoundDescription());
+    }
+
+    @Test
+    public void round_bossType_none() throws JavatroException {
+        Deck deck = new Deck(Deck.DeckType.DEFAULT);
+        Ante ante = new Ante();
+        ante.setAnteCount(1);
+        ante.setBlind(Ante.Blind.SMALL_BLIND);
+        Round round = new Round(ante, 3, deck, heldJokers, "", "");
+
+        // Check that default values are maintained
+        assertEquals(3, round.getRemainingDiscards());
+        assertEquals(Round.DEFAULT_MAX_HAND_SIZE, round.getConfig().getMaxHandSize());
+        assertEquals(Round.DEFAULT_MIN_HAND_SIZE, round.getConfig().getMinHandSize());
+    }
+
+    @Test
+    public void round_bossType_theNeedle() throws JavatroException {
+        Deck deck = new Deck(Deck.DeckType.DEFAULT);
+        Ante ante = new Ante();
+        ante.setAnteCount(1);
+        ante.setBlind(Ante.Blind.BOSS_BLIND);
+        Round round = new Round(ante, 3, deck, heldJokers, "", "");
+
+        round.setBossType(Round.BossType.THE_NEEDLE);
+
+        // Check that max hand size is set to 1
+        assertEquals(1, round.getRemainingPlays());
+        assertEquals(Round.DEFAULT_MIN_HAND_SIZE, round.getConfig().getMinHandSize());
+    }
+
+    @Test
+    public void round_bossType_theWater() throws JavatroException {
+        Deck deck = new Deck(Deck.DeckType.DEFAULT);
+        Ante ante = new Ante();
+        ante.setAnteCount(1);
+        ante.setBlind(Ante.Blind.BOSS_BLIND);
+        Round round = new Round(ante, 3, deck, heldJokers, "", "");
+
+        round.setBossType(Round.BossType.THE_WATER);
+
+        // Check that no discards are allowed
+        assertEquals(0, round.getRemainingDiscards());
+    }
+
+    @Test
+    public void round_bossType_thePsychic() throws JavatroException {
+        Deck deck = new Deck(Deck.DeckType.DEFAULT);
+        Ante ante = new Ante();
+        ante.setAnteCount(1);
+        ante.setBlind(Ante.Blind.BOSS_BLIND);
+        Round round = new Round(ante, 3, deck, heldJokers, "", "");
+
+        round.setBossType(Round.BossType.THE_PSYCHIC);
+
+        // Check that min and max hand size are both 5
+        assertEquals(5, round.getConfig().getMaxHandSize());
+        assertEquals(5, round.getConfig().getMinHandSize());
+    }
+
+    @Test
+    public void round_bossType_otherBosses() throws JavatroException {
+        Deck deck = new Deck(Deck.DeckType.DEFAULT);
+        Ante ante = new Ante();
+        ante.setAnteCount(1);
+        ante.setBlind(Ante.Blind.BOSS_BLIND);
+        Round round = new Round(ante, 3, deck, heldJokers, "", "");
+
+        // Test other bosses that don't have specific rule changes
+        Round.BossType[] otherBosses = {
+            Round.BossType.THE_CLUB,
+            Round.BossType.THE_WINDOW,
+            Round.BossType.THE_HEAD,
+            Round.BossType.THE_GOAD,
+            Round.BossType.THE_PLANT
+        };
+
+        for (Round.BossType bossType : otherBosses) {
+            round.setBossType(bossType);
+
+            // Check that default values are maintained for other bosses
+            assertEquals(Round.DEFAULT_MAX_HAND_SIZE, round.getConfig().getMaxHandSize());
+            assertEquals(Round.DEFAULT_MIN_HAND_SIZE, round.getConfig().getMinHandSize());
+        }
+    }
+
+    @Test
+    public void round_getBossType() throws JavatroException {
+        Deck deck = new Deck(Deck.DeckType.DEFAULT);
+        Ante ante = new Ante();
+        ante.setAnteCount(1);
+        ante.setBlind(Ante.Blind.SMALL_BLIND);
+        Round round = new Round(ante, 3, deck, heldJokers, "", "");
+
+        // Test getting and setting boss type
+        round.setBossType(Round.BossType.THE_NEEDLE);
+        assertEquals(Round.BossType.THE_NEEDLE, round.getBossType());
+
+        round.setBossType(Round.BossType.THE_WATER);
+        assertEquals(Round.BossType.THE_WATER, round.getBossType());
+    }
+
+    @Test
+    public void round_testRandomBossType() throws JavatroException {
+        Deck deck = new Deck(Deck.DeckType.DEFAULT);
+        Ante ante = new Ante();
+        ante.setAnteCount(1);
+        ante.setBlind(Ante.Blind.BOSS_BLIND);
+        Round round = new Round(ante, 3, deck, heldJokers, "", "");
+
+        switch (round.getBossType()) {
+            case THE_NEEDLE:
+                assertEquals(Round.BossType.THE_NEEDLE, round.getBossType());
+                assertEquals(1, round.getRemainingPlays());
+                assertEquals(Round.DEFAULT_MIN_HAND_SIZE, round.getConfig().getMinHandSize());
+                break;
+            case THE_WATER:
+                assertEquals(Round.BossType.THE_WATER, round.getBossType());
+                assertEquals(0, round.getRemainingDiscards());
+                assertEquals(Round.DEFAULT_MIN_HAND_SIZE, round.getConfig().getMinHandSize());
+                break;
+            case THE_PSYCHIC:
+                assertEquals(Round.BossType.THE_PSYCHIC, round.getBossType());
+                assertEquals(5, round.getConfig().getMaxHandSize());
+                assertEquals(5, round.getConfig().getMinHandSize());
+                break;
+            default:
+                assertEquals(Round.DEFAULT_MAX_HAND_SIZE, round.getConfig().getMaxHandSize());
+                assertEquals(Round.DEFAULT_MIN_HAND_SIZE, round.getConfig().getMinHandSize());
+                break;
+        }
     }
 }

@@ -33,7 +33,8 @@ public class ExitGameOption implements Option {
         printANSI("end_screen.txt");
 
         // display the farewell message with borders and ANSI formatting
-        UI.printBorderedContent("GOODBYE", List.of(RED + "WE KNOW YOU WILL BE BACK SOON" + END));
+        UI.printBorderedContent(
+                BOLD + "GOODBYE", List.of(RED + "WE KNOW YOU WILL BE BACK SOON" + END));
         System.exit(0); // Terminate the application
     }
 }

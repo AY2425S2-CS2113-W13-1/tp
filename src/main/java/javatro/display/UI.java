@@ -1,9 +1,22 @@
+// @@author Markneoneo
 package javatro.display;
 
 import javatro.core.Card;
 import javatro.core.JavatroException;
-import javatro.display.screens.*;
+import javatro.display.screens.BlindSelectScreen;
+import javatro.display.screens.DeckSelectScreen;
 import javatro.display.screens.DeckViewScreen;
+import javatro.display.screens.DiscardCardScreen;
+import javatro.display.screens.GameScreen;
+import javatro.display.screens.HelpScreen;
+import javatro.display.screens.LoseScreen;
+import javatro.display.screens.PlayCardScreen;
+import javatro.display.screens.PokerHandScreen;
+import javatro.display.screens.Screen;
+import javatro.display.screens.StartScreen;
+import javatro.display.screens.WinGameScreen;
+import javatro.display.screens.WinRoundScreen;
+import javatro.display.screens.RunsScreen;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +26,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * The {@code display} class is responsible for managing and displaying different screens in the
+ * The {@code UI} class is responsible for managing and displaying different screens in the
  * application. It handles user input, manages screen transitions, and notifies observers of user
  * actions. This class follows the Singleton pattern to ensure a single instance manages all
  * display-related operations.
@@ -22,33 +35,28 @@ public class UI {
 
     /** Fixed width for the bordered message display. */
     public static final int BORDER_WIDTH = 100;
-    /** display-related constants for display formatting. */
-    public static final String CARD = "\uD83C\uDCCF";
 
-    // region FORMATTING STRINGS
-    public static final String HEARTS = "♥️";
-    public static final String SPADES = "♠️";
-    public static final String DIAMONDS = "♦️";
-    public static final String CLUBS = "♣️";
-    public static final String WARNING = "⚠️ ";
-    public static final String WRITE = "✍️ ";
-    public static final String ARROW = "╰┈➤ ";
-
+    // region ANSI FORMATTING CODES
+    /** ANSI escape code to reset all formatting. */
     public static final String END = "\033[0m";
+    /** ANSI escape code for bold text. */
     public static final String BOLD = "\033[1m";
+    /** ANSI escape code for italic text. */
     public static final String ITALICS = "\033[3m";
+    /** ANSI escape code for underlined text. */
     public static final String UNDERLINE = "\033[4m";
 
+    // Text colors
     public static final String WHITE = "\033[97m";
     public static final String RED = "\033[91m";
     public static final String GREEN = "\033[92m";
     public static final String YELLOW = "\033[93m";
     public static final String BLUE = "\033[94m";
-    //    public static final String PURPLE = "\033[95m";
     public static final String PURPLE = "\033[38;2;115;14;147m";
     public static final String CYAN = "\033[96m";
     public static final String ORANGE = "\033[38;2;255;165;0m";
-    public static final String BLACK = "\033[30m";
+
+    // Background colors
     public static final String WHITE_B = "\033[107m";
     public static final String BLACK_B = "\033[40m";
     public static final String BLUE_B = "\033[104m";
@@ -56,7 +64,7 @@ public class UI {
     public static final String PURPLE_B = "\033[48;2;115;14;147m";
     public static final String ORANGE_B = "\033[48;2;255;165;0m";
 
-    /** Custom border characters */
+    /** Custom border characters for UI elements */
     public static final char TOP_LEFT = '╔';
 
     public static final char TOP_RIGHT = '╗';
@@ -69,22 +77,12 @@ public class UI {
     public static final char T_DOWN = '╦';
     public static final char T_LEFT = '╣';
     public static final char T_RIGHT = '╠';
-
-    // Unicode spacing characters for experimentation
-    public static final String NORMAL_SPACE = " "; // U+0020
-    public static final String EN_SPACE = " "; // U+2002 (1.5× normal space)
-    public static final String EM_SPACE = " "; // U+2003 (2× normal space)
-    public static final String THIN_SPACE = " "; // U+2009 (~½ normal space)
-    public static final String HAIR_SPACE = " "; // U+200A (~⅓ normal space)
-    public static final String ZERO_WIDTH_SPACE = "​"; // U+200B (invisible)
-    public static final String ZERO_WIDTH_JOINER = "‍"; // U+200D
-    public static final String ZERO_WIDTH_NON_JOINER = "‌"; // U+200C
-
     // endregion
 
     /** Parser instance for handling user input. */
     private static final Parser PARSER = new Parser();
 
+    // region SCREEN INSTANCES
     /** Predefined game-related screens. */
     private static final GameScreen GAME_SCREEN;
 
@@ -101,13 +99,9 @@ public class UI {
     private static final LoseScreen LOSE_SCREEN;
     private static final RunsScreen RUNS_SCREEN;
 
-    /** The current screen being displayed to the user. */
-    private static Screen currentScreen;
-    /** The screen displayed before current screen. */
-    private static Screen previousScreen;
-
     static {
         try {
+            // Initialize all screen components
             GAME_SCREEN = new GameScreen();
             DISCARD_SCREEN = new DiscardCardScreen();
             PLAY_SCREEN = new PlayCardScreen();
@@ -127,387 +121,329 @@ public class UI {
             throw new RuntimeException("Failed to initialize screens", e);
         }
     }
+    // endregion
 
-    // region PRINTING FUNCTIONS
+    /** The current screen being displayed to the user. */
+    private static Screen currentScreen;
+    /** The screen displayed before current screen. */
+    private static Screen previousScreen;
 
-    public static void printBlackB(String input) {
-        System.out.print(UI.BLACK_B + input + UI.END);
-    }
+    // region OUTPUT METHODS
 
     /**
-     * Prints a bordered message or menu with a title and dynamically generated content. Uses a
-     * default width of 100.
+     * Prints text with a black background using ANSI escape codes.
      *
-     * @param title the title of the message or menu
-     * @param content a list of content lines
+     * @param input The text to be printed with black background
      */
-    public static void printBorderedContent(String title, List<String> content) {
-        printBorderedContent(
-                title,
-                content,
-                BORDER_WIDTH,
-                BORDER_WIDTH); // Calls the main method with default width
+    public static void printBlackB(String input) {
+        assert input != null : "Input string cannot be null";
+        System.out.print(BLACK_B + input + END);
     }
 
     /**
      * Prints a bordered message or menu with a title and dynamically generated content.
      *
-     * @param title the title of the message or menu
-     * @param content a list of content lines
-     * @param titleWidth the width of the bordered content title
+     * @param title The title of the message or menu
+     * @param content A list of content lines
      */
-    public static void printBorderedContent(
-            String title, List<String> content, int titleWidth, int contentWidth) {
-
-        // Top border
-        printBlackB(TOP_LEFT + String.valueOf(HORIZONTAL).repeat(BORDER_WIDTH - 2) + TOP_RIGHT);
-        System.out.println();
-
-        // Centered title
-        printBlackB(centerText(title, titleWidth));
-        System.out.println();
-
-        // Middle border
-        printBlackB(T_RIGHT + String.valueOf(HORIZONTAL).repeat(BORDER_WIDTH - 2) + T_LEFT);
-        System.out.println();
-
-        // Display content (lines from the provider)
-        for (String line : content) {
-            printBlackB(centerText(line, contentWidth));
-            System.out.println();
-        }
-
-        // Bottom border
-        printBlackB(
-                BOTTOM_LEFT + String.valueOf(HORIZONTAL).repeat(BORDER_WIDTH - 2) + BOTTOM_RIGHT);
-        System.out.println();
+    public static void printBorderedContent(String title, List<String> content) {
+        assert title != null : "Title cannot be null";
+        assert content != null : "Content list cannot be null";
+        printBorderedContent(title, content, BORDER_WIDTH, BORDER_WIDTH);
     }
 
     /**
-     * Centers the given text within a specified width, padding it with spaces on both sides. This
-     * version handles ANSI escape codes and Unicode characters correctly.
+     * Prints a bordered message or menu with customizable widths for title and content.
      *
-     * @param text the text to center
-     * @param width the total width to center within
-     * @return the centered text surrounded by borders
+     * @param title The title of the message or menu
+     * @param content A list of content lines
+     * @param titleWidth The width of the title section
+     * @param contentWidth The width of the content section
+     */
+    public static void printBorderedContent(
+            String title, List<String> content, int titleWidth, int contentWidth) {
+        assert title != null : "Title cannot be null";
+        assert content != null : "Content list cannot be null";
+        assert titleWidth > 0 : "Title width must be positive";
+        assert contentWidth > 0 : "Content width must be positive";
+
+        // Build all border components first for efficiency
+        String topBorder =
+                TOP_LEFT + String.valueOf(HORIZONTAL).repeat(BORDER_WIDTH - 2) + TOP_RIGHT;
+        String middleBorder =
+                T_RIGHT + String.valueOf(HORIZONTAL).repeat(BORDER_WIDTH - 2) + T_LEFT;
+        String bottomBorder =
+                BOTTOM_LEFT + String.valueOf(HORIZONTAL).repeat(BORDER_WIDTH - 2) + BOTTOM_RIGHT;
+
+        // Use StringBuilder to minimize IO operations
+        StringBuilder output = new StringBuilder();
+
+        // Top border
+        output.append(BLACK_B).append(topBorder).append(END).append("\n");
+
+        // Centered title
+        output.append(centerText(title, titleWidth)).append("\n");
+
+        // Middle border
+        output.append(BLACK_B).append(middleBorder).append(END).append("\n");
+
+        // Content lines
+        for (String line : content) {
+            output.append(centerText(line, contentWidth)).append("\n");
+        }
+
+        // Bottom border
+        output.append(BLACK_B).append(bottomBorder).append(END).append("\n");
+
+        System.out.print(output);
+    }
+
+    /**
+     * Centers text within a specified width, accounting for ANSI codes and Unicode characters.
+     *
+     * @param text The text to center
+     * @param width The total available width
+     * @return The centered text surrounded by border characters
      */
     public static String centerText(String text, int width) {
-        // Calculate display length accounting for ANSI codes and Unicode characters
+        assert text != null : "Text cannot be null";
+        assert width > 0 : "Width must be positive";
+
         int displayLength = getDisplayLength(text);
 
-        // Ensure width is sufficient
+        // Handle case where text is longer than available space
         if (width <= displayLength + 2) {
             return BLACK_B + VERTICAL + " " + text + " " + VERTICAL + END;
         }
 
-        // Calculate padding
         int paddingSize = (width - displayLength - 2) / 2;
-        int extraPadding = (width - displayLength - 2) % 2; // Handles odd width cases
+        int extraPadding = (width - displayLength - 2) % 2;
 
-        // Format the centered text with borders
-        return BLACK_B
-                + VERTICAL
-                + " ".repeat(paddingSize)
-                + text
-                + BLACK_B
-                + " ".repeat(paddingSize + extraPadding)
-                + VERTICAL
-                + END;
+        return String.format(
+                "%s%s%s%s%s%s%s%s",
+                BLACK_B,
+                VERTICAL,
+                " ".repeat(paddingSize),
+                text,
+                BLACK_B,
+                " ".repeat(paddingSize + extraPadding),
+                VERTICAL,
+                END);
     }
 
-    // Helper: pad or truncate a string to exactly 'width' characters.
+    /**
+     * Truncates or pads a string to exactly the specified display width.
+     *
+     * @param text The input text
+     * @param width The desired display width
+     * @return The adjusted string
+     */
     public static String padToWidth(String text, int width) {
+        assert text != null : "Text cannot be null";
+        assert width > 0 : "Width must be positive";
+
         if (getDisplayLength(text) > width) {
             return text.substring(0, width);
-        } else {
-            return String.format("%-" + width + "s", text);
         }
-    }
-
-    // Helper method to pad a string to the right to a specified length.
-    public static String padRight(String text, int width) {
-        if (getDisplayLength(text) >= width) return text.substring(0, width);
         return String.format("%-" + width + "s", text);
     }
 
     /**
-     * Calculates the visible display length of text, ignoring ANSI codes and accounting for special
-     * Unicode characters.
+     * Calculates the visible length of text, ignoring ANSI codes and special Unicode characters.
      *
-     * @param text the text to measure
-     * @return the visible length of the text
+     * @param text The text to measure
+     * @return The effective display length
      */
     public static int getDisplayLength(String text) {
-        // Remove ANSI escape codes
+        assert text != null : "Text cannot be null";
+
+        // Remove ANSI escape sequences
         String strippedText = text.replaceAll("\033\\[[;\\d]*m", "");
 
-        // Calculate adjusted length accounting for special characters
         double length = 0;
         for (int i = 0; i < strippedText.length(); i++) {
             char c = strippedText.charAt(i);
+
+            // Handle special Unicode characters
             if (c == '\u200A') { // Hair space
                 length += 0.3;
             } else if (c == '\u2009') { // Thin space
                 length += 0.5;
-            } else if (c == '\u2002') { // En space
-                length += 1.5;
-            } else if (c == '\u2003') { // Em space
+            } else if (c >= '\uD800' && c <= '\uDFFF') { // Surrogate pair (emoji)
                 length += 2;
-            } else if (c == '\u200B' || c == '\u200C' || c == '\u200D') { // Zero-width
-                // No addition to length
-            } else if (c >= '\uD800' && c <= '\uDFFF') { // Surrogate pairs (emoji)
-                length += 2;
-                i++; // Skip the next char in the pair
-            } else {
+                i++; // Skip next character in pair
+            } else { // Regular character
                 length += 1;
             }
         }
-
         return (int) Math.round(length);
     }
 
     /**
-     * Generates a list of strings representing the ASCII art lines for all cards in the hand.
+     * Generates ASCII art lines for displaying cards.
      *
-     * @param holdingHand the list of cards to render
-     * @return List of strings where each string represents a line of card art
+     * @param holdingHand The list of cards to render
+     * @return List of strings representing card art lines
      */
     public static List<String> getCardArtLines(List<Card> holdingHand) {
-        List<String> cardArtLines = new ArrayList<>();
-        int cardCount = holdingHand.size();
-        int cardLength = 5; // Number of lines per card
+        assert holdingHand != null : "Card list cannot be null";
+        assert !holdingHand.isEmpty() : "Card list cannot be empty";
 
-        // Render each card into its ASCII art representation
-        String[][] renderedCards = new String[cardCount][cardLength];
-        for (int i = 0; i < cardCount; i++) {
+        List<String> cardArtLines = new ArrayList<>();
+        final int CARD_LINE_COUNT = 5; // Number of lines per card
+
+        // Render all cards first
+        String[][] renderedCards = new String[holdingHand.size()][CARD_LINE_COUNT];
+        for (int i = 0; i < holdingHand.size(); i++) {
             renderedCards[i] = CardRenderer.renderCard(holdingHand.get(i));
         }
 
-        // Combine the card art line by line
-        for (int line = 0; line < cardLength; line++) {
-            StringBuilder lineBuilder = new StringBuilder();
-            for (int i = 0; i < cardCount; i++) {
-                lineBuilder.append(renderedCards[i][line]);
-                if (i < cardCount - 1) { // Add space only if there's another card after this one
-                    lineBuilder.append(BLACK_B + "  " + END);
+        // Combine lines horizontally
+        for (int line = 0; line < CARD_LINE_COUNT; line++) {
+            StringBuilder combinedLine = new StringBuilder();
+            for (int cardIdx = 0; cardIdx < renderedCards.length; cardIdx++) {
+                combinedLine.append(renderedCards[cardIdx][line]);
+                if (cardIdx < renderedCards.length - 1) {
+                    combinedLine.append(BLACK_B).append("  ").append(END);
                 }
             }
-            cardArtLines.add(lineBuilder.toString());
+            cardArtLines.add(combinedLine.toString());
         }
-
         return cardArtLines;
     }
 
+    /**
+     * Prints ANSI art from a resource file.
+     *
+     * @param fileName The name of the file in the ansi resources directory
+     */
     public static void printANSI(String fileName) {
+        assert fileName != null && !fileName.isEmpty() : "Filename cannot be null or empty";
+
         try (InputStream inputStream =
-                WinRoundScreen.class.getResourceAsStream("/javatro/display/ansi/" + fileName)) {
+                UI.class.getResourceAsStream("/javatro/display/ansi/" + fileName)) {
             if (inputStream == null) {
                 throw JavatroException.errorLoadingLogo(fileName);
             }
             try (Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8)) {
-                System.out.println(
-                        scanner.useDelimiter("\\A").next()); // Print file content directly
+                System.out.println(scanner.useDelimiter("\\A").next());
             }
         } catch (IOException | JavatroException e) {
-            System.err.println(JavatroException.errorLoadingLogo(fileName).getMessage());
-            System.out.println("JIMBO"); // Fallback print if file is not found
+            System.err.println("Error loading ANSI art: " + e.getMessage());
+            System.out.println("ANSI TEXT"); // Fallback output
         }
     }
-
-    //    static {
-    //        try (InputStream inputStream =
-    //                     StartScreen.class.getResourceAsStream("/javatro/display/ansi/jimbo.txt"))
-    // {
-    //            if (inputStream == null) {
-    //                throw JavatroException.errorLoadingLogo("jimbo.txt");
-    //            }
-    //            try (Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8)) {
-    //                JIMBO = scanner.useDelimiter("\\A").next(); // Read the entire file
-    //            }
-    //        } catch (IOException | JavatroException e) {
-    //            JIMBO = "JIMBO"; // Fallback in case of error
-    //            System.err.println(JavatroException.errorLoadingLogo("jimbo.txt").getMessage());
-    //        }
-    //    }
-
     // endregion
 
+    // region SCREEN MANAGEMENT
+
     /**
-     * Gets the current screen being displayed.
+     * Transitions to a new screen and updates display.
      *
-     * @return the current {@link Screen}
+     * @param screen The screen to display
+     * @throws JavatroException if the screen is null
+     */
+    public void setCurrentScreen(Screen screen) throws JavatroException {
+        assert screen != null : "Screen cannot be null";
+        if (screen == null) {
+            throw JavatroException.invalidScreen();
+        }
+
+        // Update screen history
+        if (currentScreen != null) {
+            previousScreen = currentScreen;
+        }
+
+        System.out.printf(
+                "%s%sTransitioning to: %s%s%n",
+                ORANGE, UNDERLINE, screen.getClass().getSimpleName(), END);
+        currentScreen = screen;
+        currentScreen.displayScreen();
+        PARSER.getOptionInput();
+    }
+
+    /** Clears the console using ANSI escape codes. */
+    public static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+    // endregion
+
+    // region ACCESSORS
+
+    /**
+     * @return The current active screen
      */
     public static Screen getCurrentScreen() {
         return currentScreen;
     }
 
     /**
-     * Sets the current screen and displays it.
-     *
-     * @param screen the screen to be displayed
-     * @throws IllegalArgumentException if the provided screen is {@code null}
-     */
-    public void setCurrentScreen(Screen screen) throws JavatroException {
-        if (screen == null) {
-            throw JavatroException.invalidScreen();
-        }
-
-        // Store the current screen as previous before changing
-        if (currentScreen != null) {
-            previousScreen = currentScreen;
-        }
-
-        System.out.printf(
-                "%s%sTransitioning to: %s%s\n",
-                ORANGE, UNDERLINE, screen.getClass().getSimpleName(), END);
-        currentScreen = screen;
-        currentScreen.displayScreen();
-        PARSER.getOptionInput(); // This will handle retries internally
-    }
-
-    /**
-     * Gets the previous screen that was displayed before the current one.
-     *
-     * @return the previous {@link Screen}, or null if there wasn't one
+     * @return The previously active screen
      */
     public static Screen getPreviousScreen() {
         return previousScreen;
     }
 
-    /** Clears the console screen. This method uses ANSI escape codes to clear the console. */
-    public static void clearScreen() {
-        final String FLUSH = "\033[H\033[2J";
-        System.out.print(FLUSH);
-        System.out.flush(); // Ensure the output is flushed
-    }
-
     /**
-     * Gets the parser instance for handling user input.
-     *
-     * @return the {@link Parser} instance
+     * @return The input parser instance
      */
     public static Parser getParser() {
         return PARSER;
     }
 
-    // region Screen Getters
-
-    /**
-     * Gets the screen where users select cards to discard.
-     *
-     * @return the {@link DiscardCardScreen} instance
-     */
+    // Screen-specific accessors with corrected documentation
     public static DiscardCardScreen getDiscardScreen() {
         return DISCARD_SCREEN;
     }
 
-    /**
-     * Gets the screen where users select cards to play.
-     *
-     * @return the {@link PlayCardScreen} instance
-     */
     public static PlayCardScreen getPlayScreen() {
         return PLAY_SCREEN;
     }
 
-    /**
-     * Gets the game screen.
-     *
-     * @return the {@link GameScreen} instance
-     */
     public static GameScreen getGameScreen() {
         return GAME_SCREEN;
     }
 
-    /**
-     * Gets the start screen.
-     *
-     * @return the {@link StartScreen} instance
-     */
     public static StartScreen getStartScreen() {
         return START_SCREEN;
     }
 
-    /**
-     * Gets the help screen.
-     *
-     * @return the {@link HelpScreen} instance
-     */
     public static HelpScreen getHelpScreen() {
         return HELP_SCREEN;
     }
 
-    /**
-     * Gets the poker hand screen.
-     *
-     * @return the {@link PokerHandScreen} instance
-     */
     public static PokerHandScreen getPokerHandScreen() {
         return POKER_SCREEN;
     }
 
-    /**
-     * Gets the Deck screen.
-     *
-     * @return the {@link DeckViewScreen} instance
-     */
     public static DeckViewScreen getDeckViewScreen() {
         return DECK_VIEW_SCREEN;
     }
 
-    /**
-     * Gets the help screen.
-     *
-     * @return the {@link HelpScreen} instance
-     */
     public static DeckSelectScreen getDeckSelectScreen() {
         return DECK_SELECT_SCREEN;
     }
 
-    /**
-     * Gets the help screen.
-     *
-     * @return the {@link HelpScreen} instance
-     */
     public static WinRoundScreen getWinRoundScreen() {
         return WIN_ROUND_SCREEN;
     }
 
-    /**
-     * Gets the help screen.
-     *
-     * @return the {@link HelpScreen} instance
-     */
     public static WinGameScreen getWinGameScreen() {
         return WIN_GAME_SCREEN;
     }
 
-    /**
-     * Gets the help screen.
-     *
-     * @return the {@link HelpScreen} instance
-     */
     public static LoseScreen getLoseScreen() {
         return LOSE_SCREEN;
     }
 
-    // @@author swethaiscool
+    // @@author swethacool
     /**
-     * Returns the singleton instance of the {@code BlindSelectScreen}.
-     *
-     * @return the {@code BlindSelectScreen} instance.
+     * @return The blind selection screen instance
      */
     public static BlindSelectScreen getBlindScreen() {
         return BLIND_SCREEN;
     }
-    // @@author swethaiscool
-
-    /**
-     * Gets the Runs Menu screen.
-     *
-     * @return the {@link DeckScreen} instance
-     */
-    public static RunsScreen getRunsScreen() {
-        return RUNS_SCREEN;
-    }
+    // @@author swethacool
+    // endregion
 }

@@ -53,6 +53,19 @@ public class RoundState {
         return remainingDiscards;
     }
 
+    /**
+     * Sets the number of remaining discards to a specified amount.
+     *
+     * @param amount The number of discards to set
+     * @throws IllegalArgumentException if the amount is negative
+     */
+    public void setRemainingDiscards(int amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Amount cannot be negative");
+        }
+        remainingDiscards = amount;
+    }
+
     /** Reduces the number of remaining discards by one. */
     public void decrementDiscards() {
         remainingDiscards--;
@@ -82,11 +95,15 @@ public class RoundState {
     }
 
     /**
-     * Increases the number of remaining plays by a specified amount.
+     * Set the number of remaining plays by a specified amount.
      *
-     * @param amount The number of additional plays to add
+     * @param amount The number of additional plays to set
+     * @throws IllegalArgumentException if the amount is negative
      */
-    public void increaseRemainingPlays(int amount) {
-        remainingPlays += amount;
+    public void setRemainingPlays(int amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Amount cannot be negative");
+        }
+        remainingPlays = amount;
     }
 }

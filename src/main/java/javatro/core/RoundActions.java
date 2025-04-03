@@ -1,12 +1,14 @@
 package javatro.core;
 
+import static javatro.core.Round.DEFAULT_MAX_HAND_SIZE;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 /** Implements the game actions available in a round. */
 public class RoundActions {
-    /** The round these actions apply to. */
+    /** The round instance associated with these actions. */
     private final Round round;
 
     /**
@@ -27,44 +29,59 @@ public class RoundActions {
     public List<Card> playCards(List<Integer> cardIndices) throws JavatroException {
         assert cardIndices != null : "Card indices cannot be null";
 
-        // Validation
-        if (cardIndices.size() > Round.MAX_HAND_SIZE || cardIndices.isEmpty()) {
-            throw JavatroException.invalidPlayedHand();
-        }
+        validatePlayCards(cardIndices);
 
         RoundState state = round.getState();
-        if (state.getRemainingPlays() <= 0) {
-            throw JavatroException.noPlaysRemaining();
-        }
-
-        assert !cardIndices.isEmpty() : "Card indices cannot be empty";
-        assert cardIndices.size() <= Round.MAX_HAND_SIZE
-                : "Cannot play more than " + Round.MAX_HAND_SIZE + " cards";
-        assert state.getRemainingPlays() > 0 : "No plays remaining to execute this action";
-
         long oldScore = state.getCurrentScore();
         int oldRemainingPlays = state.getRemainingPlays();
 
         // Execute play
-        List<Card> playedCards = round.playerHand.play(cardIndices);
+        List<Card> playedCards = round.getPlayerHand().play(cardIndices);
         PokerHand result = HandResult.evaluateHand(playedCards);
-        Score handScore = new Score();
-        long pointsEarned = handScore.getScore(result, playedCards, round.playerJokers);
+        Score handScore = new Score(round.getBossType());
+        long pointsEarned = handScore.getScore(result, playedCards, round.getPlayerJokers());
         state.addScore(pointsEarned);
 
         // Draw new cards to replace played ones
-        round.playerHand.draw(cardIndices.size(), Round.deck);
+        round.getPlayerHand().draw(cardIndices.size(), round.getDeck());
         state.decrementPlays();
 
         assert state.getRemainingPlays() == oldRemainingPlays - 1
                 : "Remaining plays should decrease by exactly 1";
         assert state.getCurrentScore() >= oldScore
                 : "Score should not decrease after playing cards";
-        assert round.playerHand.getHand().size() == Round.INITIAL_HAND_SIZE
+        assert round.getPlayerHand().getHand().size() == Round.INITIAL_HAND_SIZE
                 : "Hand size should be maintained after play";
 
         round.updateRoundVariables();
         return playedCards;
+    }
+
+    /**
+     * Validates that a set of cards can be played.
+     *
+     * @param cardIndices Indices of cards to validate
+     * @throws JavatroException If the play is invalid
+     */
+    private void validatePlayCards(List<Integer> cardIndices) throws JavatroException {
+        Boolean isAcceptableHandSize =
+                cardIndices.size() <= round.getConfig().getMaxHandSize()
+                        && cardIndices.size() >= round.getConfig().getMinHandSize();
+
+        if (!isAcceptableHandSize) {
+            throw JavatroException.invalidPlayedHand(
+                    round.getConfig().getMinHandSize(), round.getConfig().getMaxHandSize());
+        }
+
+        if (round.getState().getRemainingPlays() <= 0) {
+            throw JavatroException.noPlaysRemaining();
+        }
+
+        assert !cardIndices.isEmpty() : "Card indices cannot be empty";
+        assert cardIndices.size() <= round.getConfig().getMaxHandSize()
+                : "Cannot play more than " + round.getConfig().getMaxHandSize() + " cards";
+        assert round.getState().getRemainingPlays() > 0
+                : "No plays remaining to execute this action";
     }
 
     /**
@@ -74,18 +91,44 @@ public class RoundActions {
      * @throws JavatroException If the discard is invalid
      */
     public List<Card> discardCards(List<Integer> cardIndices) throws JavatroException {
-        RoundState state = round.getState();
-        Integer numberOfDiscards = cardIndices.size();
-
         assert cardIndices != null : "Card indices cannot be null";
 
-        // Validation
+        validateDiscardCards(cardIndices);
+
+        // Handle duplicates by using a Set
+        Set<Integer> indicesToDiscard = new HashSet<>(cardIndices);
+        int handSizeBefore = round.getPlayerHand().getHand().size();
+        int oldRemainingDiscards = round.getState().getRemainingDiscards();
+
+        // Execute discard
+        List<Card> discardedCards = round.getPlayerHand().discard(cardIndices);
+        round.getState().decrementDiscards();
+        round.getPlayerHand().draw(indicesToDiscard.size(), round.getDeck());
+
+        assert round.getState().getRemainingDiscards() == oldRemainingDiscards - 1
+                : "Remaining discards should decrease by exactly 1";
+        assert round.getPlayerHand().getHand().size() == handSizeBefore
+                : "Hand size should be maintained after discard";
+
+        round.updateRoundVariables();
+        return discardedCards;
+    }
+
+    /**
+     * Validates that a set of cards can be discarded.
+     *
+     * @param cardIndices Indices of cards to validate
+     * @throws JavatroException If the discard is invalid
+     */
+    private void validateDiscardCards(List<Integer> cardIndices) throws JavatroException {
+        RoundState state = round.getState();
+        int numberOfDiscards = cardIndices.size();
+
         if (state.getRemainingDiscards() <= 0) {
             throw JavatroException.noRemainingDiscards();
         }
 
-        if (numberOfDiscards > round.playerHand.getHand().size()
-                || numberOfDiscards > state.getRemainingDiscards()) {
+        if (numberOfDiscards > DEFAULT_MAX_HAND_SIZE) {
             throw JavatroException.tooManyDiscards();
         }
 
@@ -95,23 +138,5 @@ public class RoundActions {
 
         assert !cardIndices.isEmpty() : "Cannot discard zero cards";
         assert state.getRemainingDiscards() > 0 : "No discards remaining to execute this action";
-
-        // Handle duplicates by using a Set
-        Set<Integer> indicesToDiscard = new HashSet<>(cardIndices);
-        int handSizeBefore = round.playerHand.getHand().size();
-        int oldRemainingDiscards = state.getRemainingDiscards();
-
-        // Execute discard
-        List<Card> discardedCards = round.playerHand.discard(cardIndices);
-        state.decrementDiscards();
-        round.playerHand.draw(indicesToDiscard.size(), Round.deck);
-
-        assert state.getRemainingDiscards() == oldRemainingDiscards - 1
-                : "Remaining discards should decrease by exactly 1";
-        assert round.playerHand.getHand().size() == handSizeBefore
-                : "Hand size should be maintained after discard";
-
-        round.updateRoundVariables();
-        return discardedCards;
     }
 }

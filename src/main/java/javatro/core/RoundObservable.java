@@ -7,7 +7,9 @@ import java.beans.PropertyChangeSupport;
 
 /** Handles observer notifications for round state changes. */
 public class RoundObservable {
+    /** The round being observed. */
     private final Round round;
+    /** The property change support for the observer pattern. */
     private final PropertyChangeSupport support;
 
     /**
@@ -39,7 +41,7 @@ public class RoundObservable {
         support.firePropertyChange("remainingDiscards", null, state.getRemainingDiscards());
         support.firePropertyChange("roundName", null, config.getRoundName());
         support.firePropertyChange("roundDescription", null, config.getRoundDescription());
-        support.firePropertyChange("holdingHand", null, round.getPlayerHand());
+        support.firePropertyChange("holdingHand", null, round.getPlayerHandCards());
         support.firePropertyChange("currentScore", null, state.getCurrentScore());
 
         // Update Storage's playing hand

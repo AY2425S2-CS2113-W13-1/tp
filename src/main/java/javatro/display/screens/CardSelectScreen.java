@@ -1,3 +1,4 @@
+// @@author Markneoneo
 package javatro.display.screens;
 
 import static javatro.display.UI.BOLD;
@@ -21,65 +22,71 @@ import javatro.core.Card;
 import javatro.core.HoldingHand;
 import javatro.core.JavatroCore;
 import javatro.core.JavatroException;
-import javatro.manager.options.*;
+import javatro.manager.options.CardSelectOption;
+import javatro.manager.options.DeckViewOption;
+import javatro.manager.options.PokerHandOption;
+import javatro.manager.options.ResumeGameOption;
+import javatro.manager.options.SortByRankOption;
+import javatro.manager.options.SortBySuitOption;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The {@code CardSelectScreen} class represents an abstract screen where users select cards from
- * their hand. It provides methods for updating and displaying the player's current hand. This class
- * is intended to be extended by specific screens like {@code DiscardCardScreen} and {@code
- * PlayCardScreen}.
+ * Abstract base class for card selection screens with sorting and display capabilities.
  *
- * <p>The class includes functionality to:
+ * <p>Provides common functionality for:
  *
  * <ul>
- *   <li>Update the player's current hand of cards.
- *   <li>Display the player's hand in a formatted layout.
- *   <li>Provide a default selection limit for card selection.
+ *   <li>Displaying formatted card hands
+ *   <li>Handling card sorting operations
+ *   <li>Managing selection options
+ *   <li>Maintaining card display state
  * </ul>
- *
- * @see Screen
  */
 public abstract class CardSelectScreen extends Screen {
 
-    /** The list of cards currently in the player's hand. */
+    /** Default spacing between card indices in the title display */
+    private static final int CARD_INDEX_SPACING = 8;
+
+    /** Number of lines in the card art display */
+    private static final int CARD_ART_LINES = 5;
+
+    /** Current player's hand of cards */
     private List<Card> holdingHand;
 
+    /** Active sorting order for card display */
     private SortOrder currentSortOrder;
 
     /**
-     * Constructs a {@code CardSelectScreen} with a custom options title and initializes it with a
-     * resume game command.
+     * Constructs a card selection screen with core functionality.
      *
-     * @param optionsTitle The title to display for the option menu.
-     * @throws JavatroException if an error occurs during initialization.
-     * @throws IllegalArgumentException if the options title is null or empty.
+     * @param optionsTitle Title for the options section
+     * @throws JavatroException if optionsTitle is invalid
      */
     public CardSelectScreen(String optionsTitle) throws JavatroException {
         super(optionsTitle);
 
-        // Add the "Select Cards" and "Resume Game" options
+        // Initialize selection commands
         super.commandMap.add(new CardSelectOption());
         super.commandMap.add(new SortBySuitOption(this));
         super.commandMap.add(new SortByRankOption(this));
         super.commandMap.add(new PokerHandOption());
         super.commandMap.add(new DeckViewOption());
         super.commandMap.add(new ResumeGameOption());
+
+        assert commandMap.size() == 6 : "Should have 6 initial commands";
     }
 
     /**
-     * Updates the holding hand by retrieving the player's current hand from the game core.
+     * Updates and sorts the displayed hand according to specified order.
      *
-     * @param sortOrder The sorting order to apply (null for no sorting)
+     * @param sortOrder Desired sorting order (null preserves current order)
      */
     public void updateHoldingHand(SortOrder sortOrder) {
-        // Get current Holding Hand
-        this.holdingHand = new ArrayList<>(JavatroCore.currentRound.getPlayerHand());
+        this.holdingHand = new ArrayList<>(JavatroCore.currentRound.getPlayerHandCards());
         this.currentSortOrder = sortOrder != null ? sortOrder : SortOrder.ORIGINAL;
 
-        // Apply sorting if requested
         if (sortOrder != null && sortOrder != SortOrder.ORIGINAL) {
             HoldingHand tempHand = new HoldingHand();
             tempHand.Hand = new ArrayList<>(this.holdingHand);
@@ -91,44 +98,41 @@ public abstract class CardSelectScreen extends Screen {
                 case BY_RANK:
                     tempHand.sortByRank();
                     break;
-                default: // Should not happen at all.
+                default:
+                    // Maintain original order
                     break;
             }
 
             this.holdingHand = tempHand.getHand();
+            assert this.holdingHand.size() == tempHand.getHand().size()
+                    : "Sorting should not change card count";
         }
-        // Update holding hand for proper selection index
-        JavatroCore.currentRound.playerHand.setHand(holdingHand);
+
+        JavatroCore.currentRound.setPlayerHandCards(this.holdingHand);
     }
 
     /**
-     * Generates and returns the formatted card indices title string for the player's hand.
+     * Generates formatted card index header for display.
      *
-     * @param cardCount the number of cards in the hand
-     * @return formatted string showing card indices with proper spacing and coloring
+     * @param cardCount Number of cards in hand
+     * @return Formatted string with numbered card positions
      */
     protected String getCardIndicesTitle(int cardCount) {
+        assert cardCount >= 0 : "Card count cannot be negative";
+
         StringBuilder title = new StringBuilder();
         for (int i = 1; i <= cardCount; i++) {
             title.append(YELLOW).append(BOLD).append("<").append(i).append(">");
-            // Only add spacing if not the last element
             if (i < cardCount) {
-                //                title.append(HAIR_SPACE.repeat(18));
-                title.append(" ".repeat(8));
+                title.append(" ".repeat(CARD_INDEX_SPACING));
             }
         }
         title.append(END);
         return title.toString();
     }
 
-    /**
-     * Displays the player's current hand of cards in a formatted layout with borders. The cards are
-     * displayed with their indices and ASCII art, with special formatting for the middle line of
-     * card art.
-     */
+    /** Displays formatted card hand with borders and styling. */
     public void displayHoldingHand() {
-
-        // Sort hand if chosen
         updateHoldingHand(currentSortOrder);
 
         if (holdingHand.isEmpty()) {
@@ -137,51 +141,50 @@ public abstract class CardSelectScreen extends Screen {
             return;
         }
 
-        int cardCount = holdingHand.size();
+        final int cardCount = holdingHand.size();
+        assert cardCount > 0 : "Card count should be positive when not empty";
 
-        // Top border
+        // Render top border
         printBlackB(TOP_LEFT + String.valueOf(HORIZONTAL).repeat(BORDER_WIDTH - 2) + TOP_RIGHT);
         System.out.println();
 
-        // Card Indices title
-        String indicesTitle = getCardIndicesTitle(cardCount);
-        printBlackB(centerText(indicesTitle, 100)); // 81
+        // Display card indices
+        printBlackB(centerText(getCardIndicesTitle(cardCount), 100));
         System.out.println();
 
-        // Middle border
+        // Middle divider
         printBlackB(T_RIGHT + String.valueOf(HORIZONTAL).repeat(BORDER_WIDTH - 2) + T_LEFT);
         System.out.println();
 
-        // Get and display card art
+        // Display card art
         List<String> cardArtLines = getCardArtLines(holdingHand);
+        assert cardArtLines.size() == CARD_ART_LINES
+                : "Card art should have " + CARD_ART_LINES + " lines";
+
         for (int i = 0; i < cardArtLines.size(); i++) {
             String line = cardArtLines.get(i);
-            // Apply a different border style for the 3rd line (index 2)
-            if (i == 2) {
-                printBlackB(centerText(line, 100)); // 110
-            } else {
-                printBlackB(centerText(line, BORDER_WIDTH));
-            }
+            int width = (i == 2) ? 100 : BORDER_WIDTH; // Special width for middle line
+            printBlackB(centerText(line, width));
             System.out.println();
         }
 
-        // Bottom border
+        // Render bottom border
         printBlackB(
                 BOTTOM_LEFT + String.valueOf(HORIZONTAL).repeat(BORDER_WIDTH - 2) + BOTTOM_RIGHT);
         System.out.println();
     }
 
-    /**
-     * Displays the screen. This method is intended to be overridden by subclasses to provide
-     * specific screen display behavior.
-     */
+    /** Sorting options for card display */
+    public enum SortOrder {
+        /** Original deal order */
+        ORIGINAL,
+        /** Grouped by card suit */
+        BY_SUIT,
+        /** Ordered by card rank */
+        BY_RANK
+    }
+
+    /** Implemented by subclasses to define screen-specific display logic */
     @Override
     public abstract void displayScreen();
-
-    // Add an enum for sorting options
-    public enum SortOrder {
-        ORIGINAL,
-        BY_SUIT,
-        BY_RANK,
-    }
 }

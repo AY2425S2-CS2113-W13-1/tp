@@ -1,3 +1,4 @@
+// @@author Markneoneo
 package javatro.display.screens;
 
 import static javatro.display.UI.printANSI;
@@ -8,28 +9,40 @@ import javatro.manager.options.HelpMenuOption;
 import javatro.manager.options.RunMenuOption;
 
 /**
- * The {@code StartScreen} class represents the initial menu screen of the application. It provides
- * options to start a game, access help, or exit the game.
+ * Initial application screen displaying main menu options and game logo.
  *
- * <p>This screen displays a visually appealing welcome message, including the javatro logo, which
- * is loaded from an external file during class initialization.
+ * <p>Provides functionality for:
+ *
+ * <ul>
+ *   <li>Displaying the Javatro logo
+ *   <li>Presenting core game startup options
+ *   <li>Handling basic application navigation
+ * </ul>
  */
 public class StartScreen extends Screen {
 
     /**
-     * Constructs a {@code StartScreen} and initializes available commands.
+     * Constructs the start screen with default main menu options.
      *
-     * @throws JavatroException if the options title is invalid or if there is an error initializing
-     *     the screen
+     * @throws JavatroException if screen initialization fails
      */
     public StartScreen() throws JavatroException {
         super("MAIN MENU");
         commandMap.add(new RunMenuOption());
         commandMap.add(new HelpMenuOption());
         commandMap.add(new ExitGameOption());
+
+        assert commandMap.size() == 3 : "StartScreen should have exactly 3 initial options";
     }
 
-    /** Displays the start screen, including the game logo and available options. */
+    /**
+     * Displays the startup screen content including:
+     *
+     * <ul>
+     *   <li>Javatro logo loaded from external file
+     *   <li>Formatted menu options (handled by superclass)
+     * </ul>
+     */
     @Override
     public void displayScreen() {
         printANSI("javatro_logo.txt");
