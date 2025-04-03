@@ -12,11 +12,11 @@ import javatro.display.screens.HelpScreen;
 import javatro.display.screens.LoseScreen;
 import javatro.display.screens.PlayCardScreen;
 import javatro.display.screens.PokerHandScreen;
+import javatro.display.screens.RunsScreen;
 import javatro.display.screens.Screen;
 import javatro.display.screens.StartScreen;
 import javatro.display.screens.WinGameScreen;
 import javatro.display.screens.WinRoundScreen;
-import javatro.display.screens.RunsScreen;
 
 import java.io.IOException;
 import java.io.InputStream;
