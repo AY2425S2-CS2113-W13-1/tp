@@ -49,7 +49,7 @@ public class Score {
 
         // First add pokerHand's chip and mult base to the scores.
         totalChips = pokerHand.getChips();
-        totalMultiplier = this.bossType == BossType.THE_NEEDLE ? 1 : pokerHand.getMultiplier();
+        totalMultiplier = pokerHand.getMultiplier();
 
         // Score the cards and apply any Jokers that have effects on play here.
         for (Card currentCard : playedCardList) {

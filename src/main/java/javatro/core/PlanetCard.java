@@ -75,7 +75,7 @@ public class PlanetCard {
                         35,
                         3,
                         PokerHand.HandType.FIVE_OF_A_KIND,
-                        "planet_planet_x.txt"));
+                        "planet_planetX.txt"));
         CARDS.put(
                 PokerHand.HandType.FLUSH_HOUSE,
                 new PlanetCard("Ceres", 40, 4, PokerHand.HandType.FLUSH_HOUSE, "planet_ceres.txt"));

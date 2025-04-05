@@ -1,5 +1,7 @@
 package javatro.core.jokers;
 
+// @@author jwyk
+
 import javatro.core.jokers.addchip.OddToddJoker;
 import javatro.core.jokers.addchip.ScaryFaceJoker;
 import javatro.core.jokers.addmult.*;
@@ -27,7 +29,7 @@ public class JokerFactory {
     /**
      * Returns a random Joker from the above list.
      *
-     * @return A RandomJoker
+     * @return A Joker from the List of Jokers above.
      */
     public static Joker createRandomJoker() {
         return jokerSuppliers.get(random.nextInt(jokerSuppliers.size())).get();

@@ -18,6 +18,8 @@
 - [Glossary](#glossary)
 - [Acknowledgements](#acknowledgements)
 
+<div style="page-break-after: always;"></div>
+
 ### What is Javatro?
 
 #### Introduction
@@ -64,21 +66,33 @@ The game progresses through several **Rounds**, with each round having a limited
 #### 4. Jokers’ Effects
 The game may have **Joker Slots** that provide special abilities or bonuses when utilized. By default, these slots are empty but may be activated based on game progression or deck type.
 
+Jokers are earned everytime you beat 1 **Boss Blind**.
+
+Below are some of the possible Jokers that you can get in the game.
+
+| Joker Name | Detailed Effect                                                        | Short Form Description |
+|------------|------------------------------------------------------------------------|------------------------|
+| OddTodd    | Played cards with Odd rank gives +31 Chips when scored (A, 9, 7, 5, 3) | 31 Chips for Odd       |
+| ScaryFace  | Played Face (K, Q, J) Cards give +30 Chips                             | +30 Chips for Face     |
+| Abstract   | +3 Mult for each Joker card held (Currently +x Mult)                   | +3 Mult per Joker      |
+
 ---
 
 #### 5. Cards and Poker Hands
 Players are dealt cards at the start of each round. The objective is to arrange these cards into valid **Poker Hands**. Common Poker Hands include:
 
-- **High Card**: The highest card in the hand when no other combination is made.
-- **Pair**: Two cards of the same rank.
-- **Two Pair**: Two separate pairs.
-- **Three of a Kind**: Three cards of the same rank.
-- **Straight**: Five consecutive cards of varying suits.
-- **Flush**: Five cards of the same suit.
-- **Full House**: A combination of a Three of a Kind and a Pair.
-- **Four of a Kind**: Four cards of the same rank.
-- **Straight Flush**: Five consecutive cards of the same suit.
-- **Royal Flush**: Ace, King, Queen, Jack, Ten of the same suit.
+| Hand               | Description                                       |
+|--------------------|---------------------------------------------------|
+| **High Card**      | Highest card when no other combination is made.   |
+| **Pair**           | Two cards of the same rank.                       |
+| **Two Pair**       | Two separate pairs.                               |
+| **Three of a Kind**| Three cards of the same rank.                     |
+| **Straight**       | Five consecutive cards of varying suits.          |
+| **Flush**          | Five cards of the same suit.                      |
+| **Full House**     | A Three of a Kind and a Pair combined.            |
+| **Four of a Kind** | Four cards of the same rank.                      |
+| **Straight Flush** | Five consecutive cards of the same suit.          |
+| **Royal Flush**    | Ace, King, Queen, Jack, Ten of the same suit.     |
 
 Each Poker Hand is worth a specific amount of points. Higher-ranking hands yield more points. Javatro provides options for the player to easily see different statistics to help them plan and optimise.
 
@@ -132,6 +146,7 @@ java -Dfile.encoding=UTF-8 -jar javatro.jar
 java "-Dfile.encoding=UTF-8" -jar javatro.jar
 ```
 - Use on-screen menu options to navigate through the game.
+
 ---
 
 ## Features
@@ -144,10 +159,12 @@ This is the initial screen of the game where you are presented with the followin
 - `1. Start Game`
 - `2. Help Menu`
 - `3. Exit Game`
----
+
 Enter `1`, `2` or `3` into to select an option.
 
-- ### Deck Selection Screen
+---
+
+### Deck Selection Screen
 ![Deck Selection](deck_selection.png)
 
 
@@ -157,8 +174,9 @@ After selecting `1. Start Game`, you will be prompted to select a deck. Availabl
 - `3. Checkered Deck`: Start with 26 Hearts, 26 Spades
 - `4. Abandoned Deck`: Start with no Face Cards (K, Q, J)
 
----
 Enter `1`, `2`, `3` or `4` to select a deck.
+
+---
 
 ### Blind Selection Screen
 ![Blind Selection](blind_screen.png)
@@ -168,8 +186,9 @@ After selecting a deck, you will proceed to select a Blind level:
 - `1. Accept Blind`
 - `2. Reject Blind`
 
----
 Enter `1` to accept the current blind and proceed to the game, or `2` to reject the current blind and select a different one.
+
+---
 
 ### Game Screen
 ![Game Screen](game_screen.png)
@@ -183,8 +202,10 @@ The main game interface where you can view your cards, current score, and game s
 - `5. Main Menu`
 - `6. Exit Game`
 
----
 Enter `1`, `2`, `3`, `4`, `5` or `6` to select an option.
+
+---
+
 ### Discarding Cards
 ![Discard Card Screen](discard_card.png)  
 
@@ -197,8 +218,11 @@ The **Discard Card Screen** allows the player to manage their cards and prepare 
 - `4. View Poker Hands` - Display possible poker hands you can form with your current cards.
 - `5. View Deck` - Shows all the remaining cards in the deck.
 - `6. Return To Game` - Go back to the main game screen without making any changes.
----
+
 Enter `1`, `2`, `3`, `4`, `5` or `6` to select an option.
+
+---
+
 ### Playing Cards
 ![Play Card Screen](play_card.png)
 
@@ -212,8 +236,11 @@ The **Play Card Screen** allows the player to select cards to form valid poker h
 - `4. View Poker Hands` - Display possible poker hands you can form with your current cards.
 - `5. View Deck` - Shows all the remaining cards in the deck.
 - `6. Return To Game` - Go back to the main game screen without making any changes.
----
+
 Enter `1`, `2`, `3`, `4`, `5` or `6` to select an option.
+
+---
+
 ### Deck View Screen
 ![Deck View Screen](deck_view.png)  
 

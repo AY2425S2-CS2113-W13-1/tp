@@ -4,6 +4,8 @@ import javatro.core.JavatroException;
 
 import java.util.ArrayList;
 
+// @@author jwyk
+
 /** Holds all the Jokers the player has in an ArrayList of type Joker. */
 public class HeldJokers {
     private static int HOLDING_LIMIT;

@@ -1,5 +1,7 @@
 package javatro.core.jokers.addchip;
 
+// @@author jwyk
+
 import static javatro.display.UI.BLACK_B;
 import static javatro.display.UI.BLUE;
 import static javatro.display.UI.BOLD;
