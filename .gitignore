@@ -21,3 +21,4 @@ htmlReport/
 Gemfile.lock
 _include/
 _site/
+*.csv

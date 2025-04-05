@@ -12,6 +12,7 @@ import javatro.manager.JavatroManager;
  * manager to the start screen.
  */
 public class Javatro {
+
     /** The view component of the application. */
     private static final UI javatroView = new UI();
 

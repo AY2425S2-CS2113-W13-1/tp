@@ -6,6 +6,7 @@ import javatro.core.JavatroException;
 import javatro.display.UI;
 import javatro.manager.options.AcceptBlindOption;
 import javatro.manager.options.RejectBlindOption;
+import javatro.storage.Storage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +51,10 @@ public class BlindSelectScreen extends Screen {
      * @return the index of the current blind (0 for Small Blind, 1 for Large Blind, 2 for Boss
      *     Blind).
      */
+    // @@author swethacool
     private int getCurrentBlindIndex() {
         Ante.Blind currentBlind = JavatroCore.getAnte().getBlind();
+        Storage.getStorageInstance().setValue(Storage.getStorageInstance().getRunChosen(),9,currentBlind.getName());
         return (currentBlind == Ante.Blind.SMALL_BLIND)
                 ? 0
                 : (currentBlind == Ante.Blind.LARGE_BLIND) ? 1 : 2;

@@ -143,11 +143,11 @@ public class Deck {
      * Enum representing the type of the deck. Test Deck is not to be used, and is a default deck.
      */
     public enum DeckType {
-        ABANDONED("Abandoned"),
-        BLUE("Blue"),
-        CHECKERED("Checkered"),
-        RED("Red"),
-        DEFAULT("Default");
+        ABANDONED("ABANDONED"),
+        BLUE("BLUE"),
+        CHECKERED("CHECKERED"),
+        RED("RED"),
+        DEFAULT("DEFAULT");
 
         private final String name;
 

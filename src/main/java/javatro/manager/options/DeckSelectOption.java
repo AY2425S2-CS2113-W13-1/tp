@@ -5,6 +5,7 @@ import javatro.core.JavatroCore;
 import javatro.core.JavatroException;
 import javatro.display.UI;
 import javatro.manager.JavatroManager;
+import javatro.storage.Storage;
 
 public class DeckSelectOption implements Option {
 
@@ -40,7 +41,8 @@ public class DeckSelectOption implements Option {
     @Override
     public void execute() throws JavatroException {
         JavatroCore.deck = new Deck(deckType);
-        JavatroManager.beginGame(deckType);
+        Storage.getStorageInstance().setValue(Storage.getStorageInstance().getRunChosen()-1, 8,deckType.getName());
+        JavatroManager.beginGame((Storage.DeckFromKey(Storage.getStorageInstance().getValue(Storage.getStorageInstance().getRunChosen(), 8))));
         JavatroManager.setScreen(UI.getBlindScreen());
     }
 }

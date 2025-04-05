@@ -8,9 +8,18 @@ import javatro.core.JavatroCore;
 import javatro.core.JavatroException;
 import javatro.display.UI;
 import javatro.manager.JavatroManager;
+import javatro.storage.Storage;
+
+import java.util.List;
+import java.util.TreeMap;
+
+import static javatro.storage.Storage.getStorageInstance;
 
 /** A command that starts the game and loads the game screen. */
 public class StartGameOption implements Option {
+
+    private String description = "Start Game";  // Default description
+
 
     /**
      * Provides a brief description of the command.
@@ -19,8 +28,19 @@ public class StartGameOption implements Option {
      */
     @Override
     public String getDescription() {
-        return "Start Game";
+        return description;
     }
+
+    /**
+     * Updates the description of the command.
+     *
+     * @param description The new description to set.
+     */
+    @Override
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 
     /**
      * Executes the command to begin the game, restore available commands, and update the main
@@ -32,6 +52,7 @@ public class StartGameOption implements Option {
     public void execute() throws JavatroException {
         // Return to game if there is an existing game.
         if (JavatroCore.currentRound == null || JavatroCore.currentRound.isLost()) {
+            if(JavatroCore.currentRound == null) Storage.getStorageInstance().addNewRun();
             JavatroCore.currentRound = null;
             JavatroManager.setScreen(UI.getDeckSelectScreen());
         }
@@ -39,4 +60,5 @@ public class StartGameOption implements Option {
             JavatroManager.setScreen(UI.getGameScreen());
         }
     }
+
 }

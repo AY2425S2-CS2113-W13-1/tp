@@ -4,6 +4,7 @@ import javatro.core.JavatroCore;
 import javatro.core.JavatroException;
 import javatro.display.UI;
 import javatro.manager.JavatroManager;
+import javatro.storage.Storage;
 
 // @@author swethacool
 /**
@@ -33,6 +34,7 @@ public class AcceptBlindOption implements Option {
         JavatroManager.jc.beginGame();
         JavatroCore.currentRound.addPropertyChangeListener(javatro.display.UI.getGameScreen());
         JavatroCore.currentRound.updateRoundVariables();
+        Storage.getStorageInstance().updateSaveFile();
         JavatroManager.setScreen(UI.getGameScreen());
     }
 }

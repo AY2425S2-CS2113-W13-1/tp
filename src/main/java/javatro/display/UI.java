@@ -3,19 +3,7 @@ package javatro.display;
 
 import javatro.core.Card;
 import javatro.core.JavatroException;
-import javatro.display.screens.BlindSelectScreen;
-import javatro.display.screens.DeckSelectScreen;
-import javatro.display.screens.DeckViewScreen;
-import javatro.display.screens.DiscardCardScreen;
-import javatro.display.screens.GameScreen;
-import javatro.display.screens.HelpScreen;
-import javatro.display.screens.LoseScreen;
-import javatro.display.screens.PlayCardScreen;
-import javatro.display.screens.PokerHandScreen;
-import javatro.display.screens.Screen;
-import javatro.display.screens.StartScreen;
-import javatro.display.screens.WinGameScreen;
-import javatro.display.screens.WinRoundScreen;
+import javatro.display.screens.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -96,6 +84,8 @@ public class UI {
     private static final WinRoundScreen WIN_ROUND_SCREEN;
     private static final WinGameScreen WIN_GAME_SCREEN;
     private static final LoseScreen LOSE_SCREEN;
+    private static final RunSelectScreen RUN_SELECT_SCREEN;
+    private static final JumpToRunScreen JUMP_TO_RUN_SCREEN;
 
     static {
         try {
@@ -112,6 +102,8 @@ public class UI {
             WIN_ROUND_SCREEN = new WinRoundScreen();
             WIN_GAME_SCREEN = new WinGameScreen();
             LOSE_SCREEN = new LoseScreen();
+            RUN_SELECT_SCREEN = new RunSelectScreen();
+            JUMP_TO_RUN_SCREEN = new JumpToRunScreen();
         } catch (JavatroException e) {
             System.err.println("Failed to initialize screens: " + e.getMessage());
             e.printStackTrace();
@@ -432,6 +424,14 @@ public class UI {
 
     public static LoseScreen getLoseScreen() {
         return LOSE_SCREEN;
+    }
+
+    public static RunSelectScreen getRunSelectScreen() {
+        return RUN_SELECT_SCREEN;
+    }
+
+    public static JumpToRunScreen getJumpToRunScreen() {
+        return JUMP_TO_RUN_SCREEN;
     }
 
     // @@author swethacool
