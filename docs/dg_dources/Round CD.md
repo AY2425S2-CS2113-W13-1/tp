@@ -1,64 +1,114 @@
+---
+config:
+  theme: default
+  layout: elk
+---
 ```mermaid
+
 classDiagram
     class Round {
-        -state: RoundState
-        -config: RoundConfig
-        -observable: RoundObservable
-        +addPropertyChangeListener(pcl: PropertyChangeListener)
+        +Round(...)
+        +addPropertyChangeListener(...)
         +updateRoundVariables()
-        +playCards(cardIndices: Integer)
-        +discardCards(cardIndices: Integer)
-        +getCurrentScore(): long
-        +getRemainingDiscards(): int
-        +getRemainingPlays(): int
-        +getPlayerHand(): HoldingHand
-        +getPlayerHandCards(): Card
-        +getPlayerJokers(): HeldJokers
-        +isLost(): boolean
-        +isWon(): boolean
-        +isRoundOver(): boolean
-        -applyDeckVariants(deck: Deck)
-        -applyAnteInvariants(ante: Ante)
-        -applyBossVariants()
+        +playCards(...)
+        +discardCards(...)
+        +getCurrentScore()
+        +isLost()
+        +isWon()
+        +isRoundOver()
+        +getRoundName()
+        +setRoundName(...)
+        +getRoundDescription()
+        +setRoundDescription(...)
+        +getState()
+        +getConfig()
+        +getObservable()
+        +getBossType()
+        +setBossType(...)
+        +getDeck()
+        +getPlayedCards()
+        +getPlayedHand()
+        +setPlayerHandCards(...)
     }
-
     class RoundState {
-        -currentScore: long
-        -remainingDiscards: int
-        -remainingPlays: int
-        -playerJokers: HeldJokers
-        -deck: Deck
-        -playerHand: HoldingHand
-        -chosenCards: Card
-        +getPlayerJokers(): HeldJokers
-        +getDeck(): Deck
-        +drawInitialCards(count: int)
+        +RoundState(...)
+        +getCurrentScore()
+        +addScore(...)
+        +getRemainingDiscards()
+        +setRemainingDiscards(...)
+        +increaseRemainingDiscards(...)
+        +decrementDiscards()
+        +getRemainingPlays()
+        +setRemainingPlays(...)
+        +decrementPlays()
+        +getPlayerJokers()
+        +getDeck()
+        +getPlayerHand()
+        +getPlayerHandCards()
+        +setPlayerHandCards(...)
+        +getChosenCards()
+        +setChosenCards(...)
+        +drawInitialCards(...)
     }
-
     class RoundConfig {
-        +INITIAL_HAND_SIZE: int
-        +MAX_DISCARDS_PER_ROUND: int
-        +DEFAULT_MAX_HAND_SIZE: int
-        +DEFAULT_MIN_HAND_SIZE: int
-        -blindScore: int
-        -roundName: String
-        -roundDescription: String
+        +RoundConfig(...)
+        +getRoundName()
+        +setRoundName(...)
+        +getRoundDescription()
+        +setRoundDescription(...)
+        +getBlindScore()
+        +getMinHandSize()
+        +setMinHandSize(...)
+        +getMaxHandSize()
+        +setMaxHandSize(...)
+        +getBossType()
+        +setBossType(...)
     }
-
-    class RoundActions {
-        +playCards(state: RoundState, config: RoundConfig, cardIndices: Integer): ActionResult
-        +discardCards(state: RoundState, config: RoundConfig, cardIndices: Integer): ActionResult
-        -validatePlayCards(cardIndices: Integer, minHandSize: int, maxHandSize: int, remainingPlays: int)
-        -validateDiscardCards(cardIndices: Integer, remainingDiscards: int)
-    }
-
     class RoundObservable {
-        +addObserver(observer: Observer)
-        +removeObserver(observer: Observer)
-        +notifyObservers(event: String)
+        +RoundObservable(...)
+        +addPropertyChangeListener(...)
+        +removePropertyChangeListener(...)
+        +updateRoundVariables(...)
     }
-
-    Round --> "1" RoundState
-    Round --> "1" RoundConfig
-    Round --> "1" RoundObservable
-    Round ..> "1" RoundActions
+    class RoundActions {
+        +playCards(...)
+        +discardCards(...)
+    }
+    class ActionResult {
+        +ActionResult(...)
+        +getCards()
+        +getPointsEarned()
+    }
+    class Deck {
+    }
+    class HeldJokers {
+    }
+    class BossType {
+        <<enumeration>>
+        NONE
+        THE_NEEDLE
+        THE_WATER
+        THE_PSYCHIC
+    }
+    class Card {
+    }
+    class HoldingHand {
+    }
+    class PokerHand {
+    }
+    class Joker {
+    }
+    Round *-- RoundState : contains
+    Round *-- RoundConfig : contains
+    Round *-- RoundObservable : contains
+    Round ..> RoundActions : uses
+    RoundActions *.. ActionResult : inner class
+    RoundState o-- HeldJokers : contains
+    RoundState o-- Deck : contains
+    RoundState o-- HoldingHand : contains
+    RoundState o-- "0..*" Card : contains via chosenCards
+    RoundConfig o-- BossType : contains
+    HoldingHand o-- "0..*" Card : contains via hand
+    HeldJokers o-- "0..*" Joker : contains via jokers
+    PokerHand o-- "0..*" Card : contains via cards
+    RoundObservable o-- Round : references

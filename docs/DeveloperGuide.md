@@ -376,40 +376,43 @@ The **Round Component** is responsible for managing the state and flow of a sing
 - **RoundConfig**: Stores configuration settings for the round (e.g., max cards, scoring rules).
 - **RoundObservable**: Implements the observer pattern to notify listeners (e.g., UI) of state changes.
 
+![](dg_images/round_8.svg)
+
+#### Round Sequence Diagram: Round Initialization
+
+The following sequence diagram illustrates the initialization process of a round, including configuration setup and state management.
+
 ![](dg_images/round_1.png)
-
-
-<!-- #### Sequence Diagram: Round Initialisation -->
-
-<!-- The following sequence diagram illustrates the initialization process of a round, including configuration setup and state management:
-
-![](dg_images/round_init.png) --> -->
-
-<!-- Note: Due to limitations of mermaid rendering, the activation bars for constructors may not appear exactly aligned with their corresponding object lifelines. The note in the diagram clarifies when the constructor is activated. -->
 
 #### Round Sequence Diagram: playCards method
 
 The following sequence diagram illustrates the process of playing cards during a round.
+
 ![](dg_images/round_2.png)
 
 #### Round Sequence Diagram: discardCards method
 The following sequence diagram illustrates the process of discarding cards during a round.
+
 ![](dg_images/round_3.png)
 
 #### Round Sequence Diagram: isWon method
 The following sequence diagram illustrates the process of checking if a round is won.
+
 ![](dg_images/round_4.png)
 
 #### Round Sequence Diagram: isRoundOver method
 The following sequence diagram illustrates the process of checking if a round is over.
+
 ![](dg_images/round_5.png)
 
 #### RoundActions Sequence Diagram: playCards method
 The following sequence diagram illustrates the process of playing cards during a round.
+
 ![](dg_images/round_6.png)
 
 #### RoundActions Sequence Diagram: discardCards method
 The following sequence diagram illustrates the process of discarding cards during a round.
+
 ![](dg_images/round_7.png)
 
 

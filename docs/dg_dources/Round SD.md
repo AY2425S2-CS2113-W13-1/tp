@@ -1,3 +1,92 @@
+# Initialise the Round
+```mermaid
+sequenceDiagram
+    actor Caller
+    participant A as :Round
+    participant B as config:RoundConfig
+    participant C as state:RoundState
+    participant E as <<class>> BossType
+    participant D as observable:RoundObservable
+
+    Caller ->> A: new Round(ante, remainingPlays, deck, heldJokers, name, description)#nbsp;#nbsp;
+    activate A
+    Note right of A: Constructor activated
+    A ->> B: new RoundConfig(...)#nbsp;#nbsp;
+    activate B
+    Note right of B: Constructor activated
+    B -->> A: this.config : RoundConfig
+    deactivate B
+    A ->> C: new RoundState(...)
+    activate C
+    Note right of C: Constructor activated
+    C -->> A: this.state : RoundState
+    deactivate C
+    A ->> A: applyDeckInvariants(deck)
+    activate A
+    alt RED
+        A ->> C: increaseRemainingDiscards(: int)
+        activate C
+        C -->> A: void
+        deactivate C
+    else BLUE
+        A ->> C: setRemainingPlays(: int)
+        activate C
+        C -->> A: void
+        deactivate C
+    end
+    deactivate A
+ 
+    A ->> A: applyAnteInvariants(ante)
+    activate A
+    alt isBossBlind
+        A ->> E: getBossType()
+        activate E
+        E -->> A: randomBoss:BossType
+        deactivate E
+        A ->> B: setBossType(randomBoss)
+        activate B
+        B -->> A: void
+        deactivate B
+    end
+    A -->> A: void
+    deactivate A
+    A ->> A: applyBossVariants()
+    activate A
+    alt THE_NEEDLE
+        A ->> C: setRemainingPlays(1)
+        activate C
+        C -->> A: void
+        deactivate C
+    else THE_WATER
+        A ->> C: setRemainingDiscards(0)
+        activate C
+        C -->> A: void
+        deactivate C
+    else THE_PSYCHIC
+        A ->> B: setMaxHandSize(5)
+        activate B
+        B -->> A: void
+        deactivate B
+        A ->> B: setMinHandSize(5)
+        activate B
+        B -->> A: void
+        deactivate B
+    end
+    A -->> A: void
+    deactivate A
+    A ->> D: new RoundObservable
+    activate D
+    Note right of D: Constructor activated
+    D -->> A: this.observable : RoundObservable
+    deactivate D
+    A ->> A: validateParameters()
+    activate A
+    A -->> A: void
+    deactivate A
+    A -->> Caller: currentRound : Round
+    deactivate A
+```
+
 # Playing Cards Flow
 ```mermaid
 sequenceDiagram
