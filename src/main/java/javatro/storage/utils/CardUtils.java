@@ -13,6 +13,7 @@ import javatro.core.Deck;
 import javatro.core.jokers.*;
 import javatro.core.jokers.addchip.OddToddJoker;
 import javatro.core.jokers.addchip.ScaryFaceJoker;
+import javatro.core.jokers.addmult.*;
 import javatro.display.DeckArt;
 
 /**
@@ -179,6 +180,12 @@ public class CardUtils {
         return switch (jokerName.toUpperCase()) {
             case "ODDTODDJOKER" -> new OddToddJoker();
             case "SCARYFACEJOKER" -> new ScaryFaceJoker();
+            case "ABSTRACTJOKER" -> new AbstractJoker();
+            case "GLUTTONOUSJOKER" -> new GluttonousJoker();
+            case "GREEDYJOKER" -> new GreedyJoker();
+            case "HALFJOKER" -> new HalfJoker();
+            case "LUSTYJOKER" -> new LustyJoker();
+            case "WRATHFULJOKER" -> new WrathfulJoker();
             default -> throw new IllegalArgumentException("Invalid Joker name: " + jokerName);
         };
     }
