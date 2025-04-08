@@ -4,6 +4,7 @@ import javatro.core.Ante;
 import javatro.core.Card;
 import javatro.core.JavatroCore;
 import javatro.core.JavatroException;
+import javatro.core.jokers.HeldJokers;
 import javatro.storage.DataParser;
 import javatro.storage.Storage;
 import javatro.storage.StorageManager;
@@ -12,6 +13,8 @@ import javatro.storage.utils.CardUtils;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+
+import static javatro.core.JavatroCore.heldJokers;
 
 /** Handles observer notifications for round state changes without direct Round dependencies. */
 class RoundObservable {
@@ -146,6 +149,24 @@ class RoundObservable {
 
                 runData.set(DataParser.ROUND_SCORE_INDEX, Long.toString(0));
             }
+
+            // Update Jokers
+            heldJokers = new HeldJokers();
+            for (int i = DataParser.JOKER_HAND_START_INDEX;
+                 i < DataParser.JOKER_HAND_START_INDEX + 5;
+                 i++) {
+                String jokerString = runData.get(i);
+                if (jokerString.equals("-") || jokerString.equals("NA")) {
+                    continue;
+                }
+
+                try {
+                    heldJokers.add(CardUtils.parseJokerString(jokerString));
+                } catch (JavatroException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
 
             // Save all updated data at once
             StorageManager.getInstance().saveRunData(runIndex, runData);

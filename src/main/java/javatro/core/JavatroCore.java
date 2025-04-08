@@ -121,9 +121,9 @@ public class JavatroCore {
         roundCount = Integer.parseInt(runData.get(DataParser.ROUND_NUMBER_INDEX));
 
         totalPlays = 4;
-        heldJokers = new HeldJokers();
 
         // Update Jokers
+        heldJokers = new HeldJokers();
         for (int i = DataParser.JOKER_HAND_START_INDEX;
                 i < DataParser.JOKER_HAND_START_INDEX + 5;
                 i++) {
@@ -218,10 +218,11 @@ public class JavatroCore {
         Round newRound = Objects.requireNonNull(classicRound());
 
         // Update Score
-        newRound.setCurrentScore(
-                Integer.parseInt(
-                        storage.getValue(
-                                storage.getRunChosen() - 1, DataParser.ROUND_SCORE_INDEX)));
+        newRound.setCurrentScore(600);
+//        newRound.setCurrentScore(
+//                Integer.parseInt(
+//                        storage.getValue(
+//                                storage.getRunChosen() - 1, DataParser.ROUND_SCORE_INDEX)));
 
         // Check if the deck is empty (all "NA")
         boolean allRestOfDeckEmpty = true;
@@ -255,6 +256,7 @@ public class JavatroCore {
         }
 
         // Update Jokers
+        heldJokers = new HeldJokers();
         for (int i = DataParser.JOKER_HAND_START_INDEX;
                 i < DataParser.JOKER_HAND_START_INDEX + 5;
                 i++) {
