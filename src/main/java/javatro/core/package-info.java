@@ -15,7 +15,6 @@
  *   <li>{@link javatro.core.JavatroCore} - The main game model responsible for game state and round
  *       management.
  *   <li>{@link javatro.core.PokerHand} - Defines and evaluates different types of poker hands.
- *   <li>{@link javatro.core.Round} - Represents an individual game round.
  * </ul>
  */
 package javatro.core;
