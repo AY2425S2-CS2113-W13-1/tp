@@ -42,7 +42,7 @@ It blends strategic decision-making with poker mechanics and roguelike elements 
 For more in-depth details on playing the game and contributing to it, check out the following:
 - [User Guide](UserGuide.md) – Detailed explanation of gameplay mechanics, commands, and troubleshooting.
 - [Developer Guide](DeveloperGuide.md) – Insights into the codebase, design decisions, and contribution guidelines.
-- [JavaDocs](https://ay2425s2-cs2113-w13-1.github.io/tp/javadoc/index.html) – Auto-generated HTML documentation of the project's classes, methods, and packages.
+- [JavaDocs](https://ay2425s2-cs2113-w13-1.github.io/tp/javadocs/) – Auto-generated HTML documentation of the project's classes, methods, and packages.
 
 ---
 
