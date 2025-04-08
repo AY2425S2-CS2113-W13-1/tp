@@ -172,7 +172,7 @@ public class HoldingHand {
                         case CLUBS -> 2;
                         case DIAMONDS -> 3;
                         default -> 4; // shouldn't happen
-                                }));
+                        }));
     }
 
     /**

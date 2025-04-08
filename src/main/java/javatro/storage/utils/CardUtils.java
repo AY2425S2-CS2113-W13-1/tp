@@ -100,30 +100,30 @@ public class CardUtils {
         char suitChar = cardString.charAt(cardString.length() - 1);
 
         Card.Rank rank =
-        switch (rankStr) {
-        case "2" -> Card.Rank.TWO;
-        case "3" -> Card.Rank.THREE;
-        case "4" -> Card.Rank.FOUR;
-        case "5" -> Card.Rank.FIVE;
-        case "6" -> Card.Rank.SIX;
-        case "7" -> Card.Rank.SEVEN;
-        case "8" -> Card.Rank.EIGHT;
-        case "9" -> Card.Rank.NINE;
-        case "10" -> Card.Rank.TEN;
-        case "J" -> Card.Rank.JACK;
-        case "Q" -> Card.Rank.QUEEN;
-        case "K" -> Card.Rank.KING;
-        case "A" -> Card.Rank.ACE;
-        default -> throw new IllegalArgumentException("Invalid rank: " + rankStr);
+            switch (rankStr) {
+            case "2" -> Card.Rank.TWO;
+            case "3" -> Card.Rank.THREE;
+            case "4" -> Card.Rank.FOUR;
+            case "5" -> Card.Rank.FIVE;
+            case "6" -> Card.Rank.SIX;
+            case "7" -> Card.Rank.SEVEN;
+            case "8" -> Card.Rank.EIGHT;
+            case "9" -> Card.Rank.NINE;
+            case "10" -> Card.Rank.TEN;
+            case "J" -> Card.Rank.JACK;
+            case "Q" -> Card.Rank.QUEEN;
+            case "K" -> Card.Rank.KING;
+            case "A" -> Card.Rank.ACE;
+            default -> throw new IllegalArgumentException("Invalid rank: " + rankStr);
         };
 
         Card.Suit suit =
-        switch (Character.toUpperCase(suitChar)) {
-        case 'H' -> Card.Suit.HEARTS;
-        case 'C' -> Card.Suit.CLUBS;
-        case 'S' -> Card.Suit.SPADES;
-        case 'D' -> Card.Suit.DIAMONDS;
-        default -> throw new IllegalArgumentException("Invalid suit: " + suitChar);
+            switch (Character.toUpperCase(suitChar)) {
+            case 'H' -> Card.Suit.HEARTS;
+            case 'C' -> Card.Suit.CLUBS;
+            case 'S' -> Card.Suit.SPADES;
+            case 'D' -> Card.Suit.DIAMONDS;
+            default -> throw new IllegalArgumentException("Invalid suit: " + suitChar);
         };
 
         return new Card(rank, suit);
@@ -138,11 +138,11 @@ public class CardUtils {
     public static String cardToString(Card card) {
         assert card != null : "Card cannot be null";
         return card.rank().getSymbol()
-        + switch (card.suit()) {
-        case HEARTS -> "H";
-        case CLUBS -> "C";
-        case SPADES -> "S";
-        case DIAMONDS -> "D";
+            + switch (card.suit()) {
+            case HEARTS -> "H";
+            case CLUBS -> "C";
+            case SPADES -> "S";
+            case DIAMONDS -> "D";
             };
     }
 
@@ -162,15 +162,15 @@ public class CardUtils {
         char suitChar = cardString.charAt(cardString.length() - 1);
 
         boolean isValidRank =
-        switch (rankStr) {
-        case "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" -> true;
-        default -> false;
+            switch (rankStr) {
+            case "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" -> true;
+            default -> false;
         };
 
         boolean isValidSuit =
-        switch (Character.toUpperCase(suitChar)) {
-        case 'H', 'C', 'S', 'D' -> true;
-        default -> false;
+            switch (Character.toUpperCase(suitChar)) {
+            case 'H', 'C', 'S', 'D' -> true;
+            default -> false;
         };
 
         return isValidRank && isValidSuit;
