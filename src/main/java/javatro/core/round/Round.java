@@ -73,7 +73,7 @@ public class Round {
     /**
      * Constructs a new round with specified boss type
      *
-     * @warning This constructor is not intended for use in normal gameplay. It is only for testing
+     * This constructor is not intended for use in normal gameplay. It is only for testing
      *     purposes.
      * @param ante The ante configuration to use
      * @param remainingPlays The number of plays allowed in this round
