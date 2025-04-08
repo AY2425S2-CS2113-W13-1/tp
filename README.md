@@ -40,21 +40,21 @@ It blends strategic decision-making with poker mechanics and roguelike elements 
 ## Documentation & Guides
 
 For more in-depth details on playing the game and contributing to it, check out the following:
-- [User Guide](UserGuide.md) – Detailed explanation of gameplay mechanics, commands, and troubleshooting.
-- [Developer Guide](DeveloperGuide.md) – Insights into the codebase, design decisions, and contribution guidelines.
-- [JavaDocs](https://ay2425s2-cs2113-w13-1.github.io/tp/javadoc/index.html) – Auto-generated HTML documentation of the project's classes, methods, and packages.
+- [User Guide](https://github.com/AY2425S2-CS2113-W13-1/tp/blob/master/docs/UserGuide.md) – Detailed explanation of gameplay mechanics, commands, and troubleshooting.
+- [Developer Guide](https://github.com/AY2425S2-CS2113-W13-1/tp/blob/master/docs/DeveloperGuide.md) – Insights into the codebase, design decisions, and contribution guidelines.
+- [JavaDocs](https://ay2425s2-cs2113-w13-1.github.io/tp/javadocs/) – Auto-generated HTML documentation of the project's classes, methods, and packages.
 
 ---
 
 ## Project Portfolio
 
 Learn more about the team and our journey:
-- [About Us](AboutUs.md)
-- [Mark Neo Qi Hao](team/markneoneo.md)
-- [John Woo Yi Kai](team/jwyk.md)
-- [Neeraj Kumbar](team/flyingapricot.md)
-- [Kwa Jian Quan](team/k-j-q.md)
-- [Saravanan Swetha](team/swethacool.md)
+- [About Us](https://github.com/AY2425S2-CS2113-W13-1/tp/blob/master/docs/AboutUs.md)
+- [Mark Neo Qi Hao](https://github.com/AY2425S2-CS2113-W13-1/tp/blob/master/docs/team/markneoneo.md)
+- [John Woo Yi Kai](https://github.com/AY2425S2-CS2113-W13-1/tp/blob/master/docs/team/jwyk.md)
+- [Neeraj Kumbar](https://github.com/AY2425S2-CS2113-W13-1/tp/blob/master/docs/team/flyingapricot.md)
+- [Kwa Jian Quan](https://github.com/AY2425S2-CS2113-W13-1/tp/blob/master/docs/team/k-j-q.md)
+- [Saravanan Swetha](https://github.com/AY2425S2-CS2113-W13-1/tp/blob/master/docs/team/swethacool.md)
 
 ---
 
