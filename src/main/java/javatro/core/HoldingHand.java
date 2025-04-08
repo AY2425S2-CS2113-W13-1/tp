@@ -147,15 +147,15 @@ public class HoldingHand {
     public void sortBySuit() {
         Hand.sort(
                 Comparator.comparingInt(
-                                (Card card) ->
-                                        switch (card.suit()) {
-                                            case SPADES -> 0;
-                                            case HEARTS -> 1;
-                                            case CLUBS -> 2;
-                                            case DIAMONDS -> 3;
-                                            default -> 4; // shouldn't happen
-                                        })
-                        .thenComparingInt(card -> -card.rank().ordinal()));
+                    (Card card) ->
+                    switch (card.suit()) {
+                    case SPADES -> 0;
+                    case HEARTS -> 1;
+                    case CLUBS -> 2;
+                    case DIAMONDS -> 3;
+                    default -> 4; // shouldn't happen
+                    })
+                    .thenComparingInt(card -> -card.rank().ordinal()));
     }
 
     /**
@@ -165,15 +165,14 @@ public class HoldingHand {
     public void sortByRank() {
         Hand.sort(
                 Comparator.comparingInt((Card card) -> -card.rank().ordinal())
-                        .thenComparingInt(
-                                card ->
-                                        switch (card.suit()) {
-                                            case SPADES -> 0;
-                                            case HEARTS -> 1;
-                                            case CLUBS -> 2;
-                                            case DIAMONDS -> 3;
-                                            default -> 4; // shouldn't happen
-                                        }));
+                        .thenComparingInt(card ->
+                        switch (card.suit()) {
+                        case SPADES -> 0;
+                        case HEARTS -> 1;
+                        case CLUBS -> 2;
+                        case DIAMONDS -> 3;
+                        default -> 4; // shouldn't happen
+                        }));
     }
 
     /**

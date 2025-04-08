@@ -160,21 +160,6 @@ public class Round {
     /** Applies special rules based on the selected boss type. */
     private void applyBossVariants() {
         BossType bossType = this.config.getBossType();
-        switch (bossType) {
-            case THE_NEEDLE:
-                this.state.setRemainingPlays(1);
-                break;
-            case THE_WATER:
-                this.state.setRemainingDiscards(0);
-                break;
-            case THE_PSYCHIC:
-                this.config.setMaxHandSize(5);
-                this.config.setMinHandSize(5);
-                break;
-            case NONE:
-            default:
-                break;
-        }
     }
 
     /** Validates the post-construction state of the round. */

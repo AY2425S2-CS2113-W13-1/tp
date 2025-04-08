@@ -21,21 +21,6 @@ import java.util.Objects;
 /** The core game logic class that manages the game state and rounds. */
 public class JavatroCore {
 
-    // 1. Constants (Static Final)
-    /** The Storage instance used for saving and retrieving data. */
-    private static final Storage storage = Storage.getStorageInstance();
-
-    /** Stores the play counts for each poker hand type */
-    private static final Map<PokerHand.HandType, Integer> pokerHandPlayCounts =
-            new EnumMap<>(PokerHand.HandType.class);
-
-    /** The current round count of the game. */
-    protected static int roundCount;
-
-    // 3. Static Protected Variables (Protected APIs)
-    /** The current ante for the game. */
-    protected static Ante ante;
-
     // 2. Static Public Variables (Public APIs)
     /** The current active round in the game. */
     public static Round currentRound;
@@ -48,6 +33,23 @@ public class JavatroCore {
 
     /** The number of plays given per round (Default value = 4). */
     public static int totalPlays;
+
+    /** The current round count of the game. */
+    protected static int roundCount;
+
+    // 3. Static Protected Variables (Protected APIs)
+    /** The current ante for the game. */
+    protected static Ante ante;
+
+    // 1. Constants (Static Final)
+    /** The Storage instance used for saving and retrieving data. */
+    private static final Storage storage = Storage.getStorageInstance();
+
+    /** Stores the play counts for each poker hand type */
+    private static final Map<PokerHand.HandType, Integer> pokerHandPlayCounts =
+            new EnumMap<>(PokerHand.HandType.class);
+
+
 
     // @author swethaiscool
     /**
@@ -121,9 +123,9 @@ public class JavatroCore {
         roundCount = Integer.parseInt(runData.get(DataParser.ROUND_NUMBER_INDEX));
 
         totalPlays = 4;
-        heldJokers = new HeldJokers();
 
         // Update Jokers
+        heldJokers = new HeldJokers();
         for (int i = DataParser.JOKER_HAND_START_INDEX;
                 i < DataParser.JOKER_HAND_START_INDEX + 5;
                 i++) {
@@ -255,6 +257,7 @@ public class JavatroCore {
         }
 
         // Update Jokers
+        heldJokers = new HeldJokers();
         for (int i = DataParser.JOKER_HAND_START_INDEX;
                 i < DataParser.JOKER_HAND_START_INDEX + 5;
                 i++) {

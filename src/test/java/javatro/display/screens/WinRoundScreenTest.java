@@ -5,7 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import javatro.core.*;
+import javatro.core.JavatroException;
+import javatro.core.PokerHand;
 import javatro.manager.options.ExitGameOption;
 import javatro.manager.options.NextRoundOption;
 import javatro.manager.options.Option;

@@ -1,7 +1,9 @@
 // @@author flyingapricot
 package javatro.storage.utils;
 
-import static javatro.core.Ante.Blind.*;
+import static javatro.core.Ante.Blind.BOSS_BLIND;
+import static javatro.core.Ante.Blind.LARGE_BLIND;
+import static javatro.core.Ante.Blind.SMALL_BLIND;
 import static javatro.display.DeckArt.ABANDONED_DECK;
 import static javatro.display.DeckArt.BLUE_DECK;
 import static javatro.display.DeckArt.CHECKERED_DECK;
@@ -10,9 +12,15 @@ import static javatro.display.DeckArt.RED_DECK;
 import javatro.core.Ante;
 import javatro.core.Card;
 import javatro.core.Deck;
-import javatro.core.jokers.*;
+import javatro.core.jokers.Joker;
 import javatro.core.jokers.addchip.OddToddJoker;
 import javatro.core.jokers.addchip.ScaryFaceJoker;
+import javatro.core.jokers.addmult.AbstractJoker;
+import javatro.core.jokers.addmult.GluttonousJoker;
+import javatro.core.jokers.addmult.GreedyJoker;
+import javatro.core.jokers.addmult.HalfJoker;
+import javatro.core.jokers.addmult.LustyJoker;
+import javatro.core.jokers.addmult.WrathfulJoker;
 import javatro.display.DeckArt;
 
 /**
@@ -34,11 +42,11 @@ public class CardUtils {
     public static DeckArt fromStorageKey(String key) {
         assert key != null : "Deck key cannot be null";
         return switch (key.toUpperCase()) {
-            case "RED" -> RED_DECK;
-            case "BLUE" -> BLUE_DECK;
-            case "CHECKERED" -> CHECKERED_DECK;
-            case "ABANDONED" -> ABANDONED_DECK;
-            default -> throw new IllegalArgumentException("Unknown deck art: " + key);
+        case "RED" -> RED_DECK;
+        case "BLUE" -> BLUE_DECK;
+        case "CHECKERED" -> CHECKERED_DECK;
+        case "ABANDONED" -> ABANDONED_DECK;
+        default -> throw new IllegalArgumentException("Unknown deck art: " + key);
         };
     }
 
@@ -52,11 +60,11 @@ public class CardUtils {
     public static Deck.DeckType deckFromKey(String key) {
         assert key != null : "Deck key cannot be null";
         return switch (key.toUpperCase()) {
-            case "RED" -> Deck.DeckType.RED;
-            case "BLUE" -> Deck.DeckType.BLUE;
-            case "CHECKERED" -> Deck.DeckType.CHECKERED;
-            case "ABANDONED" -> Deck.DeckType.ABANDONED;
-            default -> throw new IllegalArgumentException("Unknown deck type: " + key);
+        case "RED" -> Deck.DeckType.RED;
+        case "BLUE" -> Deck.DeckType.BLUE;
+        case "CHECKERED" -> Deck.DeckType.CHECKERED;
+        case "ABANDONED" -> Deck.DeckType.ABANDONED;
+        default -> throw new IllegalArgumentException("Unknown deck type: " + key);
         };
     }
 
@@ -70,10 +78,10 @@ public class CardUtils {
     public static Ante.Blind blindFromKey(String key) {
         assert key != null : "Blind key cannot be null";
         return switch (key.toUpperCase()) {
-            case "SMALL BLIND" -> SMALL_BLIND;
-            case "LARGE BLIND" -> LARGE_BLIND;
-            case "BOSS BLIND" -> BOSS_BLIND;
-            default -> throw new IllegalArgumentException("Unknown blind type: " + key);
+        case "SMALL BLIND" -> SMALL_BLIND;
+        case "LARGE BLIND" -> LARGE_BLIND;
+        case "BOSS BLIND" -> BOSS_BLIND;
+        default -> throw new IllegalArgumentException("Unknown blind type: " + key);
         };
     }
 
@@ -92,31 +100,31 @@ public class CardUtils {
         char suitChar = cardString.charAt(cardString.length() - 1);
 
         Card.Rank rank =
-                switch (rankStr) {
-                    case "2" -> Card.Rank.TWO;
-                    case "3" -> Card.Rank.THREE;
-                    case "4" -> Card.Rank.FOUR;
-                    case "5" -> Card.Rank.FIVE;
-                    case "6" -> Card.Rank.SIX;
-                    case "7" -> Card.Rank.SEVEN;
-                    case "8" -> Card.Rank.EIGHT;
-                    case "9" -> Card.Rank.NINE;
-                    case "10" -> Card.Rank.TEN;
-                    case "J" -> Card.Rank.JACK;
-                    case "Q" -> Card.Rank.QUEEN;
-                    case "K" -> Card.Rank.KING;
-                    case "A" -> Card.Rank.ACE;
-                    default -> throw new IllegalArgumentException("Invalid rank: " + rankStr);
-                };
+            switch (rankStr) {
+            case "2" -> Card.Rank.TWO;
+            case "3" -> Card.Rank.THREE;
+            case "4" -> Card.Rank.FOUR;
+            case "5" -> Card.Rank.FIVE;
+            case "6" -> Card.Rank.SIX;
+            case "7" -> Card.Rank.SEVEN;
+            case "8" -> Card.Rank.EIGHT;
+            case "9" -> Card.Rank.NINE;
+            case "10" -> Card.Rank.TEN;
+            case "J" -> Card.Rank.JACK;
+            case "Q" -> Card.Rank.QUEEN;
+            case "K" -> Card.Rank.KING;
+            case "A" -> Card.Rank.ACE;
+            default -> throw new IllegalArgumentException("Invalid rank: " + rankStr);
+        };
 
         Card.Suit suit =
-                switch (Character.toUpperCase(suitChar)) {
-                    case 'H' -> Card.Suit.HEARTS;
-                    case 'C' -> Card.Suit.CLUBS;
-                    case 'S' -> Card.Suit.SPADES;
-                    case 'D' -> Card.Suit.DIAMONDS;
-                    default -> throw new IllegalArgumentException("Invalid suit: " + suitChar);
-                };
+            switch (Character.toUpperCase(suitChar)) {
+            case 'H' -> Card.Suit.HEARTS;
+            case 'C' -> Card.Suit.CLUBS;
+            case 'S' -> Card.Suit.SPADES;
+            case 'D' -> Card.Suit.DIAMONDS;
+            default -> throw new IllegalArgumentException("Invalid suit: " + suitChar);
+        };
 
         return new Card(rank, suit);
     }
@@ -130,12 +138,12 @@ public class CardUtils {
     public static String cardToString(Card card) {
         assert card != null : "Card cannot be null";
         return card.rank().getSymbol()
-                + switch (card.suit()) {
-                    case HEARTS -> "H";
-                    case CLUBS -> "C";
-                    case SPADES -> "S";
-                    case DIAMONDS -> "D";
-                };
+            + switch (card.suit()) {
+            case HEARTS -> "H";
+            case CLUBS -> "C";
+            case SPADES -> "S";
+            case DIAMONDS -> "D";
+            };
     }
 
     /**
@@ -154,16 +162,16 @@ public class CardUtils {
         char suitChar = cardString.charAt(cardString.length() - 1);
 
         boolean isValidRank =
-                switch (rankStr) {
-                    case "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" -> true;
-                    default -> false;
-                };
+            switch (rankStr) {
+            case "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" -> true;
+            default -> false;
+        };
 
         boolean isValidSuit =
-                switch (Character.toUpperCase(suitChar)) {
-                    case 'H', 'C', 'S', 'D' -> true;
-                    default -> false;
-                };
+            switch (Character.toUpperCase(suitChar)) {
+            case 'H', 'C', 'S', 'D' -> true;
+            default -> false;
+        };
 
         return isValidRank && isValidSuit;
     }
@@ -177,9 +185,15 @@ public class CardUtils {
     public static Joker parseJokerString(String jokerName) {
         assert jokerName != null : "Joker name cannot be null";
         return switch (jokerName.toUpperCase()) {
-            case "ODDTODDJOKER" -> new OddToddJoker();
-            case "SCARYFACEJOKER" -> new ScaryFaceJoker();
-            default -> throw new IllegalArgumentException("Invalid Joker name: " + jokerName);
+        case "ODDTODDJOKER" -> new OddToddJoker();
+        case "SCARYFACEJOKER" -> new ScaryFaceJoker();
+        case "ABSTRACTJOKER" -> new AbstractJoker();
+        case "GLUTTONOUSJOKER" -> new GluttonousJoker();
+        case "GREEDYJOKER" -> new GreedyJoker();
+        case "HALFJOKER" -> new HalfJoker();
+        case "LUSTYJOKER" -> new LustyJoker();
+        case "WRATHFULJOKER" -> new WrathfulJoker();
+        default -> throw new IllegalArgumentException("Invalid Joker name: " + jokerName);
         };
     }
 
@@ -204,8 +218,8 @@ public class CardUtils {
     public static boolean isValidJokerString(String jokerName) {
         assert jokerName != null : "Joker name cannot be null";
         return switch (jokerName.toUpperCase()) {
-            case "ODDTODDJOKER", "SCARYFACEJOKER" -> true;
-            default -> false;
+        case "ODDTODDJOKER", "SCARYFACEJOKER" -> true;
+        default -> false;
         };
     }
 }

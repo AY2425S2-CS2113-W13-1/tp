@@ -80,10 +80,10 @@ public final class CardRenderer {
         assert suit != null : "Suit cannot be null";
 
         return switch (suit) {
-            case HEARTS -> "H";
-            case DIAMONDS -> "D";
-            case CLUBS -> "C";
-            case SPADES -> "S";
+        case HEARTS -> "H";
+        case DIAMONDS -> "D";
+        case CLUBS -> "C";
+        case SPADES -> "S";
         };
     }
 
@@ -98,10 +98,10 @@ public final class CardRenderer {
         assert suit != null : "Suit cannot be null";
 
         return switch (suit) {
-            case HEARTS -> RED;
-            case DIAMONDS -> ORANGE;
-            case CLUBS -> BLUE;
-            case SPADES -> PURPLE;
+        case HEARTS -> RED;
+        case DIAMONDS -> ORANGE;
+        case CLUBS -> BLUE;
+        case SPADES -> PURPLE;
         };
     }
 }

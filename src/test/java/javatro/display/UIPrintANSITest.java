@@ -1,6 +1,9 @@
 package javatro.display;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +32,7 @@ class UIPrintANSITest {
     }
 
     @Test
-    public void testPrintANSI_ValidFile() {
+    public void testPrintANSIValidFile() {
         // Test with a valid file (ensure the file exists under src/test/resources/ansi)
         assertDoesNotThrow(() -> UI.printANSI("javatro_logo.txt"));
 
@@ -42,7 +45,7 @@ class UIPrintANSITest {
     }
 
     @Test
-    public void testPrintANSI_InvalidFile() {
+    public void testPrintANSIInvalidFile() {
         // Test with a non-existent file
         UI.printANSI("nonexistent.txt");
 
@@ -58,7 +61,7 @@ class UIPrintANSITest {
     }
 
     @Test
-    public void testPrintANSI_NullFileName() {
+    public void testPrintANSINullFileName() {
         // Test with a null file name
         assertThrows(
                 AssertionError.class,
@@ -67,7 +70,7 @@ class UIPrintANSITest {
     }
 
     @Test
-    public void testPrintANSI_EmptyFileName() {
+    public void testPrintANSIEmptyFileName() {
         // Test with an empty file name
         assertThrows(
                 AssertionError.class,

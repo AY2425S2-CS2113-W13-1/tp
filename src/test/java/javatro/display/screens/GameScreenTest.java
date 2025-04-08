@@ -7,7 +7,12 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import javatro.core.Card;
 import javatro.core.JavatroException;
-import javatro.manager.options.*;
+import javatro.manager.options.DeckViewOption;
+import javatro.manager.options.DiscardCardOption;
+import javatro.manager.options.ExitGameOption;
+import javatro.manager.options.MainMenuOption;
+import javatro.manager.options.PlayCardOption;
+import javatro.manager.options.PokerHandOption;
 import javatro.storage.Storage;
 
 import org.junit.jupiter.api.BeforeEach;

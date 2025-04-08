@@ -8,11 +8,11 @@ import java.util.List;
 
 /** Contains the algorithm for calculating the final score and played hand. */
 public class Score {
-    private final BossType bossType;
     public static List<Card> playedCardsList;
     public ArrayList<Joker> jokerList;
     public double totalChips = 0;
     public double totalMultiplier = 0;
+    private final BossType bossType;
 
     /** Default constructor */
     public Score() {
@@ -81,40 +81,40 @@ public class Score {
         // Apply boss blind logic to return this as true or false based on the card's
         // characteristics
         switch (bossType) {
-            case THE_CLUB:
-                // The Club: All Club Cards cannot score
-                if (card.suit() == Card.Suit.CLUBS) {
-                    return false;
-                }
-                break;
-            case THE_WINDOW:
-                // The Window: All Diamond Cards cannot score
-                if (card.suit() == Card.Suit.DIAMONDS) {
-                    return false;
-                }
-                break;
-            case THE_HEAD:
-                // The Head: All Heart Cards cannot score
-                if (card.suit() == Card.Suit.HEARTS) {
-                    return false;
-                }
-                break;
-            case THE_GOAD:
-                // The Goad: All Spade Cards cannot score
-                if (card.suit() == Card.Suit.SPADES) {
-                    return false;
-                }
-                break;
-            case THE_PLANT:
-                // The Plant: All face(K,Q,J) cards cannot score
-                Card.Rank rank = card.rank();
-                if (rank == Card.Rank.KING || rank == Card.Rank.QUEEN || rank == Card.Rank.JACK) {
-                    return false;
-                }
-                break;
-            default:
-                // No restrictions for other boss types
-                break;
+        case THE_CLUB:
+            // The Club: All Club Cards cannot score
+            if (card.suit() == Card.Suit.CLUBS) {
+                return false;
+            }
+            break;
+        case THE_WINDOW:
+            // The Window: All Diamond Cards cannot score
+            if (card.suit() == Card.Suit.DIAMONDS) {
+                return false;
+            }
+            break;
+        case THE_HEAD:
+            // The Head: All Heart Cards cannot score
+            if (card.suit() == Card.Suit.HEARTS) {
+                return false;
+            }
+            break;
+        case THE_GOAD:
+            // The Goad: All Spade Cards cannot score
+            if (card.suit() == Card.Suit.SPADES) {
+                return false;
+            }
+            break;
+        case THE_PLANT:
+            // The Plant: All face(K,Q,J) cards cannot score
+            Card.Rank rank = card.rank();
+            if (rank == Card.Rank.KING || rank == Card.Rank.QUEEN || rank == Card.Rank.JACK) {
+                return false;
+            }
+            break;
+        default:
+            // No restrictions for other boss types
+            break;
         }
         return true;
     }

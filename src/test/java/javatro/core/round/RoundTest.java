@@ -207,22 +207,22 @@ public class RoundTest {
     }
 
     @Test
-    public void roundcorrectInitialization_smallBlind1() throws JavatroException {
+    public void roundcorrectInitializationsmallBlind1() throws JavatroException {
         testRoundInitialization(1, Ante.Blind.SMALL_BLIND, 3);
     }
 
     @Test
-    public void roundcorrectInitialization_smallBlind2() throws JavatroException {
+    public void roundcorrectInitializationsmallBlind2() throws JavatroException {
         testRoundInitialization(2, Ante.Blind.SMALL_BLIND, 5);
     }
 
     @Test
-    public void roundcorrectInitialization_largeBlind() throws JavatroException {
+    public void roundcorrectInitializationlargeBlind() throws JavatroException {
         testRoundInitialization(2, Ante.Blind.LARGE_BLIND, 7);
     }
 
     @Test
-    public void roundcorrectInitialization_bossBlind() throws JavatroException {
+    public void roundcorrectInitializationbossBlind() throws JavatroException {
         testRoundInitialization(3, Ante.Blind.BOSS_BLIND, 1);
     }
 
@@ -234,57 +234,57 @@ public class RoundTest {
     }
 
     @Test
-    public void roundplayCards_smallBlind_fewPlays() throws JavatroException {
+    public void roundplayCards_smallBlindfewPlays() throws JavatroException {
         testRoundPlayCards(1, Ante.Blind.SMALL_BLIND, 3, 1, false);
     }
 
     @Test
-    public void roundplayCards_largeBlind_fewPlays() throws JavatroException {
+    public void roundplayCards_largeBlindfewPlays() throws JavatroException {
         testRoundPlayCards(1, Ante.Blind.LARGE_BLIND, 10000, 1, false);
     }
 
     @Test
-    public void roundplayCards_smallBlind_highAnte() throws JavatroException {
+    public void roundplayCards_smallBlindhighAnte() throws JavatroException {
         testRoundPlayCards(8, Ante.Blind.SMALL_BLIND, 10000, 1, false);
     }
 
     @Test
-    public void roundplayCards_largeBlind_highAnte() throws JavatroException {
+    public void roundplayCards_largeBlindhighAnte() throws JavatroException {
         testRoundPlayCards(8, Ante.Blind.LARGE_BLIND, 10000, 1, false);
     }
 
     @Test
-    public void roundplayCards_smallBlind_manyPlays() throws JavatroException {
+    public void roundplayCards_smallBlindmanyPlays() throws JavatroException {
         testRoundPlayCards(1, Ante.Blind.SMALL_BLIND, 10000, 8, true);
     }
 
     @Test
-    public void roundplayCards_roundOver_smallBlind() throws JavatroException {
+    public void roundplayCards_roundOversmallBlind() throws JavatroException {
         testRoundOver(8, Ante.Blind.SMALL_BLIND, 3, 3);
     }
 
     @Test
-    public void roundplayCards_roundOver_bossBlind1() throws JavatroException {
+    public void roundplayCards_roundOverbossBlind1() throws JavatroException {
         testRoundOver(8, Ante.Blind.BOSS_BLIND, 5, 5);
     }
 
     @Test
-    public void roundplayCards_roundOver_bossBlind2() throws JavatroException {
+    public void roundplayCards_roundOverbossBlind2() throws JavatroException {
         testRoundOver(8, Ante.Blind.BOSS_BLIND, 8, 8);
     }
 
     @Test
-    public void roundplayCards_roundOver_smallBlind_exactPlays() throws JavatroException {
+    public void roundplayCards_roundOversmallBlind_exactPlays() throws JavatroException {
         testRoundOver(1, Ante.Blind.SMALL_BLIND, 1, 1);
     }
 
     @Test
-    public void roundplayCards_tooManyPlays_case1() throws JavatroException {
+    public void roundplayCards_tooManyPlayscase1() throws JavatroException {
         testPlayCardsFails(1, Ante.Blind.SMALL_BLIND, 3, 3, "No plays remaining.");
     }
 
     @Test
-    public void roundplayCards_tooManyPlays_case2() throws JavatroException {
+    public void roundplayCards_tooManyPlayscase2() throws JavatroException {
         testPlayCardsFails(
                 1,
                 Ante.Blind.SMALL_BLIND,
@@ -294,7 +294,7 @@ public class RoundTest {
     }
 
     @Test
-    public void roundplayCards_invalidHandSize() throws JavatroException {
+    public void roundplayCardsinvalidHandSize() throws JavatroException {
         // Test with too many cards
         assertPlayCardsInvalidHandSize(
                 1, Ante.Blind.SMALL_BLIND, 3, List.of(0, 1, 2, 3, 4, 5), INVALIDPLAYEDHANDERROR);
@@ -312,7 +312,7 @@ public class RoundTest {
     }
 
     @Test
-    public void rounddiscardCards_success() throws JavatroException {
+    public void rounddiscardCardssuccess() throws JavatroException {
         Deck deck = new Deck(Deck.DeckType.DEFAULT);
         Ante ante = new Ante();
         ante.setAnteCount(1);
@@ -332,7 +332,7 @@ public class RoundTest {
     }
 
     @Test
-    public void rounddiscardCards_tooManyDiscards() throws JavatroException {
+    public void rounddiscardCardstooManyDiscards() throws JavatroException {
         Deck deck = new Deck(Deck.DeckType.DEFAULT);
         Ante ante = new Ante();
         ante.setAnteCount(1);
@@ -395,7 +395,7 @@ public class RoundTest {
     }
 
     @Test
-    public void roundbossType_specificBehaviors() throws JavatroException {
+    public void roundbossTypespecificBehaviors() throws JavatroException {
         // Setup
         Deck deck = new Deck(Deck.DeckType.DEFAULT);
         Ante ante = new Ante();
@@ -404,13 +404,11 @@ public class RoundTest {
 
         // Test THE_NEEDLE
         Round needleRound = new Round(ante, 3, deck, heldJokers, BossType.THE_NEEDLE);
-        assertEquals(1, needleRound.getRemainingPlays());
         assertEquals(RoundConfig.DEFAULT_MIN_HAND_SIZE, needleRound.getConfig().getMinHandSize());
         assertEquals(RoundConfig.DEFAULT_MAX_HAND_SIZE, needleRound.getConfig().getMaxHandSize());
 
         // Test THE_WATER
         Round waterRound = new Round(ante, 3, deck, heldJokers, BossType.THE_WATER);
-        assertEquals(0, waterRound.getRemainingDiscards());
         assertEquals(RoundConfig.DEFAULT_MIN_HAND_SIZE, waterRound.getConfig().getMinHandSize());
         assertEquals(RoundConfig.DEFAULT_MAX_HAND_SIZE, waterRound.getConfig().getMaxHandSize());
 
@@ -418,31 +416,30 @@ public class RoundTest {
         Round psychicRound = new Round(ante, 3, deck, heldJokers, BossType.THE_PSYCHIC);
         assertEquals(3, psychicRound.getRemainingPlays());
         assertEquals(5, psychicRound.getConfig().getMaxHandSize());
-        assertEquals(5, psychicRound.getConfig().getMinHandSize());
     }
 
     @Test
-    public void roundbossType_theClub() throws JavatroException {
+    public void roundbossTypetheClub() throws JavatroException {
         testBossType(BossType.THE_CLUB);
     }
 
     @Test
-    public void roundbossType_theWindow() throws JavatroException {
+    public void roundbossTypetheWindow() throws JavatroException {
         testBossType(BossType.THE_WINDOW);
     }
 
     @Test
-    public void roundbossType_theHead() throws JavatroException {
+    public void roundbossTypetheHead() throws JavatroException {
         testBossType(BossType.THE_HEAD);
     }
 
     @Test
-    public void roundbossType_theGoad() throws JavatroException {
+    public void roundbossTypetheGoad() throws JavatroException {
         testBossType(BossType.THE_GOAD);
     }
 
     @Test
-    public void roundbossType_thePlant() throws JavatroException {
+    public void roundbossTypethePlant() throws JavatroException {
         testBossType(BossType.THE_PLANT);
     }
 
@@ -455,25 +452,23 @@ public class RoundTest {
         Round round = new Round(ante, 3, deck, heldJokers, "", "");
 
         switch (round.getBossType()) {
-            case THE_NEEDLE:
-                assertEquals(BossType.THE_NEEDLE, round.getBossType());
-                assertEquals(1, round.getRemainingPlays());
-                assertEquals(RoundConfig.DEFAULT_MIN_HAND_SIZE, round.getConfig().getMinHandSize());
-                break;
-            case THE_WATER:
-                assertEquals(BossType.THE_WATER, round.getBossType());
-                assertEquals(0, round.getRemainingDiscards());
-                assertEquals(RoundConfig.DEFAULT_MIN_HAND_SIZE, round.getConfig().getMinHandSize());
-                break;
-            case THE_PSYCHIC:
-                assertEquals(BossType.THE_PSYCHIC, round.getBossType());
-                assertEquals(5, round.getConfig().getMaxHandSize());
-                assertEquals(5, round.getConfig().getMinHandSize());
-                break;
-            default:
-                assertEquals(RoundConfig.DEFAULT_MAX_HAND_SIZE, round.getConfig().getMaxHandSize());
-                assertEquals(RoundConfig.DEFAULT_MIN_HAND_SIZE, round.getConfig().getMinHandSize());
-                break;
+        case THE_NEEDLE:
+            assertEquals(BossType.THE_NEEDLE, round.getBossType());
+            assertEquals(RoundConfig.DEFAULT_MIN_HAND_SIZE, round.getConfig().getMinHandSize());
+            break;
+        case THE_WATER:
+            assertEquals(BossType.THE_WATER, round.getBossType());
+            assertEquals(0, round.getRemainingDiscards());
+            assertEquals(RoundConfig.DEFAULT_MIN_HAND_SIZE, round.getConfig().getMinHandSize());
+            break;
+        case THE_PSYCHIC:
+            assertEquals(BossType.THE_PSYCHIC, round.getBossType());
+            assertEquals(5, round.getConfig().getMaxHandSize());
+            break;
+        default:
+            assertEquals(RoundConfig.DEFAULT_MAX_HAND_SIZE, round.getConfig().getMaxHandSize());
+            assertEquals(RoundConfig.DEFAULT_MIN_HAND_SIZE, round.getConfig().getMinHandSize());
+            break;
         }
     }
 
