@@ -92,15 +92,15 @@ public abstract class CardSelectScreen extends Screen {
             tempHand.Hand = new ArrayList<>(this.holdingHand);
 
             switch (sortOrder) {
-                case BY_SUIT:
-                    tempHand.sortBySuit();
-                    break;
-                case BY_RANK:
-                    tempHand.sortByRank();
-                    break;
-                default:
-                    // Maintain original order
-                    break;
+            case BY_SUIT:
+                tempHand.sortBySuit();
+                break;
+            case BY_RANK:
+                tempHand.sortByRank();
+                break;
+            default:
+                // Maintain original order
+                break;
             }
 
             this.holdingHand = tempHand.getHand();

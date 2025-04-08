@@ -15,6 +15,13 @@ import java.util.TreeMap;
  */
 public class Storage {
 
+    /** Indicates if a new deck is being used. */
+    public static Boolean isNewDeck = false;
+
+    /** Stores whether storage is active for the game or not */
+    public static boolean saveActive = true;
+
+    
     /** Singleton instance of Storage. */
     private static Storage storageInstance;
 
@@ -24,11 +31,6 @@ public class Storage {
     /** Stores the index of the current run. */
     private static int runChosen = 0;
 
-    /** Indicates if a new deck is being used. */
-    public static Boolean isNewDeck = false;
-
-    /** Stores whether storage is active for the game or not */
-    public static boolean saveActive = true;
 
     /**
      * Private constructor to enforce Singleton pattern. Initializes the save file by calling the

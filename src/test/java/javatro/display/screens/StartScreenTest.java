@@ -4,8 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import javatro.core.JavatroException;
-import javatro.manager.options.*;
 
+import javatro.manager.options.ExitGameOption;
+import javatro.manager.options.HelpMenuOption;
+import javatro.manager.options.Option;
+import javatro.manager.options.RunSelectOption;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

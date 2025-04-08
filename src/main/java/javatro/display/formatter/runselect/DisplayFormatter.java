@@ -67,22 +67,22 @@ public class DisplayFormatter {
         for (int i = 0; i < screenSize - 1; i++) {
             String leftText = "";
             switch (i) {
-                case 0 -> leftText =
-                        "Round: " + storage.getValue(runNumber - 1, DataParser.ROUND_NUMBER_INDEX);
-                case 1 -> leftText =
-                        "Round Score: "
-                                + storage.getValue(runNumber - 1, DataParser.ROUND_SCORE_INDEX);
-                case 2 -> leftText = "Hands: " + handsOutput + " | Discards: " + discardsOutput;
-                case 3, 6 -> leftText = "------------------------";
-                case 4 -> leftText =
-                        "Ante: " + storage.getValue(runNumber - 1, DataParser.ANTE_NUMBER_INDEX);
-                case 5 -> leftText =
-                        "Blind: " + storage.getValue(runNumber - 1, DataParser.BLIND_INDEX);
-                case 7 -> leftText =
-                        "Wins: "
-                                + storage.getValue(runNumber - 1, DataParser.WINS_INDEX)
-                                + " | Losses: "
-                                + storage.getValue(runNumber - 1, DataParser.LOSSES_INDEX);
+            case 0 -> leftText =
+                    "Round: " + storage.getValue(runNumber - 1, DataParser.ROUND_NUMBER_INDEX);
+            case 1 -> leftText =
+                    "Round Score: "
+                            + storage.getValue(runNumber - 1, DataParser.ROUND_SCORE_INDEX);
+            case 2 -> leftText = "Hands: " + handsOutput + " | Discards: " + discardsOutput;
+            case 3, 6 -> leftText = "------------------------";
+            case 4 -> leftText =
+                    "Ante: " + storage.getValue(runNumber - 1, DataParser.ANTE_NUMBER_INDEX);
+            case 5 -> leftText =
+                    "Blind: " + storage.getValue(runNumber - 1, DataParser.BLIND_INDEX);
+            case 7 -> leftText =
+                    "Wins: "
+                            + storage.getValue(runNumber - 1, DataParser.WINS_INDEX)
+                            + " | Losses: "
+                            + storage.getValue(runNumber - 1, DataParser.LOSSES_INDEX);
             }
 
             String rightAnsi = (i < cardArt.length) ? cardArt[i] : "";

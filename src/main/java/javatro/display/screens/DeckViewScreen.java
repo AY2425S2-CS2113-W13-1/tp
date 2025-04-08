@@ -295,11 +295,11 @@ public class DeckViewScreen extends Screen {
      */
     int getSuitIndex(Card.Suit suit) {
         return switch (suit) {
-            case SPADES -> 0;
-            case HEARTS -> 1;
-            case CLUBS -> 2;
-            case DIAMONDS -> 3;
-            default -> -1;
+        case SPADES -> 0;
+        case HEARTS -> 1;
+        case CLUBS -> 2;
+        case DIAMONDS -> 3;
+        default -> -1;
         };
     }
 
@@ -312,20 +312,20 @@ public class DeckViewScreen extends Screen {
     int getRankIndex(Card.Rank rank) {
         String symbol = rank.getSymbol();
         return switch (symbol) {
-            case "A" -> 0;
-            case "K" -> 1;
-            case "Q" -> 2;
-            case "J" -> 3;
-            case "10" -> 4;
-            case "9" -> 5;
-            case "8" -> 6;
-            case "7" -> 7;
-            case "6" -> 8;
-            case "5" -> 9;
-            case "4" -> 10;
-            case "3" -> 11;
-            case "2" -> 12;
-            default -> -1;
+        case "A" -> 0;
+        case "K" -> 1;
+        case "Q" -> 2;
+        case "J" -> 3;
+        case "10" -> 4;
+        case "9" -> 5;
+        case "8" -> 6;
+        case "7" -> 7;
+        case "6" -> 8;
+        case "5" -> 9;
+        case "4" -> 10;
+        case "3" -> 11;
+        case "2" -> 12;
+        default -> -1;
         };
     }
 
