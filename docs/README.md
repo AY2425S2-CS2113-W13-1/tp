@@ -94,7 +94,7 @@ Learn more about the team and our journey:
 - **Audio Credits:**
     - **Main Music:** *Balatro - Complete Original Soundtrack* (Composed by LouisF)
     - **Victory Music:** "We Are the Champions" by Queen
-    - **Losing Sound Effect:** *Cat Laughing At You* ([YouTube](https://youtu.be/L8XbI
+    - **Losing Sound Effect:** [Cat Laughing At You](https://youtu.be/L8XbI9aJOXk?feature=shared)
 
 ---
 
