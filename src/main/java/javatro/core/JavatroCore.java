@@ -218,11 +218,10 @@ public class JavatroCore {
         Round newRound = Objects.requireNonNull(classicRound());
 
         // Update Score
-        newRound.setCurrentScore(600);
-//        newRound.setCurrentScore(
-//                Integer.parseInt(
-//                        storage.getValue(
-//                                storage.getRunChosen() - 1, DataParser.ROUND_SCORE_INDEX)));
+        newRound.setCurrentScore(
+                Integer.parseInt(
+                        storage.getValue(
+                                storage.getRunChosen() - 1, DataParser.ROUND_SCORE_INDEX)));
 
         // Check if the deck is empty (all "NA")
         boolean allRestOfDeckEmpty = true;
