@@ -22,7 +22,7 @@
    - [Glossary](#glossary)
 7. [Appendix: Instructions for manual testing]()
 
-[JavaDocs](https://ay2425s2-cs2113-w13-1.github.io/tp/javadoc/index.html) – Auto-generated HTML documentation of the project's classes, methods, and packages.
+[JavaDocs](https://ay2425s2-cs2113-w13-1.github.io/tp/javadocs/) – Auto-generated HTML documentation of the project's classes, methods, and packages.
 
 
 ## Acknowledgements
