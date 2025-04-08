@@ -6,9 +6,11 @@ javatro.core.jokers.addchip
 javatro.core.jokers.addmult
 javatro.core.round
 javatro.display
+javatro.display.formatter.runselect
 javatro.display.screens
 javatro.manager
 javatro.manager.options
 javatro.storage
+javatro.storage.utils
 javatro.utilities.csvutils
 javatro.utilities.outpututils
