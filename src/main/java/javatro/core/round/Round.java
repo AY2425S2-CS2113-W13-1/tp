@@ -159,8 +159,6 @@ public class Round {
     /** Applies special rules based on the selected boss type. */
     private void applyBossVariants() {
         BossType bossType = this.config.getBossType();
-        switch (bossType) {
-         }
     }
 
     /** Validates the post-construction state of the round. */

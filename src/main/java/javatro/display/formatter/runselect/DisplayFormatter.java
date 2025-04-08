@@ -83,6 +83,7 @@ public class DisplayFormatter {
                             + storage.getValue(runNumber - 1, DataParser.WINS_INDEX)
                             + " | Losses: "
                             + storage.getValue(runNumber - 1, DataParser.LOSSES_INDEX);
+            default -> leftText = "";
             }
 
             String rightAnsi = (i < cardArt.length) ? cardArt[i] : "";
