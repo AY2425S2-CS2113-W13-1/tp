@@ -4,6 +4,5 @@
  *
  * <p>This package is responsible for managing game flow, handling user commands, and coordinating
  * between the game model and the user interface.
- *
  */
 package javatro.manager;
